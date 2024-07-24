@@ -9,10 +9,7 @@ import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
 
 public class MainActivity extends AppCompatActivity {
 
-    // Used to load the 'androidlearnopengl' library on application startup.
-    static {
-        System.loadLibrary("androidlearnopengl");
-    }
+
 
     private ActivityMainBinding binding;
 
@@ -23,14 +20,8 @@ public class MainActivity extends AppCompatActivity {
         binding = ActivityMainBinding.inflate(getLayoutInflater());
         setContentView(binding.getRoot());
 
-        // Example of a call to a native method
-        TextView tv = binding.sampleText;
-        tv.setText(stringFromJNI());
+
     }
 
-    /**
-     * A native method that is implemented by the 'androidlearnopengl' native library,
-     * which is packaged with this application.
-     */
-    public native String stringFromJNI();
+
 }
