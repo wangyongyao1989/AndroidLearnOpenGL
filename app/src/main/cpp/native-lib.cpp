@@ -1,6 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
+#include "OpenglesCode.h"
 
 
 #define LOG_TAG "wy"
@@ -10,12 +11,11 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCall";
-
+OpenglesCode *openglesCode;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
-        JNIEnv *env,
-        jobject /* this */) {
+        JNIEnv *env, jobject) {
     std::string hello = "Hello from C++";
     LOGD("cpp_stringFromJNI  hello = %c", hello.c_str());
     return env->NewStringUTF(hello.c_str());
@@ -28,12 +28,33 @@ cpp_init_callback(JNIEnv *env, jobject thiz) {
 
 }
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglesCode == nullptr)
+        openglesCode = new OpenglesCode();
+
+    openglesCode->setupGraphics(width,height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglesCode == nullptr) return;
+    openglesCode->renderFrame();
+
+
+}
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"stringFromJNI",           "()Ljava/lang/String;",                                      (std::string *) cpp_stringFromJNI},
-        {"native_callback",         "()V",                                                       (void *) cpp_init_callback},
+        {"stringFromJNI",       "()Ljava/lang/String;", (std::string *) cpp_stringFromJNI},
+        {"native_callback",     "()V",                  (void *) cpp_init_callback},
 
+        {"native_init_opengl",  "(II)Z",                (void *) cpp_init_opengl},
+        {"native_render_frame", "()V",                  (void *) cpp_render_frame},
 
 };
 

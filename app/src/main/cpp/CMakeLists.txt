@@ -9,11 +9,14 @@ add_library(${CMAKE_PROJECT_NAME}
         SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
-
+        OpenglesCode.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         android
+        EGL
+        GLESv3
+        OpenSLES
         log)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
