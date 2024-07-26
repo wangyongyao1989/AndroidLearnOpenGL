@@ -22,7 +22,11 @@ private:
 
     GLuint gProgram;
     GLuint gvPositionHandle;
-    GLuint shaderProgram;
+    GLuint shaderProgram;   //着色程序对象
+
+    GLuint vertexShader;  //顶点着色器
+    GLuint fraShader;     //片段着色器
+
     unsigned int VBO, VAO;
     unsigned int EBO;
 

@@ -91,16 +91,16 @@ void OpenglesCode::checkGlError(const char *op) {
 }
 
 /**
- * 加载渲染器
+ * 加载着色器
  * @param shaderType
  * @param pSource
  * @return
  */
 GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
-    GLuint shader = glCreateShader(shaderType);
+    GLuint shader = glCreateShader(shaderType);     //创建着色器
     if (shader) {
-        glShaderSource(shader, 1, &pSource, NULL);
-        glCompileShader(shader);
+        glShaderSource(shader, 1, &pSource, NULL);  //着色器源码附加到着色器对象上
+        glCompileShader(shader);                    //编译着着色器
         GLint compiled = 0;
         glGetShaderiv(shader, GL_COMPILE_STATUS, &compiled);
         if (!compiled) {
@@ -114,7 +114,7 @@ GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
                          shaderType, buf);
                     free(buf);
                 }
-                glDeleteShader(shader);
+                glDeleteShader(shader);     //删除着色器对象
                 shader = 0;
             }
         }
@@ -129,25 +129,25 @@ GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
  * @return
  */
 GLuint OpenglesCode::createProgram(const char *pVertexSource, const char *pFragmentSource) {
-    GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
+    vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
         return 0;
     }
 
-    GLuint pixelShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
-    if (!pixelShader) {
+    fraShader = loadShader(GL_FRAGMENT_SHADER, pFragmentSource);
+    if (!fraShader) {
         return 0;
     }
 
-    shaderProgram = glCreateProgram();
+    shaderProgram = glCreateProgram();      //创建一个着色程序对象
     if (shaderProgram) {
-        glAttachShader(shaderProgram, vertexShader);
+        glAttachShader(shaderProgram, vertexShader);        //把着色器附加到了程序对象上
         checkGlError("glAttachShader");
-        glAttachShader(shaderProgram, pixelShader);
+        glAttachShader(shaderProgram, fraShader);
         checkGlError("glAttachShader");
-        glLinkProgram(shaderProgram);
+        glLinkProgram(shaderProgram);   //链接程序对象
         GLint linkStatus = GL_FALSE;
-        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linkStatus);
+        glGetProgramiv(shaderProgram, GL_LINK_STATUS, &linkStatus);  //检测链接着色器程序是否失败
         if (linkStatus != GL_TRUE) {
             GLint bufLength = 0;
             glGetProgramiv(shaderProgram, GL_INFO_LOG_LENGTH, &bufLength);
@@ -159,7 +159,7 @@ GLuint OpenglesCode::createProgram(const char *pVertexSource, const char *pFragm
                     free(buf);
                 }
             }
-            glDeleteProgram(shaderProgram);
+            glDeleteProgram(shaderProgram);     //
             shaderProgram = 0;
         }
     }
@@ -168,6 +168,12 @@ GLuint OpenglesCode::createProgram(const char *pVertexSource, const char *pFragm
 }
 
 OpenglesCode::~OpenglesCode() {
+    if (vertexShader) {
+        glDeleteShader(vertexShader);
+    }
+    if (fraShader) {
+        glDeleteShader(fraShader);
+    }
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
