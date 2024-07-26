@@ -8,7 +8,7 @@ import android.util.Log;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GL3JniView extends GLSurfaceView {
+public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static String TAG = GL3JniView.class.getSimpleName();
     private JniCall mJniCall;
@@ -26,30 +26,26 @@ public class GL3JniView extends GLSurfaceView {
     private void init() {
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
+        setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mJniCall = new JniCall();
-        setRenderer(new MyRenderer());
+        setRenderer(this);
     }
 
 
-    private class MyRenderer implements GLSurfaceView.Renderer {
-        public void onDrawFrame(GL10 gl) {
-            Log.e(TAG, "onDrawFrame: ");
-            mJniCall.openGlRenderFrame();
-//            GL2JNILib.step();
-        }
+    public void onDrawFrame(GL10 gl) {
+//            Log.e(TAG, "onDrawFrame: ");
+        mJniCall.openGlRenderFrame();
+    }
 
-        public void onSurfaceChanged(GL10 gl, int width, int height) {
-            Log.e(TAG, "onSurfaceChanged: ");
-            mJniCall.initOpenGl(width, height);
+    public void onSurfaceChanged(GL10 gl, int width, int height) {
+        Log.e(TAG, "onSurfaceChanged: ");
+        mJniCall.initOpenGl(width, height);
+    }
 
-//            GL2JNILib.init(width, height);
-        }
 
-        public void onSurfaceCreated(GL10 gl, EGLConfig config) {
-            Log.e(TAG, "onSurfaceCreated: ");
+    @Override
+    public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
 
-            // Do nothing.
-        }
     }
 
 

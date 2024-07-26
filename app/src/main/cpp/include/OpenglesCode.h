@@ -5,8 +5,8 @@
 #ifndef ANDROIDLEARNOPENGL_OPENGLESCODE_H
 #define ANDROIDLEARNOPENGL_OPENGLESCODE_H
 
-#include <GLES2/gl2.h>
-#include <GLES2/gl2ext.h>
+#include <GLES3/gl3.h>              //导入的包为GL3对应的顶点程序和片元程序为：#version 300 es
+#include <GLES3/gl3ext.h>
 #include <android/log.h>
 
 
@@ -16,16 +16,25 @@
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 static const char gVertexShader[] =
-        "attribute vec4 vPosition;\n"
-        "void main() {\n"
-        "  gl_Position = vPosition;\n"
-        "}\n";
+        "#version 320 es\n"
+        "layout (location = 0) in vec3 aPos;\n"
+        "void main()\n"
+        "{\n"
+        "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+        "}\0";
 
 static const char gFragmentShader[] =
+        "#version 320 es\n"
         "precision mediump float;\n"
-        "void main() {\n"
-        "  gl_FragColor = vec4(0.0, 1.0, 0.0, 1.0);\n";
-static const GLfloat gTriangleVertices[] = {0.0f, 0.5f, -0.5f, -0.5f,
+        "out vec4 FragColor;\n"
+        "void main()\n"
+        "{\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+        "}\n\0";
+
+static const GLfloat gTriangleVertices[] = {
+                                            0.0f, 0.5f,
+                                            -0.5f, -0.5f,
                                             0.5f, -0.5f};
 
 

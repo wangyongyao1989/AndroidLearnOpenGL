@@ -52,13 +52,12 @@ bool OpenglesCode::setupGraphics(int w, int h) {
 
 void OpenglesCode::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
-    LOGI("GL %s = %s\n", name, v);
+    LOGI("OpenGL %s = %s\n", name, v);
 
 }
 
 void OpenglesCode::checkGlError(const char *op) {
-    for (GLint error = glGetError(); error; error
-                                                    = glGetError()) {
+    for (GLint error = glGetError(); error; error= glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 
@@ -90,6 +89,12 @@ GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
     return shader;
 }
 
+/**
+ *
+ * @param pVertexSource  顶点程序
+ * @param pFragmentSource 片元程序
+ * @return
+ */
 GLuint OpenglesCode::createProgram(const char *pVertexSource, const char *pFragmentSource) {
     GLuint vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
