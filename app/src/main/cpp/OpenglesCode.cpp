@@ -8,6 +8,7 @@
 
 void OpenglesCode::renderFrame() {
 
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
     //2、使用程序
@@ -18,9 +19,8 @@ void OpenglesCode::renderFrame() {
     glBindVertexArray(VAO);
     // 3、绘制物体
 //    glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-
-//    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNALED, 0);
+//    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     checkGlError("glDrawArrays");
 
 }
@@ -62,8 +62,8 @@ bool OpenglesCode::setupGraphics(int w, int h) {
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     //绑定EBO
-//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
 
     // 1. 设置顶点属性指针
