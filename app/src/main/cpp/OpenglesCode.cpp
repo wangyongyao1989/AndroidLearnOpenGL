@@ -6,22 +6,22 @@
 #include "OpenglesCode.h"
 
 void OpenglesCode::renderFrame() {
-    static float grey;
-    grey += 0.01f;
-    if (grey > 1.0f) {
-        grey = 0.0f;
-    }
-    glClearColor(grey, grey, grey, 1.0f);
-    checkGlError("glClearColor");
+
+    //清屏
     glClear( GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
-
+    //使用程序
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
+    //链接顶点属性
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), gTriangleVertices);
 
-    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+//    glVertexAttribPointer(gvPositionHandle, 2, GL_FLOAT, GL_FALSE, 0, gTriangleVertices);
+
     checkGlError("glVertexAttribPointer");
-    glEnableVertexAttribArray(gvPositionHandle);
+    glEnableVertexAttribArray(0);
+//    glEnableVertexAttribArray(gvPositionHandle);
+
     checkGlError("glEnableVertexAttribArray");
     glDrawArrays(GL_TRIANGLES, 0, 3);
     checkGlError("glDrawArrays");
@@ -47,6 +47,7 @@ bool OpenglesCode::setupGraphics(int w, int h) {
 
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
+    LOGI("glViewport successed!");
     return true;
 }
 
@@ -63,6 +64,12 @@ void OpenglesCode::checkGlError(const char *op) {
 
 }
 
+/**
+ * 加载渲染器
+ * @param shaderType
+ * @param pSource
+ * @return
+ */
 GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
     GLuint shader = glCreateShader(shaderType);
     if (shader) {
@@ -90,7 +97,7 @@ GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
 }
 
 /**
- *
+ *  连接编译顶点和片元程序
  * @param pVertexSource  顶点程序
  * @param pFragmentSource 片元程序
  * @return
