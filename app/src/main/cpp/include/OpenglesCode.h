@@ -15,6 +15,10 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
+/**
+ * 顶点着色器
+ */
 static const char *gVertexShader =
         "#version 320 es\n"
         "layout (location = 0) in vec3 aPos;\n"
@@ -23,13 +27,16 @@ static const char *gVertexShader =
         "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
         "}\0";
 
+/**
+ * 片元着色器
+ */
 static const char *gFragmentShader =
         "#version 320 es\n"
         "precision mediump float;\n"
         "out vec4 FragColor;\n"
         "void main()\n"
         "{\n"
-        "   FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n"
+        "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
         "}\n\0";
 
 static const GLfloat gTriangleVertices[] = {
@@ -45,6 +52,8 @@ private:
 
     GLuint gProgram;
     GLuint gvPositionHandle;
+    GLuint shaderProgram;
+    unsigned int VBO, VAO;
 
     void printGLString(const char *name, GLenum s);
 
@@ -53,6 +62,8 @@ private:
     void checkGlError(const char *op);
 
     GLuint createProgram(const char *pVertexSource, const char *pFragmentSource);
+
+    ~OpenglesCode();
 
 public:
 
