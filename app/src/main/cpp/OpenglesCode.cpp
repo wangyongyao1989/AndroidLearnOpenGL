@@ -4,17 +4,23 @@
 
 #include <malloc.h>
 #include "OpenglesCode.h"
+#include "OpenGLConstants.h"
 
 void OpenglesCode::renderFrame() {
+
+    glClear(GL_COLOR_BUFFER_BIT);
 
     //2、使用程序
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
     // seeing as we only have a single VAO there's no need to bind it every time,
     // but we'll do so to keep things a bit more organized
-//    glBindVertexArray(VAO);
+    glBindVertexArray(VAO);
     // 3、绘制物体
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+//    glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+//    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNALED, 0);
     checkGlError("glDrawArrays");
 
 }
@@ -46,15 +52,27 @@ bool OpenglesCode::setupGraphics(int w, int h) {
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
+    glGenBuffers(1, &EBO);
 
     //绑定VAO
     glBindVertexArray(VAO);
     //把顶点数组复制到缓冲中供OpenGL使用
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(gTriangleVertices), gTriangleVertices, GL_STATIC_DRAW);
+//    glBufferData(GL_ARRAY_BUFFER, sizeof(gTriangleVertices), gTriangleVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+    //绑定EBO
+//    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+//    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
+
+
     // 1. 设置顶点属性指针
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
+
+    glBindBuffer(GL_ARRAY_BUFFER, 0);
+    glBindVertexArray(0);
 
     return true;
 }
@@ -153,6 +171,7 @@ OpenglesCode::~OpenglesCode() {
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
+    glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
 }
 
