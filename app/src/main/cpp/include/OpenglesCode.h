@@ -8,6 +8,9 @@
 #include <GLES3/gl3.h>              //导入的包为GL3对应的顶点程序和片元程序为：#version 320 es
 #include <GLES3/gl3ext.h>
 #include <android/log.h>
+#include <fstream>
+#include <sstream>
+#include "iostream"
 
 
 #define LOG_TAG "wy"
@@ -15,6 +18,8 @@
 #define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+
+using namespace std;
 
 class OpenglesCode {
 
@@ -26,6 +31,17 @@ private:
 
     GLuint vertexShader;  //顶点着色器
     GLuint fraShader;     //片段着色器
+
+    ifstream vShaderFile;
+    ifstream fShaderFile;
+
+    //顶点着色器代码
+    const char *gVertexShaderCode;
+    //片段着色器代码
+    const char *gFragmentShaderCode;
+
+    string vertexCode;
+    string fragmentCode;
 
     unsigned int VBO, VAO;
     unsigned int EBO;
@@ -41,6 +57,9 @@ private:
     ~OpenglesCode();
 
 public:
+
+
+    bool getSharderPath(const char *vertexPath, const char *fragmentPath);
 
     bool setupGraphics(int w, int h);
 

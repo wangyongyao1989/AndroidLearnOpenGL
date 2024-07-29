@@ -3,8 +3,10 @@ package com.wangyongyao.androidlearnopengl;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
+import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();

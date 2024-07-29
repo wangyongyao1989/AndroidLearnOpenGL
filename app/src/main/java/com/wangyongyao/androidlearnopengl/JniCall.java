@@ -7,6 +7,10 @@ public class JniCall {
         System.loadLibrary("androidlearnopengl");
     }
 
+    public void setGLSLPath(String fragString, String vertexString) {
+        native_set_glsl_path(fragString, vertexString);
+    }
+
     public boolean initOpenGl(int w, int h) {
         return native_init_opengl(w, h);
     }
@@ -20,6 +24,8 @@ public class JniCall {
 
     private native void native_callback();
 
+
+    private native void native_set_glsl_path(String fragPath, String vertexPath);
 
     private native boolean native_init_opengl(int width, int height);
 

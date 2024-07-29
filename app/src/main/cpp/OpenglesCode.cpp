@@ -6,6 +6,8 @@
 #include "OpenglesCode.h"
 #include "OpenGLConstants.h"
 
+using namespace std;
+
 void OpenglesCode::renderFrame() {
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -25,6 +27,38 @@ void OpenglesCode::renderFrame() {
 
 }
 
+bool OpenglesCode::getSharderPath(const char *vertexPath, const char *fragmentPath) {
+
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    fShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    try {
+        // open files
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        stringstream vShaderStream, fShaderStream;
+        // read file's buffer contents into streams
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        // close file handlers
+        vShaderFile.close();
+        fShaderFile.close();
+        // convert stream into string
+        vertexCode  = vShaderStream.str();
+        fragmentCode = fShaderStream.str();
+    }
+    catch (ifstream::failure &e) {
+        LOGE("Could not getSharderPath error :%s",e.what());
+        return false;
+    }
+
+    gVertexShaderCode = vertexCode.c_str();
+    gFragmentShaderCode = fragmentCode.c_str();
+    LOGI("gVertexShaderCode :%s", gVertexShaderCode);
+    LOGI("gFragmentShaderCode :%s", gFragmentShaderCode);
+    return true;
+}
+
 bool OpenglesCode::setupGraphics(int w, int h) {
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
@@ -32,7 +66,8 @@ bool OpenglesCode::setupGraphics(int w, int h) {
     printGLString("Extensions", GL_EXTENSIONS);
 
     LOGI("setupGraphics(%d, %d)", w, h);
-    gProgram = createProgram(gVertexShader, gFragmentShader);
+//    gProgram = createProgram(gVertexShader, gFragmentShader);
+    gProgram = createProgram(gVertexShaderCode, gFragmentShaderCode);
     if (!gProgram) {
         LOGE("Could not create shaderProgram.");
         return false;
@@ -179,7 +214,12 @@ OpenglesCode::~OpenglesCode() {
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
+
+
 }
+
+
+
 
 
 

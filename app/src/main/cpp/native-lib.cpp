@@ -33,8 +33,7 @@ JNIEXPORT jboolean JNICALL
 cpp_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
     if (openglesCode == nullptr)
         openglesCode = new OpenglesCode();
-
-    openglesCode->setupGraphics(width,height);
+    openglesCode->setupGraphics(width, height);
     return 0;
 }
 
@@ -47,14 +46,29 @@ cpp_render_frame(JNIEnv *env, jobject thiz) {
 
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+cpp_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, 0);
+    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
+    if (openglesCode == nullptr) {
+        openglesCode = new OpenglesCode();
+    }
+    openglesCode->getSharderPath(vertexPath, fragPath);
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"stringFromJNI",       "()Ljava/lang/String;", (std::string *) cpp_stringFromJNI},
-        {"native_callback",     "()V",                  (void *) cpp_init_callback},
+        {"stringFromJNI",        "()Ljava/lang/String;",                    (std::string *) cpp_stringFromJNI},
+        {"native_callback",      "()V",                                     (void *) cpp_init_callback},
 
-        {"native_init_opengl",  "(II)Z",                (void *) cpp_init_opengl},
-        {"native_render_frame", "()V",                  (void *) cpp_render_frame},
+        {"native_init_opengl",   "(II)Z",                                   (void *) cpp_init_opengl},
+        {"native_render_frame",  "()V",                                     (void *) cpp_render_frame},
+        {"native_set_glsl_path", "(Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_frag_vertex_path},
 
 };
 

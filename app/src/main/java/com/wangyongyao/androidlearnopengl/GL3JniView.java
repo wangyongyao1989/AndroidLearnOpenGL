@@ -5,6 +5,8 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
@@ -12,14 +14,17 @@ public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer 
 
     private static String TAG = GL3JniView.class.getSimpleName();
     private JniCall mJniCall;
+    private Context mContext;
 
     public GL3JniView(Context context) {
         super(context);
+        mContext = context;
         init();
     }
 
     public GL3JniView(Context context, AttributeSet attrs) {
         super(context, attrs);
+        mContext = context;
         init();
     }
 
@@ -28,6 +33,9 @@ public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer 
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mJniCall = new JniCall();
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
+        mJniCall.setGLSLPath(fragPath, vertexPath);
         setRenderer(this);
     }
 
