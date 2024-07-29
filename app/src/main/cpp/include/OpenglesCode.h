@@ -32,8 +32,6 @@ private:
     GLuint vertexShader;  //顶点着色器
     GLuint fraShader;     //片段着色器
 
-    ifstream vShaderFile;
-    ifstream fShaderFile;
 
     //顶点着色器代码
     const char *gVertexShaderCode;

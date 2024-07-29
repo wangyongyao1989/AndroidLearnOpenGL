@@ -33,8 +33,10 @@ public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer 
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         mJniCall = new JniCall();
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
+//        String fragPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
+//        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_shape_rad_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_shape_rad_vertex.glsl");
         mJniCall.setGLSLPath(fragPath, vertexPath);
         setRenderer(this);
     }

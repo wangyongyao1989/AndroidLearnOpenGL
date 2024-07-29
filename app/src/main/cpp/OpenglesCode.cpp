@@ -28,6 +28,8 @@ void OpenglesCode::renderFrame() {
 }
 
 bool OpenglesCode::getSharderPath(const char *vertexPath, const char *fragmentPath) {
+    ifstream vShaderFile;
+    ifstream fShaderFile;
 
     // ensure ifstream objects can throw exceptions:
     vShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
@@ -54,8 +56,7 @@ bool OpenglesCode::getSharderPath(const char *vertexPath, const char *fragmentPa
 
     gVertexShaderCode = vertexCode.c_str();
     gFragmentShaderCode = fragmentCode.c_str();
-    LOGI("gVertexShaderCode :%s", gVertexShaderCode);
-    LOGI("gFragmentShaderCode :%s", gFragmentShaderCode);
+
     return true;
 }
 
@@ -66,6 +67,12 @@ bool OpenglesCode::setupGraphics(int w, int h) {
     printGLString("Extensions", GL_EXTENSIONS);
 
     LOGI("setupGraphics(%d, %d)", w, h);
+    LOGI("gVertexShaderCode :%s", gVertexShaderCode);
+    LOGI("gFragmentShaderCode :%s", gFragmentShaderCode);
+
+    int nrAttributes;
+    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+    LOGI("Maximum nr of vertex attributes supported: :%d", nrAttributes);
 //    gProgram = createProgram(gVertexShader, gFragmentShader);
     gProgram = createProgram(gVertexShaderCode, gFragmentShaderCode);
     if (!gProgram) {
@@ -214,6 +221,11 @@ OpenglesCode::~OpenglesCode() {
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     glDeleteProgram(shaderProgram);
+
+    vertexCode.clear();
+    fragmentCode.clear();
+    gFragmentShaderCode = nullptr;
+    gVertexShaderCode = nullptr;
 
 
 }
