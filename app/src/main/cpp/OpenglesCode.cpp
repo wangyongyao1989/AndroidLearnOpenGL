@@ -22,6 +22,16 @@ void OpenglesCode::renderFrame() {
     // 3、绘制物体
 //    glDrawArrays(GL_TRIANGLES, 0, 3);
 //    glDrawArrays(GL_TRIANGLES, 0, 6);
+
+    // be sure to activate the shader before any calls to glUniform
+    glUseProgram(shaderProgram);
+    // update shader uniform
+    double timeValue = clock() * 10 / CLOCKS_PER_SEC;
+    float greenValue = static_cast<float>(sin(timeValue) / 3.0 + 0.5);
+    int vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor");
+
+    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
+
     glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     checkGlError("glDrawArrays");
 
@@ -46,11 +56,11 @@ bool OpenglesCode::getSharderPath(const char *vertexPath, const char *fragmentPa
         vShaderFile.close();
         fShaderFile.close();
         // convert stream into string
-        vertexCode  = vShaderStream.str();
+        vertexCode = vShaderStream.str();
         fragmentCode = fShaderStream.str();
     }
     catch (ifstream::failure &e) {
-        LOGE("Could not getSharderPath error :%s",e.what());
+        LOGE("Could not getSharderPath error :%s", e.what());
         return false;
     }
 
