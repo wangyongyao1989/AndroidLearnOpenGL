@@ -10,6 +10,7 @@ add_library(${CMAKE_PROJECT_NAME}
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
         OpenglesFoundation.cpp
+        OpenGLBase.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

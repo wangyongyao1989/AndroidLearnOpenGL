@@ -20,7 +20,7 @@ public class JniCall {
     }
 
 
-    public native String stringFromJNI();
+//    public native String stringFromJNI();
 
     private native void native_callback();
 

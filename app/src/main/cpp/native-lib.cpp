@@ -13,13 +13,13 @@
 const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCall";
 OpenglesFoundation *openglesCode;
 
-extern "C" JNIEXPORT jstring JNICALL
-cpp_stringFromJNI(
-        JNIEnv *env, jobject) {
-    std::string hello = "Hello from C++";
-    LOGD("cpp_stringFromJNI  hello = %c", hello.c_str());
-    return env->NewStringUTF(hello.c_str());
-}
+//extern "C" JNIEXPORT jstring JNICALL
+//cpp_stringFromJNI(
+//        JNIEnv *env, jobject) {
+//    std::string hello = "Hello from C++";
+//    LOGD("cpp_stringFromJNI  hello = %c", hello.c_str());
+//    return env->NewStringUTF(hello.c_str());
+//}
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -54,7 +54,7 @@ cpp_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
     if (openglesCode == nullptr) {
         openglesCode = new OpenglesFoundation();
     }
-    openglesCode->getSharderPath(vertexPath, fragPath);
+    openglesCode->setSharderPath(vertexPath, fragPath);
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
 
@@ -63,7 +63,7 @@ cpp_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"stringFromJNI",        "()Ljava/lang/String;",                    (std::string *) cpp_stringFromJNI},
+//        {"stringFromJNI",        "()Ljava/lang/String;",                    (std::string *) cpp_stringFromJNI},
         {"native_callback",      "()V",                                     (void *) cpp_init_callback},
 
         {"native_init_opengl",   "(II)Z",                                   (void *) cpp_init_opengl},

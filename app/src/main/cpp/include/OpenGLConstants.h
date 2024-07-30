@@ -51,7 +51,7 @@ static const GLfloat gTriangleVertices[] = {
 //        -0.5f, 0.5f, 0.0f   // 左上角
 //};
 
-float vertices[] = {
+static float vertices[] = {
         0.5f, 0.5f, 0.0f,  // top right
         0.5f, -0.5f, 0.0f,  // bottom right
         -0.5f, -0.5f, 0.0f,  // bottom left
@@ -66,7 +66,7 @@ static unsigned int indices[] = {
         1, 2, 3  // 第二个三角形
 };
 
-float textureDemoVertices[] = {
+static float textureDemoVertices[] = {
         // positions       // colors        // texture coords
         0.5f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f, // top right
         0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f, // bottom right
@@ -74,7 +74,7 @@ float textureDemoVertices[] = {
         -0.5f, 0.5f, 0.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f  // top left
 };
 
-unsigned int textureDemoIndices[] = {
+static unsigned int textureDemoIndices[] = {
         0, 1, 3, // first triangle
         1, 2, 3  // second triangle
 };
