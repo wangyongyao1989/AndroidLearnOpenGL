@@ -3,18 +3,22 @@ package com.wangyongyao.androidlearnopengl;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.util.Log;
+import android.widget.Button;
+import android.widget.FrameLayout;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
-import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+import com.wangyongyao.androidlearnopengl.view.GL3BaseView;
+import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
 
 
     private ActivityMainBinding mBinding;
-    private GL3JniView mGlView;
-
+    private Button mBtn1;
+    private FrameLayout mGlShow1;
+    private JniCall mJniCall;
+    private Button mBtn2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,13 +35,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        mGlView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mGlView.onPause();
     }
 
     private void initObserver() {
@@ -45,16 +47,26 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initListener() {
-
+        mBtn1.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GL3BaseView gl3BaseView = new GL3BaseView(getApplication(),mJniCall);
+            mGlShow1.addView(gl3BaseView);
+        });
+        mBtn2.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GL3TextureView gl3TextureView = new GL3TextureView(getApplication(),mJniCall);
+            mGlShow1.addView(gl3TextureView);
+        });
     }
 
     private void initData() {
-
+        mJniCall = new JniCall();
     }
 
     private void initView() {
-        mGlView = mBinding.glView;
-
+        mBtn1 = mBinding.btn1;
+        mBtn2 = mBinding.btn2;
+        mGlShow1 = mBinding.glShow;
     }
 
 

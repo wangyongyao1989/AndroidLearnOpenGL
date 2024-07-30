@@ -2,8 +2,8 @@
 // Created by MMM on 2024/7/24.
 //
 
-#ifndef ANDROIDLEARNOPENGL_OPENGLESCODE_H
-#define ANDROIDLEARNOPENGL_OPENGLESCODE_H
+#ifndef ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
+#define ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 
 #include <GLES3/gl3.h>              //导入的包为GL3对应的顶点程序和片元程序为：#version 320 es
 #include <GLES3/gl3ext.h>
@@ -21,7 +21,7 @@
 
 using namespace std;
 
-class OpenglesCode {
+class OpenglesFoundation {
 
 private:
 
@@ -52,7 +52,7 @@ private:
 
     GLuint createProgram(const char *pVertexSource, const char *pFragmentSource);
 
-    ~OpenglesCode();
+    ~OpenglesFoundation();
 
 public:
 
@@ -65,4 +65,4 @@ public:
 };
 
 
-#endif //ANDROIDLEARNOPENGL_OPENGLESCODE_H
+#endif //ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H

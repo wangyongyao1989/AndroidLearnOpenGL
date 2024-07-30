@@ -1,7 +1,7 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
-#include "OpenglesCode.h"
+#include "OpenglesFoundation.h"
 
 
 #define LOG_TAG "wy"
@@ -11,7 +11,7 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCall";
-OpenglesCode *openglesCode;
+OpenglesFoundation *openglesCode;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -32,7 +32,7 @@ extern "C"
 JNIEXPORT jboolean JNICALL
 cpp_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
     if (openglesCode == nullptr)
-        openglesCode = new OpenglesCode();
+        openglesCode = new OpenglesFoundation();
     openglesCode->setupGraphics(width, height);
     return 0;
 }
@@ -52,7 +52,7 @@ cpp_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
     const char *fragPath = env->GetStringUTFChars(frag, 0);
     const char *vertexPath = env->GetStringUTFChars(vertex, 0);
     if (openglesCode == nullptr) {
-        openglesCode = new OpenglesCode();
+        openglesCode = new OpenglesFoundation();
     }
     openglesCode->getSharderPath(vertexPath, fragPath);
     env->ReleaseStringUTFChars(frag, fragPath);

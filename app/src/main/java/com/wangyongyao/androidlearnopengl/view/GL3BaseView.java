@@ -1,28 +1,30 @@
-package com.wangyongyao.androidlearnopengl;
+package com.wangyongyao.androidlearnopengl.view;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
+import com.wangyongyao.androidlearnopengl.JniCall;
 import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GL3BaseView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private static String TAG = GL3JniView.class.getSimpleName();
+    private static String TAG = GL3BaseView.class.getSimpleName();
     private JniCall mJniCall;
     private Context mContext;
 
-    public GL3JniView(Context context) {
+    public GL3BaseView(Context context, JniCall jniCall) {
         super(context);
         mContext = context;
+        mJniCall = jniCall;
         init();
     }
 
-    public GL3JniView(Context context, AttributeSet attrs) {
+    public GL3BaseView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -32,7 +34,6 @@ public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer 
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        mJniCall = new JniCall();
         //1、顶点及片段着色器的出入使用
 //        String fragPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
 //        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
@@ -42,19 +43,22 @@ public class GL3JniView extends GLSurfaceView implements GLSurfaceView.Renderer 
         //3、uniform的使用
         String fragPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
         String vertexPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
-        mJniCall.setGLSLPath(fragPath, vertexPath);
+        if (mJniCall != null)
+            mJniCall.setGLSLPath(fragPath, vertexPath);
         setRenderer(this);
     }
 
 
     public void onDrawFrame(GL10 gl) {
-//            Log.e(TAG, "onDrawFrame: ");
-        mJniCall.openGlRenderFrame();
+        Log.e(TAG, "onDrawFrame: ");
+        if (mJniCall != null)
+            mJniCall.openGlRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.e(TAG, "onSurfaceChanged: ");
-        mJniCall.initOpenGl(width, height);
+        if (mJniCall != null)
+            mJniCall.initOpenGl(width, height);
     }
 
 

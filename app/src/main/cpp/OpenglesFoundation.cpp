@@ -3,12 +3,12 @@
 //
 
 #include <malloc.h>
-#include "OpenglesCode.h"
+#include "OpenglesFoundation.h"
 #include "OpenGLConstants.h"
 
 using namespace std;
 
-void OpenglesCode::renderFrame() {
+void OpenglesFoundation::renderFrame() {
 
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
@@ -37,7 +37,7 @@ void OpenglesCode::renderFrame() {
 
 }
 
-bool OpenglesCode::getSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesFoundation::getSharderPath(const char *vertexPath, const char *fragmentPath) {
     ifstream vShaderFile;
     ifstream fShaderFile;
 
@@ -70,7 +70,7 @@ bool OpenglesCode::getSharderPath(const char *vertexPath, const char *fragmentPa
     return true;
 }
 
-bool OpenglesCode::setupGraphics(int w, int h) {
+bool OpenglesFoundation::setupGraphics(int w, int h) {
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
@@ -129,13 +129,13 @@ bool OpenglesCode::setupGraphics(int w, int h) {
     return true;
 }
 
-void OpenglesCode::printGLString(const char *name, GLenum s) {
+void OpenglesFoundation::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 
 }
 
-void OpenglesCode::checkGlError(const char *op) {
+void OpenglesFoundation::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
@@ -148,7 +148,7 @@ void OpenglesCode::checkGlError(const char *op) {
  * @param pSource
  * @return
  */
-GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
+GLuint OpenglesFoundation::loadShader(GLenum shaderType, const char *pSource) {
     GLuint shader = glCreateShader(shaderType);     //创建着色器
     if (shader) {
         glShaderSource(shader, 1, &pSource, NULL);  //着色器源码附加到着色器对象上
@@ -180,7 +180,7 @@ GLuint OpenglesCode::loadShader(GLenum shaderType, const char *pSource) {
  * @param pFragmentSource 片元程序
  * @return
  */
-GLuint OpenglesCode::createProgram(const char *pVertexSource, const char *pFragmentSource) {
+GLuint OpenglesFoundation::createProgram(const char *pVertexSource, const char *pFragmentSource) {
     vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
         return 0;
@@ -219,7 +219,7 @@ GLuint OpenglesCode::createProgram(const char *pVertexSource, const char *pFragm
 
 }
 
-OpenglesCode::~OpenglesCode() {
+OpenglesFoundation::~OpenglesFoundation() {
     if (vertexShader) {
         glDeleteShader(vertexShader);
     }
@@ -236,7 +236,6 @@ OpenglesCode::~OpenglesCode() {
     fragmentCode.clear();
     gFragmentShaderCode = nullptr;
     gVertexShaderCode = nullptr;
-
 
 }
 
