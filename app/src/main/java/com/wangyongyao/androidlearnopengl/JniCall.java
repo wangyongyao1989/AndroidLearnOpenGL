@@ -36,8 +36,8 @@ public class JniCall {
     /**
      * Texture
      */
-    public void setTextureGLSLPath(String fragString, String vertexString, String picSrc) {
-        native_texture_set_glsl_path(fragString, vertexString, picSrc);
+    public void setTextureGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_texture_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
     }
 
     public boolean initTextureOpenGl(int w, int h) {
@@ -48,7 +48,8 @@ public class JniCall {
         native_texture_render_frame();
     }
 
-    private native void native_texture_set_glsl_path(String fragPath, String vertexPath, String picSrc);
+    private native void native_texture_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
 
     private native boolean native_texture_init_opengl(int width, int height);
 

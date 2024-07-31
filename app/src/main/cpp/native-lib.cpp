@@ -87,20 +87,24 @@ cpp_texture_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_texture_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                             jstring picsrc) {
+                             jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, 0);
     const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    const char *picsrcPath = env->GetStringUTFChars(picsrc, 0);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
 
     if (openglTexture == nullptr) {
         openglTexture = new OpenglesTexture();
     }
     openglTexture->setSharderPath(vertexPath, fragPath);
-    openglTexture->setPicPath(picsrcPath);
+
+    openglTexture->setPicPath(picsrc1Path, picsrc2Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
-    env->ReleaseStringUTFChars(picsrc, picsrcPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
 }
 
 
@@ -116,8 +120,8 @@ static const JNINativeMethod methods[] = {
         {"native_texture_init_opengl",      "(II)Z",                                   (void *) cpp_texture_init_opengl},
         {"native_texture_render_frame",     "()V",                                     (void *) cpp_texture_render_frame},
 
-        {"native_texture_set_glsl_path",    "(Ljava/lang/String;"
-                                            "Ljava/lang/String;Ljava/lang/String;)V",  (void *) cpp_texture_frag_vertex_path},
+        {"native_texture_set_glsl_path",    "(Ljava/lang/String;Ljava/lang/String"
+                                            ";Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
 
 
 };

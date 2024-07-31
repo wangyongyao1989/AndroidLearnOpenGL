@@ -57,8 +57,8 @@ bool OpenglesTexture::setupGraphics(int w, int h) {
 
 
     // load and create a texture
-    glGenTextures(1, &texture);
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glGenTextures(1, &texture1);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
     // set texture wrapping to GL_REPEAT (default wrapping method)
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
@@ -67,10 +67,36 @@ bool OpenglesTexture::setupGraphics(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-    if (data) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+    // tell stb_image.h to flip loaded texture's on the y-axis.
+    stbi_set_flip_vertically_on_load(true);
+
+    if (data1) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width1, height1, 0, GL_RGB, GL_UNSIGNED_BYTE, data1);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
+    stbi_image_free(data1);
+
+    glGenTextures(1, &texture2);
+    glBindTexture(GL_TEXTURE_2D, texture2);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+    // set texture filtering parameters
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+    if (data2) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE, data2);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
+    stbi_image_free(data2);
+
+    // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
+    // -------------------------------------------------------------------------------------------
+    glUseProgram(shaderProgram); // don't forget to activate/use the shader before setting uniforms!
+    // either set it manually like so:
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
+    // or set it via the texture class
+    setInt("texture2", 1);
 
     return true;
 }
@@ -79,7 +105,10 @@ void OpenglesTexture::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
     // bind Texture
-    glBindTexture(GL_TEXTURE_2D, texture);
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, texture2);
     //2、使用程序
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
@@ -96,10 +125,13 @@ bool OpenglesTexture::setSharderPath(const char *vertexPath, const char *fragmen
     return getSharderPath(vertexPath, fragmentPath);
 }
 
-void OpenglesTexture::setPicPath(const char *pic) {
-    LOGI("setPicPath pic==%s", pic);
+void OpenglesTexture::setPicPath(const char *pic1, const char *pic2) {
+    LOGI("setPicPath pic1==%s", pic1);
+    LOGI("setPicPath pic2==%s", pic2);
     // load image, create texture and generate mipmaps
-    data = stbi_load(pic, &width, &height, &nrChannels, 0);
+    data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
+    data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
+
 }
 
 
@@ -108,9 +140,10 @@ OpenglesTexture::OpenglesTexture() {
 }
 
 OpenglesTexture::~OpenglesTexture() {
-    texture = 0;
-    if (data)
-        data = nullptr;
+    texture1 = 0;
+    texture2 = 0;
+    data1 = nullptr;
+    data2 = nullptr;
 
 }
 

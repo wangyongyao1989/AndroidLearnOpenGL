@@ -14,9 +14,12 @@ using namespace std;
 class OpenglesTexture : public OpenGLBase {
 
 private:
-    unsigned int texture;
-    unsigned char *data;
-    int width, height, nrChannels;
+    unsigned int texture1;
+    unsigned int texture2;
+    unsigned char *data1;
+    unsigned char *data2;
+    int width1, height1, nrChannels1;
+    int width2, height2, nrChannels2;
 
 public:
 
@@ -30,7 +33,7 @@ public:
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath) override;
 
-    void setPicPath(const char *pic);
+    void setPicPath(const char *pic1, const char *pic2);
 
 //    void setPicPath(int w,int h,const char *picData);
 

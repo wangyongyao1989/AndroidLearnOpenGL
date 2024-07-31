@@ -38,10 +38,11 @@ public class GL3TextureView extends GLSurfaceView implements GLSurfaceView.Rende
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String fragPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_fragment.glsl");
         String vertexPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_vertex.glsl");
-        String picSrc = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
+        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
+        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
-            mJniCall.setTextureGLSLPath(fragPath, vertexPath, picSrc);
+            mJniCall.setTextureGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
         }
 
         setRenderer(this);

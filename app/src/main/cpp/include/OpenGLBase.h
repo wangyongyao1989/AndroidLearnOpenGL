@@ -66,6 +66,21 @@ public:
 
     virtual void renderFrame() = 0;
 
+    // ------------------------------------------------------------------------
+    void setBool(const std::string &name, bool value) const
+    {
+        glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), (int)value);
+    }
+    // ------------------------------------------------------------------------
+    void setInt(const std::string &name, int value) const
+    {
+        glUniform1i(glGetUniformLocation(shaderProgram, name.c_str()), value);
+    }
+    // ------------------------------------------------------------------------
+    void setFloat(const std::string &name, float value) const
+    {
+        glUniform1f(glGetUniformLocation(shaderProgram, name.c_str()), value);
+    }
 
 };
 
