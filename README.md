@@ -11,6 +11,6 @@
   ![OpenGL矩形形1](https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/_Screenrecorder20240729160633717_1.gif)
 
 ## 5、纹理的使用：
-  ![OpenGL矩形形1](https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/_Screenrecorder20240729160633717_1.gif)
-    
+  <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/_Screenrecorder20240729160633717_1.gif" width="210px">
+
     
