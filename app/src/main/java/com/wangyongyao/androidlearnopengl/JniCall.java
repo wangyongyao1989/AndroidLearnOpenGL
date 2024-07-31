@@ -1,5 +1,7 @@
 package com.wangyongyao.androidlearnopengl;
 
+import android.graphics.Bitmap;
+
 public class JniCall {
 
     // Used to load the 'androidlearnopengl' library on application startup.

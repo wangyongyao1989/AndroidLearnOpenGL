@@ -97,25 +97,29 @@ cpp_texture_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring ve
     }
     openglTexture->setSharderPath(vertexPath, fragPath);
     openglTexture->setPicPath(picsrcPath);
+
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
     env->ReleaseStringUTFChars(picsrc, picsrcPath);
-
-
 }
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"stringFromJNI",                   "()Ljava/lang/String;",                                      (std::string *) cpp_stringFromJNI},
-        {"native_callback",                 "()V",                                                       (void *) cpp_init_callback},
+        {"stringFromJNI",                   "()Ljava/lang/String;",                    (std::string *) cpp_stringFromJNI},
+        {"native_callback",                 "()V",                                     (void *) cpp_init_callback},
         //Foundation
-        {"native_foundation_init_opengl",   "(II)Z",                                                     (void *) cpp_foundation_init_opengl},
-        {"native_foundation_render_frame",  "()V",                                                       (void *) cpp_foundation_render_frame},
-        {"native_foundation_set_glsl_path", "(Ljava/lang/String;Ljava/lang/String;)V",                   (void *) cpp_foundation_frag_vertex_path},
+        {"native_foundation_init_opengl",   "(II)Z",                                   (void *) cpp_foundation_init_opengl},
+        {"native_foundation_render_frame",  "()V",                                     (void *) cpp_foundation_render_frame},
+        {"native_foundation_set_glsl_path", "(Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_foundation_frag_vertex_path},
         //Texture
-        {"native_texture_init_opengl",      "(II)Z",                                                     (void *) cpp_texture_init_opengl},
-        {"native_texture_render_frame",     "()V",                                                       (void *) cpp_texture_render_frame},
-        {"native_texture_set_glsl_path",    "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
+        {"native_texture_init_opengl",      "(II)Z",                                   (void *) cpp_texture_init_opengl},
+        {"native_texture_render_frame",     "()V",                                     (void *) cpp_texture_render_frame},
+
+        {"native_texture_set_glsl_path",    "(Ljava/lang/String;"
+                                            "Ljava/lang/String;Ljava/lang/String;)V",  (void *) cpp_texture_frag_vertex_path},
+
+
 };
 
 

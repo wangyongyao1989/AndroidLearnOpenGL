@@ -12,10 +12,12 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenglesFoundation.cpp
         OpenGLBase.cpp
         OpenglesTexture.cpp
+        OpenGLStdImage.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         android
+#        jnigraphics
         EGL
         GLESv3
         OpenSLES

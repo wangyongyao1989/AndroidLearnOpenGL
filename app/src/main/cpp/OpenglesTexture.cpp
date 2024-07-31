@@ -57,8 +57,6 @@ bool OpenglesTexture::setupGraphics(int w, int h) {
 
 
     // load and create a texture
-    // -------------------------
-
     glGenTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, texture);
 
@@ -69,6 +67,10 @@ bool OpenglesTexture::setupGraphics(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+    if (data) {
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+    }
 
     return true;
 }
@@ -96,14 +98,8 @@ bool OpenglesTexture::setSharderPath(const char *vertexPath, const char *fragmen
 
 void OpenglesTexture::setPicPath(const char *pic) {
     LOGI("setPicPath pic==%s", pic);
-    picSrc = pic;
     // load image, create texture and generate mipmaps
-    int width, height, nrChannels;
-    LOGI("setupGraphics picSrc==%s", picSrc);
-
-//    data = stbi_load(picSrc, &width, &height, &nrChannels, 0);
-    LOGI("setPicPath picSrc==%s", picSrc);
-
+    data = stbi_load(pic, &width, &height, &nrChannels, 0);
 }
 
 
@@ -112,6 +108,9 @@ OpenglesTexture::OpenglesTexture() {
 }
 
 OpenglesTexture::~OpenglesTexture() {
+    texture = 0;
+    if (data)
+        data = nullptr;
 
 }
 

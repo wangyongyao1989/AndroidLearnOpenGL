@@ -15,8 +15,8 @@ class OpenglesTexture : public OpenGLBase {
 
 private:
     unsigned int texture;
-    const char *picSrc;
     unsigned char *data;
+    int width, height, nrChannels;
 
 public:
 
@@ -31,5 +31,8 @@ public:
     bool setSharderPath(const char *vertexPath, const char *fragmentPath) override;
 
     void setPicPath(const char *pic);
+
+//    void setPicPath(int w,int h,const char *picData);
+
 };
 

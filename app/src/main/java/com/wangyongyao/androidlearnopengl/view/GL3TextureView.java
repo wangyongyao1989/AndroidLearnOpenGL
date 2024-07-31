@@ -1,10 +1,13 @@
 package com.wangyongyao.androidlearnopengl.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
 import com.wangyongyao.androidlearnopengl.JniCall;
+import com.wangyongyao.androidlearnopengl.R;
 import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -37,8 +40,10 @@ public class GL3TextureView extends GLSurfaceView implements GLSurfaceView.Rende
         String vertexPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_vertex.glsl");
         String picSrc = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
 
-        if (mJniCall != null)
+        if (mJniCall != null) {
             mJniCall.setTextureGLSLPath(fragPath, vertexPath, picSrc);
+        }
+
         setRenderer(this);
     }
 
