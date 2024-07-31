@@ -2,6 +2,7 @@
 #include <string>
 #include <android/log.h>
 #include "OpenglesFoundation.h"
+#include "OpenglesTexture.h"
 
 
 #define LOG_TAG "wy"
@@ -11,15 +12,16 @@
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
 const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCall";
-OpenglesFoundation *openglesCode;
+OpenglesFoundation *openglesFoundation;
+OpenglesTexture *openglTexture;
 
-//extern "C" JNIEXPORT jstring JNICALL
-//cpp_stringFromJNI(
-//        JNIEnv *env, jobject) {
-//    std::string hello = "Hello from C++";
-//    LOGD("cpp_stringFromJNI  hello = %c", hello.c_str());
-//    return env->NewStringUTF(hello.c_str());
-//}
+extern "C" JNIEXPORT jstring JNICALL
+cpp_stringFromJNI(
+        JNIEnv *env, jobject) {
+    std::string hello = "Hello from C++";
+    LOGD("cpp_stringFromJNI  hello = %c", hello.c_str());
+    return env->NewStringUTF(hello.c_str());
+}
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -28,48 +30,92 @@ cpp_init_callback(JNIEnv *env, jobject thiz) {
 
 }
 
+/*********************** Foundation *********************/
+
 extern "C"
 JNIEXPORT jboolean JNICALL
-cpp_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
-    if (openglesCode == nullptr)
-        openglesCode = new OpenglesFoundation();
-    openglesCode->setupGraphics(width, height);
+cpp_foundation_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglesFoundation == nullptr)
+        openglesFoundation = new OpenglesFoundation();
+    openglesFoundation->setupGraphics(width, height);
     return 0;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_render_frame(JNIEnv *env, jobject thiz) {
-    if (openglesCode == nullptr) return;
-    openglesCode->renderFrame();
+cpp_foundation_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglesFoundation == nullptr) return;
+    openglesFoundation->renderFrame();
 
 
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
+cpp_foundation_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
     const char *fragPath = env->GetStringUTFChars(frag, 0);
     const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    if (openglesCode == nullptr) {
-        openglesCode = new OpenglesFoundation();
+    if (openglesFoundation == nullptr) {
+        openglesFoundation = new OpenglesFoundation();
     }
-    openglesCode->setSharderPath(vertexPath, fragPath);
+    openglesFoundation->setSharderPath(vertexPath, fragPath);
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
 
 }
 
+/*********************** Texture *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_texture_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglTexture == nullptr)
+        openglTexture = new OpenglesTexture();
+    openglTexture->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_texture_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglTexture == nullptr) return;
+    openglTexture->renderFrame();
+
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_texture_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                             jstring picsrc) {
+    const char *fragPath = env->GetStringUTFChars(frag, 0);
+    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
+    const char *picsrcPath = env->GetStringUTFChars(picsrc, 0);
+
+    if (openglTexture == nullptr) {
+        openglTexture = new OpenglesTexture();
+    }
+    openglTexture->setSharderPath(vertexPath, fragPath);
+    openglTexture->setPicPath(picsrcPath);
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc, picsrcPath);
+
+
+}
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-//        {"stringFromJNI",        "()Ljava/lang/String;",                    (std::string *) cpp_stringFromJNI},
-        {"native_callback",      "()V",                                     (void *) cpp_init_callback},
-
-        {"native_init_opengl",   "(II)Z",                                   (void *) cpp_init_opengl},
-        {"native_render_frame",  "()V",                                     (void *) cpp_render_frame},
-        {"native_set_glsl_path", "(Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_frag_vertex_path},
-
+        {"stringFromJNI",                   "()Ljava/lang/String;",                                      (std::string *) cpp_stringFromJNI},
+        {"native_callback",                 "()V",                                                       (void *) cpp_init_callback},
+        //Foundation
+        {"native_foundation_init_opengl",   "(II)Z",                                                     (void *) cpp_foundation_init_opengl},
+        {"native_foundation_render_frame",  "()V",                                                       (void *) cpp_foundation_render_frame},
+        {"native_foundation_set_glsl_path", "(Ljava/lang/String;Ljava/lang/String;)V",                   (void *) cpp_foundation_frag_vertex_path},
+        //Texture
+        {"native_texture_init_opengl",      "(II)Z",                                                     (void *) cpp_texture_init_opengl},
+        {"native_texture_render_frame",     "()V",                                                       (void *) cpp_texture_render_frame},
+        {"native_texture_set_glsl_path",    "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
 };
 
 

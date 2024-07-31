@@ -3,7 +3,6 @@ package com.wangyongyao.androidlearnopengl.view;
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 
 import com.wangyongyao.androidlearnopengl.JniCall;
 import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
@@ -34,22 +33,24 @@ public class GL3TextureView extends GLSurfaceView implements GLSurfaceView.Rende
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_vertex.glsl");
+        String picSrc = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
+
         if (mJniCall != null)
-            mJniCall.setGLSLPath(fragPath, vertexPath);
+            mJniCall.setTextureGLSLPath(fragPath, vertexPath, picSrc);
         setRenderer(this);
     }
 
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.openGlRenderFrame();
+            mJniCall.openTextureGlRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initOpenGl(width, height);
+            mJniCall.initTextureOpenGl(width, height);
     }
 
 

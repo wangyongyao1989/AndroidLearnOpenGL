@@ -11,6 +11,7 @@ add_library(${CMAKE_PROJECT_NAME}
         native-lib.cpp
         OpenglesFoundation.cpp
         OpenGLBase.cpp
+        OpenglesTexture.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

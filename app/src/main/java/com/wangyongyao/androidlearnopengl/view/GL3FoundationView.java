@@ -11,20 +11,20 @@ import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GL3BaseView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GL3FoundationView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private static String TAG = GL3BaseView.class.getSimpleName();
+    private static String TAG = GL3FoundationView.class.getSimpleName();
     private JniCall mJniCall;
     private Context mContext;
 
-    public GL3BaseView(Context context, JniCall jniCall) {
+    public GL3FoundationView(Context context, JniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GL3BaseView(Context context, AttributeSet attrs) {
+    public GL3FoundationView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -44,7 +44,7 @@ public class GL3BaseView extends GLSurfaceView implements GLSurfaceView.Renderer
         String fragPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
         String vertexPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
         if (mJniCall != null)
-            mJniCall.setGLSLPath(fragPath, vertexPath);
+            mJniCall.setFoundationGLSLPath(fragPath, vertexPath);
         setRenderer(this);
     }
 
@@ -52,13 +52,13 @@ public class GL3BaseView extends GLSurfaceView implements GLSurfaceView.Renderer
     public void onDrawFrame(GL10 gl) {
         Log.e(TAG, "onDrawFrame: ");
         if (mJniCall != null)
-            mJniCall.openGlRenderFrame();
+            mJniCall.openFoundationGlRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.e(TAG, "onSurfaceChanged: ");
         if (mJniCall != null)
-            mJniCall.initOpenGl(width, height);
+            mJniCall.initFoundationOpenGl(width, height);
     }
 
 

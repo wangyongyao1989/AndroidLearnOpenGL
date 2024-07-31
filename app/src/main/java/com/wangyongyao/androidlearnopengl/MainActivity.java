@@ -7,7 +7,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
-import com.wangyongyao.androidlearnopengl.view.GL3BaseView;
+import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
 
 public class MainActivity extends AppCompatActivity {
@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
     private void initListener() {
         mBtn1.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3BaseView gl3BaseView = new GL3BaseView(getApplication(),mJniCall);
+            GL3FoundationView gl3BaseView = new GL3FoundationView(getApplication(),mJniCall);
             mGlShow1.addView(gl3BaseView);
         });
         mBtn2.setOnClickListener(view -> {

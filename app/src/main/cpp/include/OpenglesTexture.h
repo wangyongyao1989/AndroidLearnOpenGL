@@ -4,21 +4,25 @@
 
 #ifndef ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 #define ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
+#endif //ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 
 #include "OpenGLBase.h"
-
+#include <stb_image.h>
 
 using namespace std;
 
-class OpenglesFoundation : public OpenGLBase {
+class OpenglesTexture : public OpenGLBase {
 
 private:
+    unsigned int texture;
+    const char *picSrc;
+    unsigned char *data;
 
 public:
 
-    OpenglesFoundation();
+    OpenglesTexture();
 
-    ~OpenglesFoundation();
+    ~OpenglesTexture();
 
     bool setupGraphics(int w, int h) override;
 
@@ -26,7 +30,6 @@ public:
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath) override;
 
+    void setPicPath(const char *pic);
 };
 
-
-#endif //ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H

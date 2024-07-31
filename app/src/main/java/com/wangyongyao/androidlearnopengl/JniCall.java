@@ -7,29 +7,50 @@ public class JniCall {
         System.loadLibrary("androidlearnopengl");
     }
 
-    public void setGLSLPath(String fragString, String vertexString) {
-        native_set_glsl_path(fragString, vertexString);
+    public void setFoundationGLSLPath(String fragString, String vertexString) {
+        native_foundation_set_glsl_path(fragString, vertexString);
     }
 
-    public boolean initOpenGl(int w, int h) {
-        return native_init_opengl(w, h);
+    public boolean initFoundationOpenGl(int w, int h) {
+        return native_foundation_init_opengl(w, h);
     }
 
-    public void openGlRenderFrame() {
-        native_render_frame();
+    public void openFoundationGlRenderFrame() {
+        native_foundation_render_frame();
     }
 
 
-//    public native String stringFromJNI();
+    public native String stringFromJNI();
 
     private native void native_callback();
 
 
-    private native void native_set_glsl_path(String fragPath, String vertexPath);
+    private native void native_foundation_set_glsl_path(String fragPath, String vertexPath);
 
-    private native boolean native_init_opengl(int width, int height);
+    private native boolean native_foundation_init_opengl(int width, int height);
 
-    private native void native_render_frame();
+    private native void native_foundation_render_frame();
+
+    /**
+     * Texture
+     */
+    public void setTextureGLSLPath(String fragString, String vertexString, String picSrc) {
+        native_texture_set_glsl_path(fragString, vertexString, picSrc);
+    }
+
+    public boolean initTextureOpenGl(int w, int h) {
+        return native_texture_init_opengl(w, h);
+    }
+
+    public void openTextureGlRenderFrame() {
+        native_texture_render_frame();
+    }
+
+    private native void native_texture_set_glsl_path(String fragPath, String vertexPath, String picSrc);
+
+    private native boolean native_texture_init_opengl(int width, int height);
+
+    private native void native_texture_render_frame();
 
 
 }
