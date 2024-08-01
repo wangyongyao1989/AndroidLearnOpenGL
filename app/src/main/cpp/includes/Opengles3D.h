@@ -9,9 +9,6 @@
 #include "OpenGLBase.h"
 #include <stb_image.h>
 
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
 
 using namespace std;
 
@@ -22,6 +19,7 @@ private:
     unsigned int texture2;
     unsigned char *data1;
     unsigned char *data2;
+    int screenW, screenH;
     int width1, height1, nrChannels1;
     int width2, height2, nrChannels2;
 

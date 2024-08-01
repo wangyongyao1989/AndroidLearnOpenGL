@@ -33,13 +33,13 @@ public class GL3DView extends GLSurfaceView implements GLSurfaceView.Renderer {
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_vertex.glsl");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "3d_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "3d_vertex.glsl");
         String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
-            mJniCall.setTextureGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
+            mJniCall.set3DGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
         }
 
         setRenderer(this);
@@ -48,12 +48,12 @@ public class GL3DView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.openTextureGlRenderFrame();
+            mJniCall.open3DGlRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initTextureOpenGl(width, height);
+            mJniCall.init3DOpenGl(width, height);
     }
 
 

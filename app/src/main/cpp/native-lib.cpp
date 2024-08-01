@@ -15,6 +15,7 @@
 const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCall";
 OpenglesFoundation *openglesFoundation;
 OpenglesTexture *openglTexture;
+Opengles3D *opengl3D;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -113,17 +114,17 @@ cpp_texture_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring ve
 extern "C"
 JNIEXPORT jboolean JNICALL
 cpp_3d_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
-    if (openglTexture == nullptr)
-        openglTexture = new OpenglesTexture();
-    openglTexture->setupGraphics(width, height);
+    if (opengl3D == nullptr)
+        opengl3D = new Opengles3D();
+    opengl3D->setupGraphics(width, height);
     return 0;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
 cpp_3d_render_frame(JNIEnv *env, jobject thiz) {
-    if (openglTexture == nullptr) return;
-    openglTexture->renderFrame();
+    if (opengl3D == nullptr) return;
+    opengl3D->renderFrame();
 
 }
 
@@ -136,12 +137,12 @@ cpp_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
 
-    if (openglTexture == nullptr) {
-        openglTexture = new OpenglesTexture();
+    if (opengl3D == nullptr) {
+        opengl3D = new Opengles3D();
     }
-    openglTexture->setSharderPath(vertexPath, fragPath);
+    opengl3D->setSharderPath(vertexPath, fragPath);
 
-    openglTexture->setPicPath(picsrc1Path, picsrc2Path);
+    opengl3D->setPicPath(picsrc1Path, picsrc2Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
