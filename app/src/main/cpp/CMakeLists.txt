@@ -13,6 +13,7 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenGLBase.cpp
         OpenglesTexture.cpp
         OpenGLStdImage.cpp
+        Opengles3D.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
@@ -24,4 +25,4 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         log)
 
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
-        ${distribution_DIR}/include)
+        ${distribution_DIR}/includes)

@@ -55,5 +55,25 @@ public class JniCall {
 
     private native void native_texture_render_frame();
 
+    /**
+     * 3D
+     */
+    public void set3DGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_texture_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
 
+    public boolean init3DOpenGl(int w, int h) {
+        return native_texture_init_opengl(w, h);
+    }
+
+    public void open3DGlRenderFrame() {
+        native_texture_render_frame();
+    }
+
+    private native void native_3d_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native boolean native_3d_init_opengl(int width, int height);
+
+    private native void native_3d_render_frame();
 }
