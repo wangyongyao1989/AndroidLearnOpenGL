@@ -28,6 +28,7 @@ bool OpenglesMultiCube3D::setupGraphics(int w, int h) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
+
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
@@ -108,29 +109,33 @@ void OpenglesMultiCube3D::renderFrame() {
     glEnable(GL_DEPTH_TEST);
 
     // create transformations
-    // make sure to initialize matrix to identity matrix first
-    glm::mat4 model = glm::mat4(1.0f);          //模型矩阵(Model Matrix)
     glm::mat4 view = glm::mat4(1.0f);           //观察矩阵(View Matrix)
     glm::mat4 projection = glm::mat4(1.0f);     //投影矩阵(Projection Matrix)
-    double timeValue = clock() * 10 / CLOCKS_PER_SEC;
-    model = glm::rotate(model, (float) timeValue,
-                        glm::vec3(0.5f, 1.0f, 0.0f));
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
+
+    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -6.0f));  //观察矩阵(View Matrix)平移，类似于相机移动
     projection = glm::perspective(glm::radians(45.0f), (float) screenW / (float) screenH, 0.1f,
                                   100.0f);
-    // retrieve the matrix uniform locations
-    unsigned int modelLoc = glGetUniformLocation(shaderProgram, "model");
-    unsigned int viewLoc = glGetUniformLocation(shaderProgram, "view");
     // pass them to the shaders (3 different ways)
-    glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model));
-    glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &view[0][0]);
     setMat4("projection", projection);
+    setMat4("view", view);
 
+    // render boxes
     glBindVertexArray(VAO);
+    for (unsigned int i = 0; i < 10; i++) {
+        // calculate the model matrix for each object and pass it to shader before drawing
+        glm::mat4 model = glm::mat4(1.0f);                   //模型矩阵(Model Matrix)
+        model = glm::translate(model, cubePositions[i]);    //对获取到的模型移动到对应位置
+        float angle = 20.0f * i;
+        if (i < 6) {
+            double timeValue = clock() * 10 / CLOCKS_PER_SEC;
+            angle = timeValue * 25.0f;
+        }
+        //让模型经过旋转矩阵的变化
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
-    // be sure to activate the shader before any calls to glUniform
-    glUseProgram(shaderProgram);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
     checkGlError("glDrawArrays");
 }
 

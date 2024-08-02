@@ -82,7 +82,6 @@ static unsigned int textureDemoIndices[] = {
 /**
 * 立方体
 */
-
 const float cubeVertices[] = {
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
