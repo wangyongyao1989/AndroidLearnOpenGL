@@ -98,4 +98,26 @@ public class JniCall {
     private native boolean native_cube_3d_init_opengl(int width, int height);
 
     private native void native_cube_3d_render_frame();
+
+    /**
+     * 多立方体3D
+     */
+    public void setMultiCube3DGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_multi_cube_3d_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public boolean initMultiCube3DOpenGl(int w, int h) {
+        return native_multi_cube_3d_init_opengl(w, h);
+    }
+
+    public void openMultiCube3DGlRenderFrame() {
+        native_multi_cube_3d_render_frame();
+    }
+
+    private native void native_multi_cube_3d_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native boolean native_multi_cube_3d_init_opengl(int width, int height);
+
+    private native void native_multi_cube_3d_render_frame();
 }

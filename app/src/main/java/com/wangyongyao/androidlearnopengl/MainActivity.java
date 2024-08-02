@@ -8,6 +8,7 @@ import android.widget.FrameLayout;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
 import com.wangyongyao.androidlearnopengl.view.GL3DCubeView;
+import com.wangyongyao.androidlearnopengl.view.GL3DMultiCubeView;
 import com.wangyongyao.androidlearnopengl.view.GL3DView;
 import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
@@ -23,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn2;
     private Button mBtn3;
     private Button mBtn4;
+    private Button mBtn5;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,6 +73,12 @@ public class MainActivity extends AppCompatActivity {
             GL3DCubeView gl3DCubeView = new GL3DCubeView(getApplication(), mJniCall);
             mGlShow1.addView(gl3DCubeView);
         });
+        mBtn5.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GL3DMultiCubeView gl3DMultiCubeView = new GL3DMultiCubeView(getApplication(), mJniCall);
+            mGlShow1.addView(gl3DMultiCubeView);
+        });
+
     }
 
     private void initData() {
@@ -83,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
         mBtn2 = mBinding.btn2;
         mBtn3 = mBinding.btn3;
         mBtn4 = mBinding.btn4;
+        mBtn5 = mBinding.btn5;
+
     }
 
 

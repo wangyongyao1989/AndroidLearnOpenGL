@@ -5,6 +5,7 @@
 #include "OpenglesTexture.h"
 #include "Opengles3D.h"
 #include "OpenglesCube3D.h"
+#include "OpenglesMultiCube3D.h"
 
 
 #define LOG_TAG "wy"
@@ -18,6 +19,7 @@ OpenglesFoundation *openglesFoundation;
 OpenglesTexture *openglTexture;
 Opengles3D *opengl3D;
 OpenglesCube3D *openglCube3D;
+OpenglesMultiCube3D *openglMultiCube3D;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -154,7 +156,6 @@ cpp_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
 }
 
 /*********************** 立方体3D *********************/
-
 extern "C"
 JNIEXPORT jboolean JNICALL
 cpp_cube_3d_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
@@ -187,6 +188,48 @@ cpp_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring ve
     openglCube3D->setSharderPath(vertexPath, fragPath);
 
     openglCube3D->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+/*********************** 多立方体3D *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_multi_cube_3d_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglMultiCube3D == nullptr)
+        openglMultiCube3D = new OpenglesMultiCube3D();
+    openglMultiCube3D->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_cube_3d_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglMultiCube3D == nullptr) return;
+    openglMultiCube3D->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                             jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, 0);
+    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+
+    if (openglMultiCube3D == nullptr) {
+        openglMultiCube3D = new OpenglesMultiCube3D();
+    }
+    openglMultiCube3D->setSharderPath(vertexPath, fragPath);
+
+    openglMultiCube3D->setPicPath(picsrc1Path, picsrc2Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
@@ -229,6 +272,14 @@ static const JNINativeMethod methods[] = {
                                             ";Ljava/lang/String"
                                             ";Ljava/lang/String"
                                             ";Ljava/lang/String;)V", (void *) cpp_cube_3d_frag_vertex_path},
+        //立方体3D
+        {"native_multi_cube_3d_init_opengl",      "(II)Z",                 (void *) cpp_multi_cube_3d_init_opengl},
+        {"native_multi_cube_3d_render_frame",     "()V",                   (void *) cpp_multi_cube_3d_render_frame},
+
+        {"native_multi_cube_3d_set_glsl_path",    "(Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String;)V", (void *) cpp_multi_cube_3d_frag_vertex_path},
 };
 
 
