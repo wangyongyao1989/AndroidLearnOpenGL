@@ -86,7 +86,7 @@ bool OpenglesCube3D::setupGraphics(int w, int h) {
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     glUseProgram(shaderProgram); // don't forget to activate/use the shader before setting uniforms!
-    setInt("texture1",0);
+    glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
     setInt("texture2", 1);
 
     return true;
