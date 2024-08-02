@@ -1,10 +1,10 @@
 //
 // Created by MMM on 2024/7/30.
 //
-#include "Opengles3D.h"
+#include "OpenglesCube3D.h"
 #include <iostream>
 
-bool Opengles3D::setupGraphics(int w, int h) {
+bool OpenglesCube3D::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
@@ -30,31 +30,23 @@ bool Opengles3D::setupGraphics(int w, int h) {
 
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
-    glGenBuffers(1, &EBO);
 
     //绑定VAO
     glBindVertexArray(VAO);
     //把顶点数组复制到缓冲中供OpenGL使用
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(textureDemoVertices), textureDemoVertices, GL_STATIC_DRAW);
-
-    //绑定EBO
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(textureDemoIndices), indices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
 
 
     // 1. 设置顶点属性指针
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-    // color attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+
+    // texture coord attribute
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                           (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-    // texture coord attribute
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
-                          (void *) (6 * sizeof(float)));
-    glEnableVertexAttribArray(2);
 
 
     // load and create a texture
@@ -86,7 +78,7 @@ bool Opengles3D::setupGraphics(int w, int h) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
     if (data2) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width2, height2, 0, GL_RGB, GL_UNSIGNED_BYTE,
                      data2);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
@@ -98,14 +90,16 @@ bool Opengles3D::setupGraphics(int w, int h) {
     // either set it manually like so:
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
     // or set it via the texture class
+    setInt("texture1",0);
     setInt("texture2", 1);
 
     return true;
 }
 
-void Opengles3D::renderFrame() {
+void OpenglesCube3D::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT);
+
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
     // bind Texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
@@ -139,16 +133,19 @@ void Opengles3D::renderFrame() {
 
     // be sure to activate the shader before any calls to glUniform
     glUseProgram(shaderProgram);
-//    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+//    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     checkGlError("glDrawArrays");
 }
 
-bool Opengles3D::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesCube3D::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
     return getSharderPath(vertexPath, fragmentPath);
 }
 
-void Opengles3D::setPicPath(const char *pic1, const char *pic2) {
+void OpenglesCube3D::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
     // load image, create texture and generate mipmaps
@@ -158,11 +155,11 @@ void Opengles3D::setPicPath(const char *pic1, const char *pic2) {
 }
 
 
-Opengles3D::Opengles3D() {
+OpenglesCube3D::OpenglesCube3D() {
 
 }
 
-Opengles3D::~Opengles3D() {
+OpenglesCube3D::~OpenglesCube3D() {
     texture1 = 0;
     texture2 = 0;
     data1 = nullptr;

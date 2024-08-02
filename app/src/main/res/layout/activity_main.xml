@@ -36,6 +36,16 @@
         app:layout_constraintTop_toBottomOf="@+id/btn2"
         tools:ignore="HardcodedText,SmallSp" />
 
+    <Button
+        android:id="@+id/btn4"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:text="立方体3D"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn3"
+        tools:ignore="HardcodedText,SmallSp" />
+
 
     <FrameLayout
         android:id="@+id/gl_show"

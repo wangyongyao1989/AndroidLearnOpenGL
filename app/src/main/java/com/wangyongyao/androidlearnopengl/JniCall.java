@@ -56,7 +56,7 @@ public class JniCall {
     private native void native_texture_render_frame();
 
     /**
-     * 3D
+     * 3D基础
      */
     public void set3DGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
         native_3d_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
@@ -76,4 +76,26 @@ public class JniCall {
     private native boolean native_3d_init_opengl(int width, int height);
 
     private native void native_3d_render_frame();
+
+    /**
+     * 立方体3D
+     */
+    public void setCube3DGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_cube_3d_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public boolean initCube3DOpenGl(int w, int h) {
+        return native_cube_3d_init_opengl(w, h);
+    }
+
+    public void openCube3DGlRenderFrame() {
+        native_cube_3d_render_frame();
+    }
+
+    private native void native_cube_3d_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native boolean native_cube_3d_init_opengl(int width, int height);
+
+    private native void native_cube_3d_render_frame();
 }

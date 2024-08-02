@@ -19,6 +19,8 @@
 ## 6、多层纹理的使用:
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/texturemix.png" width="350px">
 
+## 7、3D基础使用:
+  <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/3dbase1.mp4" width="350px">
 
 
 

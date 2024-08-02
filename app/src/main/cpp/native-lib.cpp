@@ -4,6 +4,7 @@
 #include "OpenglesFoundation.h"
 #include "OpenglesTexture.h"
 #include "Opengles3D.h"
+#include "OpenglesCube3D.h"
 
 
 #define LOG_TAG "wy"
@@ -16,6 +17,7 @@ const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCal
 OpenglesFoundation *openglesFoundation;
 OpenglesTexture *openglTexture;
 Opengles3D *opengl3D;
+OpenglesCube3D *openglCube3D;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -109,7 +111,7 @@ cpp_texture_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring ve
 
 }
 
-/*********************** 3D *********************/
+/*********************** 3D基础 *********************/
 
 extern "C"
 JNIEXPORT jboolean JNICALL
@@ -151,27 +153,82 @@ cpp_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
 
 }
 
+/*********************** 立方体3D *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_cube_3d_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglCube3D == nullptr)
+        openglCube3D = new OpenglesCube3D();
+    openglCube3D->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_cube_3d_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglCube3D == nullptr) return;
+    openglCube3D->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                             jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, 0);
+    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+
+    if (openglCube3D == nullptr) {
+        openglCube3D = new OpenglesCube3D();
+    }
+    openglCube3D->setSharderPath(vertexPath, fragPath);
+
+    openglCube3D->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"stringFromJNI",                   "()Ljava/lang/String;",                    (std::string *) cpp_stringFromJNI},
-        {"native_callback",                 "()V",                                     (void *) cpp_init_callback},
+        {"stringFromJNI",                   "()Ljava/lang/String;",  (std::string *) cpp_stringFromJNI},
+        {"native_callback",                 "()V",                   (void *) cpp_init_callback},
         //Foundation
-        {"native_foundation_init_opengl",   "(II)Z",                                   (void *) cpp_foundation_init_opengl},
-        {"native_foundation_render_frame",  "()V",                                     (void *) cpp_foundation_render_frame},
-        {"native_foundation_set_glsl_path", "(Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_foundation_frag_vertex_path},
+        {"native_foundation_init_opengl",   "(II)Z",                 (void *) cpp_foundation_init_opengl},
+        {"native_foundation_render_frame",  "()V",                   (void *) cpp_foundation_render_frame},
+        {"native_foundation_set_glsl_path", "(Ljava/lang/String;"
+                                            "Ljava/lang/String;)V",  (void *) cpp_foundation_frag_vertex_path},
         //Texture
-        {"native_texture_init_opengl",      "(II)Z",                                   (void *) cpp_texture_init_opengl},
-        {"native_texture_render_frame",     "()V",                                     (void *) cpp_texture_render_frame},
+        {"native_texture_init_opengl",      "(II)Z",                 (void *) cpp_texture_init_opengl},
+        {"native_texture_render_frame",     "()V",                   (void *) cpp_texture_render_frame},
 
-        {"native_texture_set_glsl_path",    "(Ljava/lang/String;Ljava/lang/String"
-                                            ";Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
-        //3D
-        {"native_3d_init_opengl",           "(II)Z",                                   (void *) cpp_3d_init_opengl},
-        {"native_3d_render_frame",          "()V",                                     (void *) cpp_3d_render_frame},
+        {"native_texture_set_glsl_path",    "(Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
+        //3D基础
+        {"native_3d_init_opengl",           "(II)Z",                 (void *) cpp_3d_init_opengl},
+        {"native_3d_render_frame",          "()V",                   (void *) cpp_3d_render_frame},
 
-        {"native_3d_set_glsl_path",         "(Ljava/lang/String;Ljava/lang/String"
-                                            ";Ljava/lang/String;Ljava/lang/String;)V", (void *) cpp_3d_frag_vertex_path},
+        {"native_3d_set_glsl_path",         "(Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String;)V", (void *) cpp_3d_frag_vertex_path},
+        //立方体3D
+        {"native_cube_3d_init_opengl",      "(II)Z",                 (void *) cpp_cube_3d_init_opengl},
+        {"native_cube_3d_render_frame",     "()V",                   (void *) cpp_cube_3d_render_frame},
+
+        {"native_cube_3d_set_glsl_path",    "(Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String"
+                                            ";Ljava/lang/String;)V", (void *) cpp_cube_3d_frag_vertex_path},
 };
 
 
