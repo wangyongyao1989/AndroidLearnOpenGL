@@ -69,26 +69,26 @@ bool OpenglesMultiCube3D::setupGraphics(int w, int h) {
     }
     stbi_image_free(data1);
 
-    glGenTextures(1, &texture2);
-    glBindTexture(GL_TEXTURE_2D, texture2);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-    // set texture filtering parameters
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
-    if (data2) {
-        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
-                     data2);
-        glGenerateMipmap(GL_TEXTURE_2D);
-    }
-    stbi_image_free(data2);
+//    glGenTextures(1, &texture2);
+//    glBindTexture(GL_TEXTURE_2D, texture2);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+//    // set texture filtering parameters
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+//    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+//
+//    if (data2) {
+//        glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width2, height2, 0, GL_RGBA, GL_UNSIGNED_BYTE,
+//                     data2);
+//        glGenerateMipmap(GL_TEXTURE_2D);
+//    }
+//    stbi_image_free(data2);
 
     // tell opengl for each sampler to which texture unit it belongs to (only has to be done once)
     // -------------------------------------------------------------------------------------------
     glUseProgram(shaderProgram); // don't forget to activate/use the shader before setting uniforms!
     glUniform1i(glGetUniformLocation(shaderProgram, "texture1"), 0);
-    setInt("texture2", 1);
+//    setInt("texture2", 1);
 
     return true;
 }
@@ -100,8 +100,8 @@ void OpenglesMultiCube3D::renderFrame() {
     // bind Texture
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, texture1);
-    glActiveTexture(GL_TEXTURE1);
-    glBindTexture(GL_TEXTURE_2D, texture2);
+//    glActiveTexture(GL_TEXTURE1);
+//    glBindTexture(GL_TEXTURE_2D, texture2);
     //2、使用程序
     glUseProgram(gProgram);
     checkGlError("glUseProgram");
@@ -159,7 +159,6 @@ OpenglesMultiCube3D::OpenglesMultiCube3D() {
 
 OpenglesMultiCube3D::~OpenglesMultiCube3D() {
     texture1 = 0;
-    texture2 = 0;
     data1 = nullptr;
     data2 = nullptr;
 

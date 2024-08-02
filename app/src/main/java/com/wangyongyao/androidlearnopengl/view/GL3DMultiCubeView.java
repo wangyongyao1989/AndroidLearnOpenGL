@@ -33,9 +33,9 @@ public class GL3DMultiCubeView extends GLSurfaceView implements GLSurfaceView.Re
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "cube_3d_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "cube_3d_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "multi_cube_3d_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "multi_cube_3d_vertex.glsl");
+        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {

@@ -22,8 +22,11 @@
 ## 7、3D基础使用:
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/3dbase1.gif" width="350px">
 
-## 7、使用深度测试使立方体3D更立体:
+## 8、使用深度测试使立方体3D更立体:
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/cube3dbase1.gif" width="350px">
+
+## 9、多立方体3D旋转:
+  <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/MultiCube.gif" width="350px">
 
 
     

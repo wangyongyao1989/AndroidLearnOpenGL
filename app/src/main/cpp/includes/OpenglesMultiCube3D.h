@@ -31,7 +31,7 @@ class OpenglesMultiCube3D : public OpenGLBase {
 
 private:
     unsigned int texture1;
-    unsigned int texture2;
+//    unsigned int texture2;
     unsigned char *data1;
     unsigned char *data2;
     int screenW, screenH;
