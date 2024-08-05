@@ -1,10 +1,10 @@
 //
 // Created by MMM on 2024/7/30.
 //
-#include "OpenglesMultiCube3D.h"
+#include "OpenglesCamera3D.h"
 #include <iostream>
 
-bool OpenglesMultiCube3D::setupGraphics(int w, int h) {
+bool OpenglesCamera3D::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
@@ -79,7 +79,7 @@ bool OpenglesMultiCube3D::setupGraphics(int w, int h) {
     return true;
 }
 
-void OpenglesMultiCube3D::renderFrame() {
+void OpenglesCamera3D::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
@@ -108,7 +108,7 @@ void OpenglesMultiCube3D::renderFrame() {
     for (unsigned int i = 0; i < 10; i++) {
         // calculate the model matrix for each object and pass it to shader before drawing
         glm::mat4 model = glm::mat4(1.0f);                   //模型矩阵(Model Matrix)
-        model = glm::translate(model, cubePositions[i]);    //对获取到的模型移动到对应位置
+        model = glm::translate(model, cameraCubePositions[i]);    //对获取到的模型移动到对应位置
         float angle = 20.0f * i;
         if (i < 6) {
             double timeValue = clock() * 10 / CLOCKS_PER_SEC;
@@ -123,11 +123,11 @@ void OpenglesMultiCube3D::renderFrame() {
     checkGlError("glDrawArrays");
 }
 
-bool OpenglesMultiCube3D::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesCamera3D::setSharderPath(const char *vertexPath, const char *fragmentPath) {
     return getSharderPath(vertexPath, fragmentPath);
 }
 
-void OpenglesMultiCube3D::setPicPath(const char *pic1, const char *pic2) {
+void OpenglesCamera3D::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
     // load image, create texture and generate mipmaps
@@ -137,11 +137,11 @@ void OpenglesMultiCube3D::setPicPath(const char *pic1, const char *pic2) {
 }
 
 
-OpenglesMultiCube3D::OpenglesMultiCube3D() {
+OpenglesCamera3D::OpenglesCamera3D() {
 
 }
 
-OpenglesMultiCube3D::~OpenglesMultiCube3D() {
+OpenglesCamera3D::~OpenglesCamera3D() {
     texture1 = 0;
     data1 = nullptr;
     data2 = nullptr;

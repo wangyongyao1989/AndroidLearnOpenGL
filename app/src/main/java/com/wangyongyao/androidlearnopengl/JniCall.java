@@ -1,7 +1,5 @@
 package com.wangyongyao.androidlearnopengl;
 
-import android.graphics.Bitmap;
-
 public class JniCall {
 
     // Used to load the 'androidlearnopengl' library on application startup.
@@ -110,7 +108,7 @@ public class JniCall {
         return native_multi_cube_3d_init_opengl(w, h);
     }
 
-    public void openMultiCube3DGlRenderFrame() {
+    public void MultiCube3DOpenGLRenderFrame() {
         native_multi_cube_3d_render_frame();
     }
 
@@ -120,4 +118,26 @@ public class JniCall {
     private native boolean native_multi_cube_3d_init_opengl(int width, int height);
 
     private native void native_multi_cube_3d_render_frame();
+
+    /**
+     * 摄像头旋转
+     */
+    public void setCameraGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_camera_3d_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public boolean initCamera3DOpenGl(int w, int h) {
+        return native_camera_3d_init_opengl(w, h);
+    }
+
+    public void CameraOpenGLRenderFrame() {
+        native_camera_3d_render_frame();
+    }
+
+    private native void native_camera_3d_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native boolean native_camera_3d_init_opengl(int width, int height);
+
+    private native void native_camera_3d_render_frame();
 }

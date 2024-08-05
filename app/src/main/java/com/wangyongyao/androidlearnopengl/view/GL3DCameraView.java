@@ -10,20 +10,20 @@ import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GL3DMultiCubeView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private static String TAG = GL3DMultiCubeView.class.getSimpleName();
+    private static String TAG = GL3DCameraView.class.getSimpleName();
     private JniCall mJniCall;
     private Context mContext;
 
-    public GL3DMultiCubeView(Context context, JniCall jniCall) {
+    public GL3DCameraView(Context context, JniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GL3DMultiCubeView(Context context, AttributeSet attrs) {
+    public GL3DCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -33,13 +33,13 @@ public class GL3DMultiCubeView extends GLSurfaceView implements GLSurfaceView.Re
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "multi_cube_3d_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "multi_cube_3d_vertex.glsl");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "camera_3d_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "camera_3d_vertex.glsl");
         String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
-            mJniCall.setMultiCube3DGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
+            mJniCall.setCameraGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
         }
 
         setRenderer(this);
@@ -48,12 +48,12 @@ public class GL3DMultiCubeView extends GLSurfaceView implements GLSurfaceView.Re
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.MultiCube3DOpenGLRenderFrame();
+            mJniCall.CameraOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initMultiCube3DOpenGl(width, height);
+            mJniCall.initCamera3DOpenGl(width, height);
     }
 
 

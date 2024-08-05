@@ -6,6 +6,7 @@
 #include "Opengles3D.h"
 #include "OpenglesCube3D.h"
 #include "OpenglesMultiCube3D.h"
+#include "OpenglesCamera3D.h"
 
 
 #define LOG_TAG "wy"
@@ -20,6 +21,7 @@ OpenglesTexture *openglTexture;
 Opengles3D *opengl3D;
 OpenglesCube3D *openglCube3D;
 OpenglesMultiCube3D *openglMultiCube3D;
+OpenglesCamera3D *openglCamera3D;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -238,6 +240,48 @@ cpp_multi_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstr
 
 }
 
+/*********************** GL摄像头 *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_camera_3d_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglCamera3D == nullptr)
+        openglCamera3D = new OpenglesCamera3D();
+    openglCamera3D->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_camera_3d_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglCamera3D == nullptr) return;
+    openglCamera3D->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_camera_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                   jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, 0);
+    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+
+    if (openglCamera3D == nullptr) {
+        openglCamera3D = new OpenglesCamera3D();
+    }
+    openglCamera3D->setSharderPath(vertexPath, fragPath);
+
+    openglCamera3D->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
@@ -280,6 +324,15 @@ static const JNINativeMethod methods[] = {
                                             ";Ljava/lang/String"
                                             ";Ljava/lang/String"
                                             ";Ljava/lang/String;)V", (void *) cpp_multi_cube_3d_frag_vertex_path},
+
+        //摄像头
+        {"native_camera_3d_init_opengl",      "(II)Z",                 (void *) cpp_camera_3d_init_opengl},
+        {"native_camera_3d_render_frame",     "()V",                   (void *) cpp_camera_3d_render_frame},
+
+        {"native_camera_3d_set_glsl_path",    "(Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String;)V", (void *) cpp_camera_3d_frag_vertex_path},
 };
 
 

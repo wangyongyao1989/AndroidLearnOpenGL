@@ -16,6 +16,7 @@ add_library(${CMAKE_PROJECT_NAME}
         Opengles3D.cpp
         OpenglesCube3D.cpp
         OpenglesMultiCube3D.cpp
+        OpenglesCamera3D.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
