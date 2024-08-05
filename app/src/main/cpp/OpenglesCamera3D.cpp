@@ -95,8 +95,14 @@ void OpenglesCamera3D::renderFrame() {
     // create transformations
     glm::mat4 view = glm::mat4(1.0f);           //观察矩阵(View Matrix)
     glm::mat4 projection = glm::mat4(1.0f);     //投影矩阵(Projection Matrix)
+    float radius = 10.0f;
+    double timeValue = clock() * 10 / CLOCKS_PER_SEC;
 
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -6.0f));  //观察矩阵(View Matrix)平移，类似于相机移动
+    float camX = static_cast<float>(sin(timeValue) * radius);
+    float camZ = static_cast<float>(cos(timeValue) * radius);
+
+    //观察矩阵(View Matrix)平移,glm::LookAt函数需要一个位置、目标和上向量。
+    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
     projection = glm::perspective(glm::radians(45.0f), (float) screenW / (float) screenH, 0.1f,
                                   100.0f);
     // pass them to the shaders (3 different ways)

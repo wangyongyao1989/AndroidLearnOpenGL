@@ -28,5 +28,7 @@
 ## 9、多立方体3D旋转:
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/MultiCube.gif" width="350px">
 
+## 10、Camera3D旋转:
+  <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/Camer3DRotate.gif" width="350px">
 
     
