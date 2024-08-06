@@ -174,7 +174,7 @@ void OpenglesCamera3D::setOnScale(float scaleFactor, float focusX, float focusY,
         }
     }
     LOGI("setOnScale scale:%f", scale);
-    mCamera.ProcessMouseScroll(scale);
+    mCamera.ProcessScroll(scale);
 }
 
 

@@ -38,7 +38,7 @@ private:
     float Pitch;
     // camera options
     float MovementSpeed;
-    float MouseSensitivity;
+    float Sensitivity;
 
     // calculates the front vector from the Camera's (updated) Euler Angles
     void updateCameraVectors();
@@ -63,7 +63,7 @@ public:
 
     void ProcessXYMovement(float xoffset, float yoffset, bool constrainPitch = true);
 
-    void ProcessMouseScroll(float yoffset);
+    void ProcessScroll(float yoffset);
 
 
 };

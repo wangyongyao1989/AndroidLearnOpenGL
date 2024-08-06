@@ -5,7 +5,7 @@
 #include "Camera3D.h"
 
 Camera3D::Camera3D(vec3 position, vec3 up, float yaw, float pitch) :
-        Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY),
+        Front(vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), Sensitivity(SENSITIVITY),
         Zoom(ZOOM) {
     Position = position;
     WorldUp = up;
@@ -16,7 +16,7 @@ Camera3D::Camera3D(vec3 position, vec3 up, float yaw, float pitch) :
 
 Camera3D::Camera3D(float posX, float posY, float posZ, float upX, float upY, float upZ, float yaw,
                    float pitch) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED),
-                                  MouseSensitivity(SENSITIVITY), Zoom(ZOOM) {
+                                  Sensitivity(SENSITIVITY), Zoom(ZOOM) {
     Position = glm::vec3(posX, posY, posZ);
     WorldUp = glm::vec3(upX, upY, upZ);
     Yaw = yaw;
@@ -42,8 +42,8 @@ void Camera3D::ProcessKeyboard(Camera_Movement direction, float deltaTime) {
 }
 
 void Camera3D::ProcessXYMovement(float xoffset, float yoffset, bool constrainPitch) {
-    xoffset *= MouseSensitivity;
-    yoffset *= MouseSensitivity;
+    xoffset *= Sensitivity;
+    yoffset *= Sensitivity;
 
     Yaw += xoffset;
     Pitch += yoffset;
@@ -60,7 +60,7 @@ void Camera3D::ProcessXYMovement(float xoffset, float yoffset, bool constrainPit
     updateCameraVectors();
 }
 
-void Camera3D::ProcessMouseScroll(float yoffset) {
+void Camera3D::ProcessScroll(float yoffset) {
     Zoom -= (float) yoffset;
 //    if (Zoom < 1.0f)
 //        Zoom = 1.0f;
