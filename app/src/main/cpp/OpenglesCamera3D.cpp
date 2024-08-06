@@ -95,15 +95,22 @@ void OpenglesCamera3D::renderFrame() {
     // create transformations
     glm::mat4 view = glm::mat4(1.0f);           //观察矩阵(View Matrix)
     glm::mat4 projection = glm::mat4(1.0f);     //投影矩阵(Projection Matrix)
-    float radius = 10.0f;
-    double timeValue = clock() * 10 / CLOCKS_PER_SEC;
 
-    float camX = static_cast<float>(sin(timeValue) * radius);
-    float camZ = static_cast<float>(cos(timeValue) * radius);
+//    float radius = 10.0f;
+//    timeValue = 10 / CLOCKS_PER_SEC;
+//    float camX = static_cast<float>(sin(timeValue) * radius);
+//    float camZ = static_cast<float>(cos(timeValue) * radius);
+//    LOGI("setMoveXY camX:%f,camZ:%f", camX,camZ);
+    //观察矩阵(View Matrix)平移,glm::LookAt函数需要一个位置、目标和上向量。
+//    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f),
+//                       glm::vec3(0.0f, 1.0f, 0.0f));
+//    projection = glm::perspective(glm::radians(45.0f), (float) screenW / (float) screenH, 0.1f,
+//                                  100.0f);
 
     //观察矩阵(View Matrix)平移,glm::LookAt函数需要一个位置、目标和上向量。
-    view = glm::lookAt(glm::vec3(camX, 0.0f, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-    projection = glm::perspective(glm::radians(45.0f), (float) screenW / (float) screenH, 0.1f,
+    view = mCamera.GetViewMatrix();
+    projection = glm::perspective(glm::radians(mCamera.Zoom), (float) screenW / (float) screenH,
+                                  0.1f,
                                   100.0f);
     // pass them to the shaders (3 different ways)
     setMat4("projection", projection);
@@ -140,6 +147,34 @@ void OpenglesCamera3D::setPicPath(const char *pic1, const char *pic2) {
     data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
     data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
 
+}
+
+void OpenglesCamera3D::setMoveXY(float dx, float dy, int actionMode) {
+    LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
+    float xoffset = dx - lastX;
+    float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
+    lastX = dx;
+    lastY = dy;
+    mActionMode = actionMode;
+    mCamera.ProcessXYMovement(xoffset, yoffset);
+}
+
+void OpenglesCamera3D::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+//    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
+//         actionMode);
+//    LOGI("setOnScale scaleFactor:%f", scaleFactor);
+    float scale;
+    if (actionMode == 1 || actionMode == 3) {
+        scale = 45.0f;
+    } else {
+        if (scaleFactor > 1) {
+            scale = (scaleFactor - 1) * 1000 + 45;
+        } else {
+           scale = 50 - (1 - scaleFactor) * 1000;
+        }
+    }
+    LOGI("setOnScale scale:%f", scale);
+    mCamera.ProcessMouseScroll(scale);
 }
 
 

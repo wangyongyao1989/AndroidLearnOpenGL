@@ -220,7 +220,7 @@ cpp_multi_cube_3d_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_multi_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                             jstring picsrc1, jstring picsrc2) {
+                                   jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, 0);
     const char *vertexPath = env->GetStringUTFChars(vertex, 0);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
@@ -262,7 +262,7 @@ cpp_camera_3d_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_camera_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                   jstring picsrc1, jstring picsrc2) {
+                               jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, 0);
     const char *vertexPath = env->GetStringUTFChars(vertex, 0);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
@@ -282,57 +282,75 @@ cpp_camera_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring 
 
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+cpp_camera_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (openglCamera3D == nullptr) return;
+    openglCamera3D->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_camera_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX, jfloat focusY,
+                    jint actionMode) {
+    if (openglCamera3D == nullptr) return;
+    openglCamera3D->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"stringFromJNI",                   "()Ljava/lang/String;",  (std::string *) cpp_stringFromJNI},
-        {"native_callback",                 "()V",                   (void *) cpp_init_callback},
+        {"stringFromJNI",                      "()Ljava/lang/String;",  (std::string *) cpp_stringFromJNI},
+        {"native_callback",                    "()V",                   (void *) cpp_init_callback},
         //Foundation
-        {"native_foundation_init_opengl",   "(II)Z",                 (void *) cpp_foundation_init_opengl},
-        {"native_foundation_render_frame",  "()V",                   (void *) cpp_foundation_render_frame},
-        {"native_foundation_set_glsl_path", "(Ljava/lang/String;"
-                                            "Ljava/lang/String;)V",  (void *) cpp_foundation_frag_vertex_path},
+        {"native_foundation_init_opengl",      "(II)Z",                 (void *) cpp_foundation_init_opengl},
+        {"native_foundation_render_frame",     "()V",                   (void *) cpp_foundation_render_frame},
+        {"native_foundation_set_glsl_path",    "(Ljava/lang/String;"
+                                               "Ljava/lang/String;)V",  (void *) cpp_foundation_frag_vertex_path},
         //Texture
-        {"native_texture_init_opengl",      "(II)Z",                 (void *) cpp_texture_init_opengl},
-        {"native_texture_render_frame",     "()V",                   (void *) cpp_texture_render_frame},
+        {"native_texture_init_opengl",         "(II)Z",                 (void *) cpp_texture_init_opengl},
+        {"native_texture_render_frame",        "()V",                   (void *) cpp_texture_render_frame},
 
-        {"native_texture_set_glsl_path",    "(Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
+        {"native_texture_set_glsl_path",       "(Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_texture_frag_vertex_path},
         //3D基础
-        {"native_3d_init_opengl",           "(II)Z",                 (void *) cpp_3d_init_opengl},
-        {"native_3d_render_frame",          "()V",                   (void *) cpp_3d_render_frame},
+        {"native_3d_init_opengl",              "(II)Z",                 (void *) cpp_3d_init_opengl},
+        {"native_3d_render_frame",             "()V",                   (void *) cpp_3d_render_frame},
 
-        {"native_3d_set_glsl_path",         "(Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String;)V", (void *) cpp_3d_frag_vertex_path},
+        {"native_3d_set_glsl_path",            "(Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_3d_frag_vertex_path},
         //立方体3D
-        {"native_cube_3d_init_opengl",      "(II)Z",                 (void *) cpp_cube_3d_init_opengl},
-        {"native_cube_3d_render_frame",     "()V",                   (void *) cpp_cube_3d_render_frame},
+        {"native_cube_3d_init_opengl",         "(II)Z",                 (void *) cpp_cube_3d_init_opengl},
+        {"native_cube_3d_render_frame",        "()V",                   (void *) cpp_cube_3d_render_frame},
 
-        {"native_cube_3d_set_glsl_path",    "(Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String;)V", (void *) cpp_cube_3d_frag_vertex_path},
+        {"native_cube_3d_set_glsl_path",       "(Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_cube_3d_frag_vertex_path},
         //立方体3D
-        {"native_multi_cube_3d_init_opengl",      "(II)Z",                 (void *) cpp_multi_cube_3d_init_opengl},
-        {"native_multi_cube_3d_render_frame",     "()V",                   (void *) cpp_multi_cube_3d_render_frame},
+        {"native_multi_cube_3d_init_opengl",   "(II)Z",                 (void *) cpp_multi_cube_3d_init_opengl},
+        {"native_multi_cube_3d_render_frame",  "()V",                   (void *) cpp_multi_cube_3d_render_frame},
 
-        {"native_multi_cube_3d_set_glsl_path",    "(Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String"
-                                            ";Ljava/lang/String;)V", (void *) cpp_multi_cube_3d_frag_vertex_path},
+        {"native_multi_cube_3d_set_glsl_path", "(Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_multi_cube_3d_frag_vertex_path},
 
         //摄像头
-        {"native_camera_3d_init_opengl",      "(II)Z",                 (void *) cpp_camera_3d_init_opengl},
-        {"native_camera_3d_render_frame",     "()V",                   (void *) cpp_camera_3d_render_frame},
+        {"native_camera_3d_init_opengl",       "(II)Z",                 (void *) cpp_camera_3d_init_opengl},
+        {"native_camera_3d_render_frame",      "()V",                   (void *) cpp_camera_3d_render_frame},
 
-        {"native_camera_3d_set_glsl_path",    "(Ljava/lang/String"
-                                                  ";Ljava/lang/String"
-                                                  ";Ljava/lang/String"
-                                                  ";Ljava/lang/String;)V", (void *) cpp_camera_3d_frag_vertex_path},
+        {"native_camera_3d_set_glsl_path",     "(Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_camera_3d_frag_vertex_path},
+        {"native_camera_move_xy",              "(FFI)V",                (void *) cpp_camera_move_xy},
+        {"native_camera_on_scale",             "(FFFI)V",               (void *) cpp_camera_on_scale},
+
 };
 
 

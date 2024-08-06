@@ -134,10 +134,24 @@ public class JniCall {
         native_camera_3d_render_frame();
     }
 
+    public void CameraMoveXY(float dx, float dy, int action) {
+        native_camera_move_xy(dx, dy, action);
+    }
+
+    public void CameraOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_camera_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
     private native void native_camera_3d_set_glsl_path(String fragPath, String vertexPath
             , String picSrc1, String picSrc2);
 
     private native boolean native_camera_3d_init_opengl(int width, int height);
 
     private native void native_camera_3d_render_frame();
+
+    private native void native_camera_move_xy(float dx, float dy, int action);
+
+    private native void native_camera_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+
 }
