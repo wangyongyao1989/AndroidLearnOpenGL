@@ -1,5 +1,7 @@
 # OpenGL基础绘制：
-
+    LearnOpenGL中文地址：https://learnopengl-cn.github.io/
+    LearnOpenGL英文文地址：https://learnopengl.com/
+    LearnOpenGL github地址：https://github.com/JoeyDeVries/LearnOpenGL/tree/master
 
 ## 1、画出第一个三角形：
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/triangle.png" width="350px">

@@ -7,6 +7,7 @@
 #include "OpenglesCube3D.h"
 #include "OpenglesMultiCube3D.h"
 #include "OpenglesCamera3D.h"
+#include "OpenglesLightCube.h"
 
 
 #define LOG_TAG "wy"
@@ -22,12 +23,14 @@ Opengles3D *opengl3D;
 OpenglesCube3D *openglCube3D;
 OpenglesMultiCube3D *openglMultiCube3D;
 OpenglesCamera3D *openglCamera3D;
+OpenglesLightCube *openglLightCube;
+
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
         JNIEnv *env, jobject) {
     std::string hello = "Hello from C++";
-    LOGD("cpp_stringFromJNI  hello = %c", hello.c_str());
+    LOGD("cpp_stringFromJNI  hello = %s", hello.c_str());
     return env->NewStringUTF(hello.c_str());
 }
 
@@ -61,8 +64,8 @@ cpp_foundation_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_foundation_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
-    const char *fragPath = env->GetStringUTFChars(frag, 0);
-    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     if (openglesFoundation == nullptr) {
         openglesFoundation = new OpenglesFoundation();
     }
@@ -96,10 +99,10 @@ extern "C"
 JNIEXPORT void JNICALL
 cpp_texture_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                              jstring picsrc1, jstring picsrc2) {
-    const char *fragPath = env->GetStringUTFChars(frag, 0);
-    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
     if (openglTexture == nullptr) {
         openglTexture = new OpenglesTexture();
@@ -138,10 +141,10 @@ extern "C"
 JNIEXPORT void JNICALL
 cpp_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                         jstring picsrc1, jstring picsrc2) {
-    const char *fragPath = env->GetStringUTFChars(frag, 0);
-    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
     if (opengl3D == nullptr) {
         opengl3D = new Opengles3D();
@@ -179,10 +182,10 @@ extern "C"
 JNIEXPORT void JNICALL
 cpp_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                              jstring picsrc1, jstring picsrc2) {
-    const char *fragPath = env->GetStringUTFChars(frag, 0);
-    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
     if (openglCube3D == nullptr) {
         openglCube3D = new OpenglesCube3D();
@@ -221,10 +224,10 @@ extern "C"
 JNIEXPORT void JNICALL
 cpp_multi_cube_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                                    jstring picsrc1, jstring picsrc2) {
-    const char *fragPath = env->GetStringUTFChars(frag, 0);
-    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
     if (openglMultiCube3D == nullptr) {
         openglMultiCube3D = new OpenglesMultiCube3D();
@@ -263,10 +266,10 @@ extern "C"
 JNIEXPORT void JNICALL
 cpp_camera_3d_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                                jstring picsrc1, jstring picsrc2) {
-    const char *fragPath = env->GetStringUTFChars(frag, 0);
-    const char *vertexPath = env->GetStringUTFChars(vertex, 0);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, 0);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, 0);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
     if (openglCamera3D == nullptr) {
         openglCamera3D = new OpenglesCamera3D();
@@ -295,6 +298,63 @@ cpp_camera_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX
                     jint actionMode) {
     if (openglCamera3D == nullptr) return;
     openglCamera3D->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
+
+/*********************** GL光照场景 *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_light_cube_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (openglLightCube == nullptr)
+        openglLightCube = new OpenglesLightCube();
+    openglLightCube->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_light_cube_render_frame(JNIEnv *env, jobject thiz) {
+    if (openglLightCube == nullptr) return;
+    openglLightCube->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_light_cube_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                               jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (openglLightCube == nullptr) {
+        openglLightCube = new OpenglesLightCube();
+    }
+    openglLightCube->setSharderPath(vertexPath, fragPath);
+
+    openglLightCube->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_light_cube_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (openglLightCube == nullptr) return;
+    openglLightCube->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_light_cube_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX, jfloat focusY,
+                        jint actionMode) {
+    if (openglLightCube == nullptr) return;
+    openglLightCube->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
 
@@ -331,7 +391,7 @@ static const JNINativeMethod methods[] = {
                                                ";Ljava/lang/String"
                                                ";Ljava/lang/String"
                                                ";Ljava/lang/String;)V", (void *) cpp_cube_3d_frag_vertex_path},
-        //立方体3D
+        //多立方体3D
         {"native_multi_cube_3d_init_opengl",   "(II)Z",                 (void *) cpp_multi_cube_3d_init_opengl},
         {"native_multi_cube_3d_render_frame",  "()V",                   (void *) cpp_multi_cube_3d_render_frame},
 
@@ -351,6 +411,16 @@ static const JNINativeMethod methods[] = {
         {"native_camera_move_xy",              "(FFI)V",                (void *) cpp_camera_move_xy},
         {"native_camera_on_scale",             "(FFFI)V",               (void *) cpp_camera_on_scale},
 
+        //光照场景
+        {"native_light_cube_init_opengl",      "(II)Z",                 (void *) cpp_light_cube_init_opengl},
+        {"native_light_cube_render_frame",     "()V",                   (void *) cpp_light_cube_render_frame},
+
+        {"native_light_cube_set_glsl_path",    "(Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_light_cube_frag_vertex_path},
+        {"native_light_cube_move_xy",          "(FFI)V",                (void *) cpp_light_cube_move_xy},
+        {"native_light_cube_on_scale",         "(FFFI)V",               (void *) cpp_light_cube_on_scale},
 };
 
 
