@@ -322,7 +322,7 @@ cpp_light_cube_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_light_cube_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                               jstring picsrc1, jstring picsrc2) {
+                                jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
@@ -339,6 +339,22 @@ cpp_light_cube_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring
     env->ReleaseStringUTFChars(vertex, vertexPath);
     env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
     env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (openglLightCube == nullptr) {
+        openglLightCube = new OpenglesLightCube();
+    }
+    openglLightCube->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
 
 }
 
@@ -414,7 +430,8 @@ static const JNINativeMethod methods[] = {
         //光照场景
         {"native_light_cube_init_opengl",      "(II)Z",                 (void *) cpp_light_cube_init_opengl},
         {"native_light_cube_render_frame",     "()V",                   (void *) cpp_light_cube_render_frame},
-
+        {"native_color_set_glsl_path",         "(Ljava/lang/String"
+                                               ";Ljava/lang/String;)V", (void *) cpp_color_frag_vertex_path},
         {"native_light_cube_set_glsl_path",    "(Ljava/lang/String"
                                                ";Ljava/lang/String"
                                                ";Ljava/lang/String"

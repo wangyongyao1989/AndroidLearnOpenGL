@@ -30,8 +30,7 @@ using namespace std;
 class OpenGLBase {
 public:
     GLuint shaderProgram;   //着色程序对象
-    GLuint vertexShader;  //顶点着色器
-    GLuint fraShader;     //片段着色器
+
 
     unsigned int VBO, VAO;
     unsigned int EBO;
@@ -47,7 +46,8 @@ public:
     string fragmentCode;
 
 private:
-
+    GLuint vertexShader;  //顶点着色器
+    GLuint fraShader;     //片段着色器
     GLuint loadShader(GLenum shaderType, const char *pSource);
 
 

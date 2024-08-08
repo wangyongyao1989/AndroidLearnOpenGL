@@ -160,6 +160,10 @@ public class JniCall {
         native_light_cube_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
     }
 
+    public void setColorGLSLPath(String fragString, String vertexString) {
+        native_color_set_glsl_path(fragString, vertexString);
+    }
+
     public boolean initLigtCubeOpenGl(int w, int h) {
         return native_light_cube_init_opengl(w, h);
     }
@@ -179,6 +183,7 @@ public class JniCall {
     private native void native_light_cube_set_glsl_path(String fragPath, String vertexPath
             , String picSrc1, String picSrc2);
 
+    private native void native_color_set_glsl_path(String fragPath, String vertexPath);
     private native boolean native_light_cube_init_opengl(int width, int height);
 
     private native void native_light_cube_render_frame();

@@ -27,6 +27,50 @@ const vec3 LightCubePositions[] = {
         vec3(-1.3f, 1.0f, -1.5f)
 };
 
+const float lightCubeVertices[] = {
+        -0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f, -0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+
+        -0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f, -0.5f,
+        0.5f, -0.5f,  0.5f,
+        0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f,  0.5f,
+        -0.5f, -0.5f, -0.5f,
+
+        -0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f, -0.5f,
+        0.5f,  0.5f,  0.5f,
+        0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f,  0.5f,
+        -0.5f,  0.5f, -0.5f,
+};
+
 class OpenglesLightCube : public OpenGLBase {
 
 private:
@@ -41,8 +85,19 @@ private:
     float lastX, lastY;
     int mActionMode;
 
+    //顶点着色器代码
+    const char *colorVertexShaderCode;
+    //片段着色器代码
+    const char *colorFragmentShaderCode;
+
+    string colorVertexCode;
+    string colorFragmentCode;
+
+
     // camera
     Camera3D mCamera;
+
+    bool getColorSharderPath(const char *vertexPath, const char *fragmentPath);
 
 public:
 
@@ -55,6 +110,8 @@ public:
     void renderFrame() override;
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath) override;
+
+    bool setColorSharderPath(const char *vertexPath, const char *fragmentPath);
 
     void setPicPath(const char *pic1, const char *pic2);
 

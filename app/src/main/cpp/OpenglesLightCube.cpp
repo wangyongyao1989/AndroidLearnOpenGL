@@ -140,6 +140,10 @@ bool OpenglesLightCube::setSharderPath(const char *vertexPath, const char *fragm
     return getSharderPath(vertexPath, fragmentPath);
 }
 
+bool OpenglesLightCube::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
+    return getColorSharderPath(vertexPath, fragmentPath);
+}
+
 void OpenglesLightCube::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
@@ -177,6 +181,39 @@ void OpenglesLightCube::setOnScale(float scaleFactor, float focusX, float focusY
     mCamera.ProcessScroll(scale);
 }
 
+bool OpenglesLightCube::getColorSharderPath(const char *vertexPath, const char *fragmentPath) {
+    ifstream vShaderFile;
+    ifstream fShaderFile;
+
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    fShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    try {
+        // open files
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        stringstream vShaderStream, fShaderStream;
+        // read file's buffer contents into streams
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        // close file handlers
+        vShaderFile.close();
+        fShaderFile.close();
+        // convert stream into string
+        colorVertexCode = vShaderStream.str();
+        colorFragmentCode = fShaderStream.str();
+    }
+    catch (ifstream::failure &e) {
+        LOGE("Could not getSharderPath error :%s", e.what());
+        return false;
+    }
+
+    colorVertexShaderCode = colorVertexCode.c_str();
+    colorFragmentShaderCode = colorFragmentCode.c_str();
+
+    return true;
+}
+
 
 OpenglesLightCube::OpenglesLightCube() {
 
@@ -187,6 +224,13 @@ OpenglesLightCube::~OpenglesLightCube() {
     data1 = nullptr;
     data2 = nullptr;
 
+    //析构函数中释放资源
+
+
+    colorVertexCode.clear();
+    colorFragmentCode.clear();
+    colorFragmentShaderCode = nullptr;
+    colorFragmentShaderCode = nullptr;
 }
 
 
