@@ -2,18 +2,7 @@
 // Created by MMM on 2024/7/30.
 //
 
-#include "OpenGLBase.h"
-
-void OpenGLBase::printGLString(const char *name, GLenum s) {
-    const char *v = (const char *) glGetString(s);
-    LOGI("OpenGL %s = %s\n", name, v);
-}
-
-void OpenGLBase::checkGlError(const char *op) {
-    for (GLint error = glGetError(); error; error = glGetError()) {
-        LOGI("after %s() glError (0x%x)\n", op, error);
-    }
-}
+#include "OpenGLSingleShaderBase.h"
 
 /**
  *  连接编译顶点和片元程序
@@ -21,7 +10,7 @@ void OpenGLBase::checkGlError(const char *op) {
  * @param pFragmentSource 片元程序
  * @return
  */
-GLuint OpenGLBase::createProgram(const char *pVertexSource, const char *pFragmentSource) {
+GLuint OpenGLSingleShaderBase::createProgram(const char *pVertexSource, const char *pFragmentSource) {
     vertexShader = loadShader(GL_VERTEX_SHADER, pVertexSource);
     if (!vertexShader) {
         return 0;
@@ -65,7 +54,7 @@ GLuint OpenGLBase::createProgram(const char *pVertexSource, const char *pFragmen
  * @param pSource
  * @return
  */
-GLuint OpenGLBase::loadShader(GLenum shaderType, const char *pSource) {
+GLuint OpenGLSingleShaderBase::loadShader(GLenum shaderType, const char *pSource) {
     GLuint shader = glCreateShader(shaderType);     //创建着色器
     if (shader) {
         glShaderSource(shader, 1, &pSource, NULL);  //着色器源码附加到着色器对象上
@@ -91,7 +80,7 @@ GLuint OpenGLBase::loadShader(GLenum shaderType, const char *pSource) {
     return shader;
 }
 
-bool OpenGLBase::getSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenGLSingleShaderBase::getSharderPath(const char *vertexPath, const char *fragmentPath) {
     ifstream vShaderFile;
     ifstream fShaderFile;
 
@@ -124,7 +113,7 @@ bool OpenGLBase::getSharderPath(const char *vertexPath, const char *fragmentPath
     return true;
 }
 
-OpenGLBase::~OpenGLBase() {
+OpenGLSingleShaderBase::~OpenGLSingleShaderBase() {
     if (vertexShader) {
         glDeleteShader(vertexShader);
     }
@@ -143,8 +132,19 @@ OpenGLBase::~OpenGLBase() {
     gVertexShaderCode = nullptr;
 }
 
-OpenGLBase::OpenGLBase() {
+OpenGLSingleShaderBase::OpenGLSingleShaderBase() {
 
+}
+
+void OpenGLSingleShaderBase::printGLString(const char *name, GLenum s) {
+    const char *v = (const char *) glGetString(s);
+    LOGI("OpenGL %s = %s\n", name, v);
+}
+
+void OpenGLSingleShaderBase::checkGlError(const char *op) {
+    for (GLint error = glGetError(); error; error = glGetError()) {
+        LOGI("after %s() glError (0x%x)\n", op, error);
+    }
 }
 
 

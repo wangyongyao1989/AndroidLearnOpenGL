@@ -10,7 +10,8 @@ add_library(${CMAKE_PROJECT_NAME}
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
         OpenglesFoundation.cpp
-        OpenGLBase.cpp
+        OpenGLSingleShaderBase.cpp
+        OpenGLMultiShaderBase.cpp
         OpenglesTexture.cpp
         OpenGLStdImage.cpp
         Opengles3D.cpp

@@ -52,8 +52,8 @@ public class GLLightingView extends GLSurfaceView implements GLSurfaceView.Rende
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
-            mJniCall.setLigtCubeGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
-            mJniCall.setColorGLSLPath(colorFragPath, colorVertexPath);
+            mJniCall.setLigtCubeGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
+            mJniCall.setColorGLSLPath(fragPath, vertexPath);
         }
         setRenderer(this);
 

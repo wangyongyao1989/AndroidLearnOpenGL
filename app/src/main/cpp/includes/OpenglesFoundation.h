@@ -5,12 +5,12 @@
 #ifndef ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 #define ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 
-#include "OpenGLBase.h"
+#include "OpenGLSingleShaderBase.h"
 
 
 using namespace std;
 
-class OpenglesFoundation : public OpenGLBase {
+class OpenglesFoundation : public OpenGLSingleShaderBase {
 
 private:
 

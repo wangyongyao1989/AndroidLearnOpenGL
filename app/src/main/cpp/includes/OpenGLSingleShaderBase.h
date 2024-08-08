@@ -2,8 +2,8 @@
 // Created by MMM on 2024/7/30.
 //
 
-#ifndef ANDROIDLEARNOPENGL_OPENGLBASE_H
-#define ANDROIDLEARNOPENGL_OPENGLBASE_H
+#ifndef ANDROIDLEARNOPENGL_OPENGLSINGLESHADERBASE_H
+#define ANDROIDLEARNOPENGL_OPENGLSINGLESHADERBASE_H
 
 #include <GLES3/gl3.h>              //导入的包为GL3对应的顶点程序和片元程序为：#version 320 es
 #include <GLES3/gl3ext.h>
@@ -27,7 +27,10 @@
 
 using namespace std;
 
-class OpenGLBase {
+/**
+ * 仅对一对顶点/片段着色器加载使用的基类
+ */
+class OpenGLSingleShaderBase {
 public:
     GLuint shaderProgram;   //着色程序对象
 
@@ -53,9 +56,9 @@ private:
 
 public:
 
-    OpenGLBase();
+    OpenGLSingleShaderBase();
 
-    ~OpenGLBase();
+    ~OpenGLSingleShaderBase();
 
     void printGLString(const char *name, GLenum s);
 
@@ -123,4 +126,4 @@ public:
 };
 
 
-#endif //ANDROIDLEARNOPENGL_OPENGLBASE_H
+#endif //ANDROIDLEARNOPENGL_OPENGLSINGLESHADERBASE_H

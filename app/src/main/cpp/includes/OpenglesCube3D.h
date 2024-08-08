@@ -6,13 +6,13 @@
 #define ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 #endif //ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 
-#include "OpenGLBase.h"
+#include "OpenGLSingleShaderBase.h"
 #include <stb_image.h>
 
 
 using namespace std;
 
-class OpenglesCube3D : public OpenGLBase {
+class OpenglesCube3D : public OpenGLSingleShaderBase {
 
 private:
     unsigned int texture1;

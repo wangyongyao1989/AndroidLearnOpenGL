@@ -6,7 +6,7 @@
 #define ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 #endif //ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 
-#include "OpenGLBase.h"
+#include "OpenGLSingleShaderBase.h"
 #include <stb_image.h>
 
 
@@ -27,7 +27,7 @@ const glm::vec3 cubePositions[] = {
         glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
-class OpenglesMultiCube3D : public OpenGLBase {
+class OpenglesMultiCube3D : public OpenGLSingleShaderBase {
 
 private:
     unsigned int texture1;

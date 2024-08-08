@@ -6,7 +6,7 @@
 #define ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 #endif //ANDROIDLEARNOPENGL_OPENGLESFOUNDATION_H
 
-#include "OpenGLBase.h"
+#include "OpenGLSingleShaderBase.h"
 #include <stb_image.h>
 #include "Camera3D.h"
 
@@ -27,7 +27,7 @@ const vec3 cameraCubePositions[] = {
         vec3(-1.3f, 1.0f, -1.5f)
 };
 
-class OpenglesCamera3D : public OpenGLBase {
+class OpenglesCamera3D : public OpenGLSingleShaderBase {
 
 private:
     unsigned int texture1;
