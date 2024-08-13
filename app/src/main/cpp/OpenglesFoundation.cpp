@@ -53,7 +53,7 @@ bool OpenglesFoundation::setupGraphics(int w, int h) {
 //    gProgram = createProgram(gVertexShader, gFragmentShader);
     gProgram = createProgram(gVertexShaderCode, gFragmentShaderCode);
     if (!gProgram) {
-        LOGE("Could not create shaderProgram.");
+        LOGE("Could not create shaderId.");
         return false;
     }
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");

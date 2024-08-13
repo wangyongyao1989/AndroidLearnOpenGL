@@ -8,7 +8,21 @@ bool OpenglesLightCube::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
+    GLuint lightingProgram = lightingShader->createProgram();
+    if (!lightingProgram) {
+        LOGE("Could not create shaderId.");
+        return false;
+    }
+    GLuint lightingPositionHandle = glGetAttribLocation(lightingProgram, "gl_Position");
+    checkGlError("lightingProgram glGetAttribLocation");
 
+    GLuint lightCubeProgram = lightCubeShader->createProgram();
+    if (!lightCubeProgram) {
+        LOGE("Could not create shaderId.");
+        return false;
+    }
+    GLuint lightCubePositionHandle = glGetAttribLocation(lightCubeProgram, "gl_Position");
+    checkGlError("lightCubeProgram glGetAttribLocation");
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
     LOGI("glViewport successed!");
@@ -25,7 +39,7 @@ bool OpenglesLightCube::setupGraphics(int w, int h) {
 
     glBindVertexArray(cubeVAO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
 
@@ -34,7 +48,7 @@ bool OpenglesLightCube::setupGraphics(int w, int h) {
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
 
@@ -47,20 +61,20 @@ void OpenglesLightCube::renderFrame() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
     // be sure to activate shader when setting uniforms/drawing objects
-    glUseProgram(lightingShader);
-    setVec3(lightingShader, "objectColor", 1.0f, 0.5f, 0.31f);
-    setVec3(lightingShader, "lightColor", 1.0f, 1.0f, 1.0f);
+    lightingShader->use();
+    lightingShader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+    lightingShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
     glm::mat4 view = mCamera.GetViewMatrix();
-    setMat4(lightingShader, "projection", projection);
-    setMat4(lightingShader, "view", view);
+    lightingShader->setMat4("projection", projection);
+    lightingShader->setMat4("view", view);
 
     // world transformation
     glm::mat4 model = glm::mat4(1.0f);
-    setMat4(lightingShader,"model", model);
+    lightingShader->setMat4("model", model);
 
     // render the cube
     glBindVertexArray(cubeVAO);
@@ -68,13 +82,13 @@ void OpenglesLightCube::renderFrame() {
 
 
     // also draw the lamp object
-    glUseProgram(lightCubeShader);
-    setMat4(lightCubeShader, "projection", projection);
-    setMat4(lightCubeShader, "view", view);
+    lightCubeShader->use();
+    lightCubeShader->setMat4("projection", projection);
+    lightCubeShader->setMat4("view", view);
     model = glm::mat4(1.0f);
     model = glm::translate(model, lightPos);
     model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    setMat4(lightCubeShader, "model", model);
+    lightCubeShader->setMat4("model", model);
 
     glBindVertexArray(lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
@@ -82,15 +96,13 @@ void OpenglesLightCube::renderFrame() {
 }
 
 bool OpenglesLightCube::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    bool b = getSharderPath(vertexPath, fragmentPath);
-    lightingShader = createSharderProgram();
-    return b;
+    lightingShader->getSharderPath(vertexPath, fragmentPath);
+    return 0;
 }
 
 bool OpenglesLightCube::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
-    bool b = getSharderPath(vertexPath, fragmentPath);
-    lightCubeShader = createSharderProgram();
-    return b;
+    lightCubeShader->getSharderPath(vertexPath, fragmentPath);
+    return false;
 }
 
 void OpenglesLightCube::setPicPath(const char *pic1, const char *pic2) {
@@ -132,7 +144,8 @@ void OpenglesLightCube::setOnScale(float scaleFactor, float focusX, float focusY
 
 
 OpenglesLightCube::OpenglesLightCube() {
-
+    lightingShader = new OpenGLShader();
+    lightCubeShader = new OpenGLShader();
 }
 
 OpenglesLightCube::~OpenglesLightCube() {
@@ -144,12 +157,21 @@ OpenglesLightCube::~OpenglesLightCube() {
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
-    glDeleteProgram(lightingShader);
-    glDeleteProgram(lightCubeShader);
-
+    lightCubeShader = nullptr;
+    lightingShader = nullptr;
 
     colorVertexCode.clear();
     colorFragmentCode.clear();
 }
 
+void OpenglesLightCube::printGLString(const char *name, GLenum s) {
+    const char *v = (const char *) glGetString(s);
+    LOGI("OpenGL %s = %s\n", name, v);
+}
+
+void OpenglesLightCube::checkGlError(const char *op) {
+    for (GLint error = glGetError(); error; error = glGetError()) {
+        LOGI("after %s() glError (0x%x)\n", op, error);
+    }
+}
 

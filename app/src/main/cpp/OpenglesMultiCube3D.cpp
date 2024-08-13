@@ -12,7 +12,7 @@ bool OpenglesMultiCube3D::setupGraphics(int w, int h) {
     LOGI("gFragmentShaderCode :%s", gFragmentShaderCode);
     gProgram = createProgram(gVertexShaderCode, gFragmentShaderCode);
     if (!gProgram) {
-        LOGE("Could not create shaderProgram.");
+        LOGE("Could not create shaderId.");
         return false;
     }
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");

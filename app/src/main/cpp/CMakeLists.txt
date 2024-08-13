@@ -11,7 +11,6 @@ add_library(${CMAKE_PROJECT_NAME}
         native-lib.cpp
         OpenglesFoundation.cpp
         OpenGLSingleShaderBase.cpp
-        OpenGLMultiShaderBase.cpp
         OpenglesTexture.cpp
         OpenGLStdImage.cpp
         Opengles3D.cpp
@@ -20,6 +19,7 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenglesCamera3D.cpp
         Camera3D.cpp
         OpenglesLightCube.cpp
+        OpenGLShader.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
