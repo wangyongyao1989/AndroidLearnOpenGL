@@ -10,6 +10,7 @@
 #include "OpenglesLightCube.h"
 #include "OpenglesDiffuseReflectionLight.h"
 #include "OpenglesMirrorLight.h"
+#include "OpenglesMaterial.h"
 
 
 #define LOG_TAG "wy"
@@ -28,6 +29,7 @@ OpenglesCamera3D *openglCamera3D;
 OpenglesLightCube *openglLightCube;
 OpenglesDiffuseReflectionLight *diffuseReflectionLight;
 OpenglesMirrorLight *mirrorLight;
+OpenglesMaterial *material;
 
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -527,6 +529,81 @@ cpp_mirror_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX
     mirrorLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
+/*********************** GL材质 *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_material_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (material == nullptr)
+        material = new OpenglesMaterial();
+    material->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_material_render_frame(JNIEnv *env, jobject thiz) {
+    if (material == nullptr) return;
+    material->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_material_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                            jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (material == nullptr) {
+        material = new OpenglesMaterial();
+    }
+    material->setSharderPath(vertexPath, fragPath);
+
+    material->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_material_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                  jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (material == nullptr) {
+        material = new OpenglesMaterial();
+    }
+    material->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_material_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (material == nullptr) return;
+    material->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_material_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                    jfloat focusY,
+                    jint actionMode) {
+    if (material == nullptr) return;
+    material->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
+
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
@@ -605,7 +682,7 @@ static const JNINativeMethod methods[] = {
         {"native_diffuse_reflection_move_xy",             "(FFI)V",                (void *) cpp_diffuse_reflection_move_xy},
         {"native_diffuse_reflection_on_scale",            "(FFFI)V",               (void *) cpp_diffuse_reflection_on_scale},
 
-        //漫反射光照
+        //镜面光照
         {"native_mirror_init_opengl",                     "(II)Z",                 (void *) cpp_mirror_init_opengl},
         {"native_mirror_render_frame",                    "()V",                   (void *) cpp_mirror_render_frame},
         {"native_mirror_color_set_glsl_path",             "(Ljava/lang/String"
@@ -616,6 +693,20 @@ static const JNINativeMethod methods[] = {
                                                           ";Ljava/lang/String;)V", (void *) cpp_mirror_frag_vertex_path},
         {"native_mirror_move_xy",                         "(FFI)V",                (void *) cpp_mirror_move_xy},
         {"native_mirror_on_scale",                        "(FFFI)V",               (void *) cpp_mirror_on_scale},
+
+        //材质
+        {"native_material_init_opengl",                     "(II)Z",                 (void *) cpp_material_init_opengl},
+        {"native_material_render_frame",                    "()V",                   (void *) cpp_material_render_frame},
+        {"native_material_color_set_glsl_path",             "(Ljava/lang/String"
+                                                          ";Ljava/lang/String;)V", (void *) cpp_material_color_frag_vertex_path},
+        {"native_material_set_glsl_path",                   "(Ljava/lang/String"
+                                                          ";Ljava/lang/String"
+                                                          ";Ljava/lang/String"
+                                                          ";Ljava/lang/String;)V", (void *) cpp_material_frag_vertex_path},
+        {"native_material_move_xy",                         "(FFI)V",                (void *) cpp_material_move_xy},
+        {"native_material_on_scale",                        "(FFFI)V",               (void *) cpp_material_on_scale},
+
+
 };
 
 

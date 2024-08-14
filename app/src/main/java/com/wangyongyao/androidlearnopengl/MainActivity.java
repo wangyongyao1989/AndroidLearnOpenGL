@@ -16,6 +16,7 @@ import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
+import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
 import com.wangyongyao.androidlearnopengl.view.GLMirrorLightingView;
 
 public class MainActivity extends AppCompatActivity {
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn7;
     private Button mBtn8;
     private Button mBtn9;
+    private Button mBtn10;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,15 +101,21 @@ public class MainActivity extends AppCompatActivity {
         });
         mBtn8.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLDiffuseReflectionLightingView gl3DCameraView
+            GLDiffuseReflectionLightingView reflectionLightingView
                     = new GLDiffuseReflectionLightingView(getApplication(), mJniCall);
-            mGlShow1.addView(gl3DCameraView);
+            mGlShow1.addView(reflectionLightingView);
         });
         mBtn9.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLMirrorLightingView gl3DCameraView
+            GLMirrorLightingView glMirrorLightingView
                     = new GLMirrorLightingView(getApplication(), mJniCall);
-            mGlShow1.addView(gl3DCameraView);
+            mGlShow1.addView(glMirrorLightingView);
+        });
+        mBtn10.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLMaterialView glMaterialView
+                    = new GLMaterialView(getApplication(), mJniCall);
+            mGlShow1.addView(glMaterialView);
         });
 
 
@@ -128,6 +136,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn7 = mBinding.btn7;
         mBtn8 = mBinding.btn8;
         mBtn9 = mBinding.btn9;
+        mBtn10 = mBinding.btn10;
 
     }
 
