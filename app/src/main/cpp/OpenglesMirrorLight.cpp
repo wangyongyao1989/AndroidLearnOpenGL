@@ -63,6 +63,7 @@ void OpenglesMirrorLight::renderFrame() {
     lightColorShader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     lightColorShader->setVec3("lightPos", OpenglesMirrorLightLightPos);
+    lightColorShader->setVec3("viewPos", mCamera.Position);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),

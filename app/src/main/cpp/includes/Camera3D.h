@@ -28,7 +28,6 @@ class Camera3D {
 
 private:
     // camera Attributes
-    vec3 Position;
     vec3 Front;
     vec3 Up;
     vec3 Right;
@@ -45,6 +44,7 @@ private:
 
 public:
     float Zoom;
+    vec3 Position;
 
     // constructor with vectors
     Camera3D(
