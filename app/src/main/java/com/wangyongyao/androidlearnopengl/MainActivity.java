@@ -16,6 +16,7 @@ import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
+import com.wangyongyao.androidlearnopengl.view.GLMirrorLightingView;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn6;
     private Button mBtn7;
     private Button mBtn8;
+    private Button mBtn9;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,6 +103,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLDiffuseReflectionLightingView(getApplication(), mJniCall);
             mGlShow1.addView(gl3DCameraView);
         });
+        mBtn9.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLMirrorLightingView gl3DCameraView
+                    = new GLMirrorLightingView(getApplication(), mJniCall);
+            mGlShow1.addView(gl3DCameraView);
+        });
 
 
     }
@@ -119,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn6 = mBinding.btn6;
         mBtn7 = mBinding.btn7;
         mBtn8 = mBinding.btn8;
+        mBtn9 = mBinding.btn9;
 
     }
 

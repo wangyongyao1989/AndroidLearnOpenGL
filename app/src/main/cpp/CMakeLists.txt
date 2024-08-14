@@ -21,6 +21,8 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenglesLightCube.cpp
         OpenGLShader.cpp
         OpenglesDiffuseReflectionLight.cpp
+        OpenglesMirrorLight.cpp
+
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}

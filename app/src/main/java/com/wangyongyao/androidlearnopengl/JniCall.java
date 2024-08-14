@@ -233,5 +233,44 @@ public class JniCall {
 
     private native void native_diffuse_reflection_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
+    /**
+     * 镜面光照
+     */
+    public void setMirrorGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_mirror_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public void setMirrorColorGLSLPath(String fragString, String vertexString) {
+        native_mirror_color_set_glsl_path(fragString, vertexString);
+    }
+
+    public boolean initMirrorOpenGl(int w, int h) {
+        return native_mirror_init_opengl(w, h);
+    }
+
+    public void mirrorOpenGLRenderFrame() {
+        native_mirror_render_frame();
+    }
+
+    public void mirrorMoveXY(float dx, float dy, int action) {
+        native_mirror_move_xy(dx, dy, action);
+    }
+
+    public void mirrorOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_mirror_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_mirror_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native void native_mirror_color_set_glsl_path(String fragPath, String vertexPath);
+
+    private native boolean native_mirror_init_opengl(int width, int height);
+
+    private native void native_mirror_render_frame();
+
+    private native void native_mirror_move_xy(float dx, float dy, int action);
+
+    private native void native_mirror_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
 }
