@@ -16,7 +16,7 @@ using namespace glm;
 /**
 * 立方体
 */
-const float lightCubeVertices11[] = {
+const float lightCubeVertices[] = {
         -0.5f, -0.5f, -0.5f,
         0.5f, -0.5f, -0.5f,
         0.5f, 0.5f, -0.5f,
@@ -76,9 +76,6 @@ private:
     float lastX, lastY;
     int mActionMode;
 
-//    GLuint lightingShader;   //着色程序对象
-//    GLuint lightCubeShader;
-
     unsigned int VBO, VAO;
     unsigned int EBO;
     unsigned int cubeVAO;
@@ -91,7 +88,7 @@ private:
 
     // camera
     Camera3D mCamera;
-    OpenGLShader *lightingShader;
+    OpenGLShader *lightColorShader;
     OpenGLShader *lightCubeShader;
 
 public:
