@@ -44,10 +44,10 @@ public class GLDiffuseReflectionLightingView extends GLSurfaceView implements GL
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "light_cube_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "light_cube_shape_vertex.glsl");
-        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "light_color_fragment.glsl");
-        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "light_color_shape_vertex.glsl");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_reflection_cube_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_reflection_cube_vertex.glsl");
+        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_reflection_color_fragment.glsl");
+        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_reflection_color_vertex.glsl");
         String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 

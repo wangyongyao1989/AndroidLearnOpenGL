@@ -37,14 +37,16 @@ bool OpenglesDiffuseReflectionLight::setupGraphics(int w, int h) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(diffuseReflectionVertices), diffuseReflectionVertices, GL_STATIC_DRAW);
     glBindVertexArray(cubeVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(1);
 
     //绑定灯光立方体数据
     glGenVertexArrays(1, &lightCubeVAO);
     glBindVertexArray(lightCubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
 
@@ -58,8 +60,9 @@ void OpenglesDiffuseReflectionLight::renderFrame() {
 
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
-    lightColorShader->setVec3("objectColor", 0.0f, 0.0f, 1.0f);
+    lightColorShader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
     lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setVec3("lightPos", diffuseReflectionLightPos);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
@@ -83,7 +86,7 @@ void OpenglesDiffuseReflectionLight::renderFrame() {
     lightCubeShader->setMat4("view", view);
     model = glm::mat4(1.0f);
     model = glm::translate(model, diffuseReflectionLightPos);
-    model = glm::scale(model, glm::vec3(0.5f)); // a smaller cube
+    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
     lightCubeShader->setMat4("model", model);
 
     glBindVertexArray(lightCubeVAO);

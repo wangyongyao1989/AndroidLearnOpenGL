@@ -45,7 +45,7 @@ public class GLLightingView extends GLSurfaceView implements GLSurfaceView.Rende
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String fragPath = OpenGLUtil.getModelFilePath(mContext, "light_cube_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "light_cube_shape_vertex.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "light_cube_vertex.glsl");
         String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "light_color_fragment.glsl");
         String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "light_color_shape_vertex.glsl");
         String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
