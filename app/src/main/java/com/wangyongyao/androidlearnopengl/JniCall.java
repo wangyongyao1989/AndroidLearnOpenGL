@@ -184,6 +184,7 @@ public class JniCall {
             , String picSrc1, String picSrc2);
 
     private native void native_color_set_glsl_path(String fragPath, String vertexPath);
+
     private native boolean native_light_cube_init_opengl(int width, int height);
 
     private native void native_light_cube_render_frame();
@@ -191,5 +192,46 @@ public class JniCall {
     private native void native_light_cube_move_xy(float dx, float dy, int action);
 
     private native void native_light_cube_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+    /**
+     * 漫反射光照
+     */
+    public void setDiffuseReflectionGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_diffuse_reflection_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public void setDiffuseReflectionColorGLSLPath(String fragString, String vertexString) {
+        native_diffuse_reflection_color_set_glsl_path(fragString, vertexString);
+    }
+
+    public boolean initDiffuseReflectionOpenGl(int w, int h) {
+        return native_diffuse_reflection_init_opengl(w, h);
+    }
+
+    public void diffuseReflectionOpenGLRenderFrame() {
+        native_diffuse_reflection_render_frame();
+    }
+
+    public void diffuseReflectionMoveXY(float dx, float dy, int action) {
+        native_diffuse_reflection_move_xy(dx, dy, action);
+    }
+
+    public void diffuseReflectionOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_diffuse_reflection_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_diffuse_reflection_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native void native_diffuse_reflection_color_set_glsl_path(String fragPath, String vertexPath);
+
+    private native boolean native_diffuse_reflection_init_opengl(int width, int height);
+
+    private native void native_diffuse_reflection_render_frame();
+
+    private native void native_diffuse_reflection_move_xy(float dx, float dy, int action);
+
+    private native void native_diffuse_reflection_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
 
 }

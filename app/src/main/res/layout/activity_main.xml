@@ -70,12 +70,21 @@
         android:id="@+id/btn7"
         android:layout_width="90dp"
         android:layout_height="wrap_content"
-        android:text="GL光照场景"
-        android:textSize="10sp"
+        android:text="GL光照场景及环境光照"
+        android:textSize="8sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btn6"
         tools:ignore="HardcodedText,SmallSp" />
 
+    <Button
+        android:id="@+id/btn8"
+        android:layout_width="90dp"
+        android:layout_height="wrap_content"
+        android:text="漫反射光照"
+        android:textSize="10sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btn7"
+        tools:ignore="HardcodedText,SmallSp" />
 
     <FrameLayout
         android:id="@+id/gl_show"

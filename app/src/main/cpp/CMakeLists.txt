@@ -20,6 +20,7 @@ add_library(${CMAKE_PROJECT_NAME}
         Camera3D.cpp
         OpenglesLightCube.cpp
         OpenGLShader.cpp
+        OpenglesDiffuseReflectionLight.cpp
 )
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
