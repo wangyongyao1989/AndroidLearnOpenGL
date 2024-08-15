@@ -37,7 +37,7 @@ bool OpenglesMaterial::setupGraphics(int w, int h) {
     glBindVertexArray(cubeVAO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
     //绑定灯光立方体数据
@@ -58,10 +58,15 @@ void OpenglesMaterial::renderFrame() {
 
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
-    lightColorShader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
-    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    lightColorShader->setVec3("lightPos", OpenglesMaterialLightLightPos);
-    lightColorShader->setVec3("viewPos", mCamera.Position);
+//    lightColorShader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+//    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+//    lightColorShader->setVec3("lightPos", OpenglesMaterialLightLightPos);
+//    lightColorShader->setVec3("viewPos", mCamera.Position);
+
+    lightColorShader->setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
+    lightColorShader->setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+    lightColorShader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
+    lightColorShader->setFloat("material.shininess", 32.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
