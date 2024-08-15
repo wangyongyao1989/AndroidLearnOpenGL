@@ -313,6 +313,45 @@ public class JniCall {
 
     private native void native_material_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
+    /**
+     * 漫反射贴图
+     */
+    public void setDiffuseMapGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_diffuse_map_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public void setDiffuseMapColorGLSLPath(String fragString, String vertexString) {
+        native_diffuse_map_color_set_glsl_path(fragString, vertexString);
+    }
+
+    public boolean initDiffuseMapOpenGl(int w, int h) {
+        return native_diffuse_map_init_opengl(w, h);
+    }
+
+    public void diffuseMapOpenGLRenderFrame() {
+        native_diffuse_map_render_frame();
+    }
+
+    public void diffuseMapMoveXY(float dx, float dy, int action) {
+        native_diffuse_map_move_xy(dx, dy, action);
+    }
+
+    public void diffuseMapOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_diffuse_map_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_diffuse_map_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native void native_diffuse_map_color_set_glsl_path(String fragPath, String vertexPath);
+
+    private native boolean native_diffuse_map_init_opengl(int width, int height);
+
+    private native void native_diffuse_map_render_frame();
+
+    private native void native_diffuse_map_move_xy(float dx, float dy, int action);
+
+    private native void native_diffuse_map_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
 
 }

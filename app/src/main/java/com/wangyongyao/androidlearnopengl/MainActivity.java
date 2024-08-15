@@ -14,6 +14,7 @@ import com.wangyongyao.androidlearnopengl.view.GL3DMultiCubeView;
 import com.wangyongyao.androidlearnopengl.view.GL3DView;
 import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
+import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
@@ -36,6 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn8;
     private Button mBtn9;
     private Button mBtn10;
+    private Button mBtn11;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLMaterialView(getApplication(), mJniCall);
             mGlShow1.addView(glMaterialView);
         });
+        mBtn11.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLDiffuseMapView glDiffuseMap
+                    = new GLDiffuseMapView(getApplication(), mJniCall);
+            mGlShow1.addView(glDiffuseMap);
+        });
 
 
     }
@@ -137,6 +145,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn8 = mBinding.btn8;
         mBtn9 = mBinding.btn9;
         mBtn10 = mBinding.btn10;
+        mBtn11 = mBinding.btn11;
 
     }
 

@@ -23,6 +23,7 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenglesDiffuseReflectionLight.cpp
         OpenglesMirrorLight.cpp
         OpenglesMaterial.cpp
+        OpenglesDiffuseMap.cpp
 
 )
 
