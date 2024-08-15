@@ -62,7 +62,11 @@ void OpenglesMaterial::renderFrame() {
     lightColorShader->use();
 
 //    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    vec3 lightColor(2.0f, 0.7f, 1.3f);
+    double timeValue = clock() * 8 / CLOCKS_PER_SEC;
+    vec3 lightColor;
+    lightColor.x = sin(timeValue * 2.0f);
+    lightColor.y = sin(timeValue * 0.7f);
+    lightColor.z = sin(timeValue * 1.3f);
     vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
     vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
     lightColorShader->setVec3("light.ambient", ambientColor);
@@ -80,6 +84,8 @@ void OpenglesMaterial::renderFrame() {
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
+    vec3 cameraMove(0.0f, 0.0f, 5.0f);
+    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     lightColorShader->setMat4("projection", projection);
     lightColorShader->setMat4("view", view);

@@ -69,6 +69,8 @@ void OpenglesDiffuseReflectionLight::renderFrame() {
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
+    vec3 cameraMove(0.0f, 0.0f, 5.0f);
+    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     lightColorShader->setMat4("projection", projection);
     lightColorShader->setMat4("view", view);
