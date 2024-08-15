@@ -56,12 +56,21 @@ void OpenglesMaterial::renderFrame() {
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
 
+    //开启深度测试
+    glEnable(GL_DEPTH_TEST);
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
-//    lightColorShader->setVec3("objectColor", 1.0f, 0.5f, 0.31f);
+
 //    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-//    lightColorShader->setVec3("lightPos", OpenglesMaterialLightLightPos);
-//    lightColorShader->setVec3("viewPos", mCamera.Position);
+    vec3 lightColor(2.0f, 0.7f, 1.3f);
+    vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
+    vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
+    lightColorShader->setVec3("light.ambient", ambientColor);
+    lightColorShader->setVec3("light.diffuse", diffuseColor);
+    lightColorShader->setVec3("light.specular", 1.0f, 1.0f, 1.0f);
+
+    lightColorShader->setVec3("light.position", OpenglesMaterialLightLightPos);
+    lightColorShader->setVec3("viewPos", mCamera.Position);
 
     lightColorShader->setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
     lightColorShader->setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
