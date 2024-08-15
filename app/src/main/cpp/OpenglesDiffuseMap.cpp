@@ -125,12 +125,10 @@ bool OpenglesDiffuseMap::setColorSharderPath(const char *vertexPath, const char 
 }
 
 void OpenglesDiffuseMap::setPicPath(const char *pic1, const char *pic2) {
-    LOGI("setPicPath pic1==%s", pic1);
-    LOGI("setPicPath pic2==%s", pic2);
-    // load image, create texture and generate mipmaps
-    data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
-    data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
-
+    picSrc1 = pic1;
+    picSrc2 = pic2;
+    LOGI("setPicPath picSrc1==%s", picSrc1);
+    LOGI("setPicPath picSrc2==%s", picSrc2);
 }
 
 void OpenglesDiffuseMap::setMoveXY(float dx, float dy, int actionMode) {
@@ -169,9 +167,8 @@ OpenglesDiffuseMap::OpenglesDiffuseMap() {
 
 OpenglesDiffuseMap::~OpenglesDiffuseMap() {
     texture1 = 0;
-    data1 = nullptr;
-    data2 = nullptr;
-
+    picSrc1 = nullptr;
+    picSrc2 = nullptr;
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -192,5 +189,43 @@ void OpenglesDiffuseMap::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
+}
+
+/**
+ * 加载纹理
+ * @param path
+ * @return
+ */
+int OpenglesDiffuseMap::loadTexture(const char *path) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+
+    int width, height, nrComponents;
+    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    if (data) {
+        GLenum format;
+        if (nrComponents == 1)
+            format = GL_RED;
+        else if (nrComponents == 3)
+            format = GL_RGB;
+        else if (nrComponents == 4)
+            format = GL_RGBA;
+
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+        stbi_image_free(data);
+    } else {
+        checkGlError("Texture failed to load at path: ");
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
 

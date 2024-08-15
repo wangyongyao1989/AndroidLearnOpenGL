@@ -64,8 +64,8 @@ class OpenglesDiffuseMap {
 private:
     unsigned int texture1;
     unsigned int texture2;
-    unsigned char *data1;
-    unsigned char *data2;
+    const char *picSrc1;
+    const char *picSrc2;
     int screenW, screenH;
     int width1, height1, nrChannels1;
     int width2, height2, nrChannels2;
@@ -111,5 +111,7 @@ public:
     void printGLString(const char *name, GLenum s);
 
     void checkGlError(const char *op);
+
+    int loadTexture(char const *path);
 };
 

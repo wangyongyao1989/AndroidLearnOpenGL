@@ -44,11 +44,11 @@ public class GLDiffuseMapView extends GLSurfaceView implements GLSurfaceView.Ren
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "material_cube_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "material_cube_vertex.glsl");
-        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "material_color_fragment.glsl");
-        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "material_color_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_cube_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_cube_vertex.glsl");
+        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_color_fragment.glsl");
+        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_color_vertex.glsl");
+        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_container2.jpg");
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
