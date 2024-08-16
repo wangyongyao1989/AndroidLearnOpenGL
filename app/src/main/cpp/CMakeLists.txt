@@ -26,6 +26,7 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenglesDiffuseMap.cpp
         OpenglesSpecularMap.cpp
         OpenglesDirectionLight.cpp
+        OpenglesAttenuationLight.cpp
 
 )
 

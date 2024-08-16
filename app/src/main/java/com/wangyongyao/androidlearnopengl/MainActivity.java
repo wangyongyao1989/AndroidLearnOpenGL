@@ -13,6 +13,7 @@ import com.wangyongyao.androidlearnopengl.view.GL3DMultiCubeView;
 import com.wangyongyao.androidlearnopengl.view.GL3DView;
 import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
+import com.wangyongyao.androidlearnopengl.view.GLAttenuationLightView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLDirectionalLightView;
@@ -41,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn11;
     private Button mBtn12;
     private Button mBtn13;
+    private Button mBtn14;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -140,6 +142,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLDirectionalLightView(getApplication(), mJniCall);
             mGlShow1.addView(glDirectionalLight);
         });
+        mBtn14.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLAttenuationLightView glAttenuationLight
+                    = new GLAttenuationLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glAttenuationLight);
+        });
 
 
     }
@@ -163,6 +171,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn11 = mBinding.btn11;
         mBtn12 = mBinding.btn12;
         mBtn13 = mBinding.btn13;
+        mBtn14 = mBinding.btn14;
 
     }
 

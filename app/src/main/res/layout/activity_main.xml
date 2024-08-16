@@ -136,6 +136,16 @@
         app:layout_constraintStart_toEndOf="@id/btn1"
         app:layout_constraintTop_toBottomOf="@id/btn12"
         tools:ignore="HardcodedText,SmallSp" />
+    <Button
+        android:id="@+id/btn14"
+        android:layout_width="90dp"
+        android:layout_height="40dp"
+        android:text="GL点光源衰减"
+        android:textSize="8sp"
+        android:layout_marginStart="5dp"
+        app:layout_constraintStart_toEndOf="@id/btn1"
+        app:layout_constraintTop_toBottomOf="@id/btn13"
+        tools:ignore="HardcodedText,SmallSp" />
 
     <FrameLayout
         android:id="@+id/gl_show"
