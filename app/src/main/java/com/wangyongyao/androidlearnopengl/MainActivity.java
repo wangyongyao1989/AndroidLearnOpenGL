@@ -18,6 +18,7 @@ import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
+import com.wangyongyao.androidlearnopengl.view.GLSpecularMapView;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -37,6 +38,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn9;
     private Button mBtn10;
     private Button mBtn11;
+    private Button mBtn12;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,6 +126,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLDiffuseMapView(getApplication(), mJniCall);
             mGlShow1.addView(glDiffuseMap);
         });
+        mBtn12.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSpecularMapView glSpecularMap
+                    = new GLSpecularMapView(getApplication(), mJniCall);
+            mGlShow1.addView(glSpecularMap);
+        });
 
 
     }
@@ -145,6 +153,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn9 = mBinding.btn9;
         mBtn10 = mBinding.btn10;
         mBtn11 = mBinding.btn11;
+        mBtn12 = mBinding.btn12;
 
     }
 
