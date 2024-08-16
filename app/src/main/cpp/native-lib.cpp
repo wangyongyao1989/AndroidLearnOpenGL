@@ -13,6 +13,7 @@
 #include "OpenglesMaterial.h"
 #include "OpenglesDiffuseMap.h"
 #include "OpenglesSpecularMap.h"
+#include "OpenglesDirectionLight.h"
 
 
 #define LOG_TAG "wy"
@@ -34,7 +35,7 @@ OpenglesSpecularLight *specularLight;
 OpenglesMaterial *material;
 OpenglesDiffuseMap *diffuseMap;
 OpenglesSpecularMap *specularMap;
-
+OpenglesDirectionLight *directionLight;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -759,6 +760,81 @@ cpp_specular_map_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat 
     specularMap->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
+/*********************** GL平行光*********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_direction_light_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (directionLight == nullptr)
+        directionLight = new OpenglesDirectionLight();
+    directionLight->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_direction_light_render_frame(JNIEnv *env, jobject thiz) {
+    if (directionLight == nullptr) return;
+    directionLight->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_direction_light_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                  jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (directionLight == nullptr) {
+        directionLight = new OpenglesDirectionLight();
+    }
+    directionLight->setSharderPath(vertexPath, fragPath);
+
+    directionLight->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_direction_light_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                        jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (directionLight == nullptr) {
+        directionLight = new OpenglesDirectionLight();
+    }
+    directionLight->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_direction_light_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (directionLight == nullptr) return;
+    directionLight->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_direction_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                          jfloat focusY,
+                          jint actionMode) {
+    if (directionLight == nullptr) return;
+    directionLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
+
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
         {"stringFromJNI",                                 "()Ljava/lang/String;",  (std::string *) cpp_stringFromJNI},
@@ -884,6 +960,17 @@ static const JNINativeMethod methods[] = {
         {"native_specular_map_move_xy",                         "(FFI)V",                (void *) cpp_specular_map_move_xy},
         {"native_specular_map_on_scale",                        "(FFFI)V",               (void *) cpp_specular_map_on_scale},
 
+        //平行光
+        {"native_direction_light_init_opengl",                     "(II)Z",                 (void *) cpp_direction_light_init_opengl},
+        {"native_direction_light_render_frame",                    "()V",                   (void *) cpp_direction_light_render_frame},
+        {"native_direction_light_color_set_glsl_path",             "(Ljava/lang/String"
+                                                                ";Ljava/lang/String;)V", (void *) cpp_direction_light_color_frag_vertex_path},
+        {"native_direction_light_set_glsl_path",                   "(Ljava/lang/String"
+                                                                ";Ljava/lang/String"
+                                                                ";Ljava/lang/String"
+                                                                ";Ljava/lang/String;)V", (void *) cpp_direction_light_frag_vertex_path},
+        {"native_direction_light_move_xy",                         "(FFI)V",                (void *) cpp_direction_light_move_xy},
+        {"native_direction_light_on_scale",                        "(FFFI)V",               (void *) cpp_direction_light_on_scale},
 };
 
 

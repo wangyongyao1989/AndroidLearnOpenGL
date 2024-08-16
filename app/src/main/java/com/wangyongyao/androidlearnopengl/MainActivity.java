@@ -39,6 +39,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn10;
     private Button mBtn11;
     private Button mBtn12;
+    private Button mBtn13;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +133,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLSpecularMapView(getApplication(), mJniCall);
             mGlShow1.addView(glSpecularMap);
         });
+        mBtn13.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSpecularMapView glSpecularMap
+                    = new GLSpecularMapView(getApplication(), mJniCall);
+            mGlShow1.addView(glSpecularMap);
+        });
 
 
     }
@@ -154,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn10 = mBinding.btn10;
         mBtn11 = mBinding.btn11;
         mBtn12 = mBinding.btn12;
+        mBtn13 = mBinding.btn13;
 
     }
 
