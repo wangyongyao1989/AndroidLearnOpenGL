@@ -35,18 +35,38 @@ bool OpenglesDiffuseMap::setupGraphics(int w, int h) {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(DiffuseMapVertices), DiffuseMapVertices, GL_STATIC_DRAW);
     glBindVertexArray(cubeVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
                           (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void *) (6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     //绑定灯光立方体数据
     glGenVertexArrays(1, &lightCubeVAO);
     glBindVertexArray(lightCubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
+
+    // load and create a texture
+    LOGI("load and create a texture!");
+    GLenum format;
+    if (nrChannels1 == 1) {
+        format = GL_RED;
+    } else if (nrChannels1 == 3) {
+        format = GL_RGB;
+    } else if (nrChannels1 == 4) {
+        format = GL_RGBA;
+    }
+//    LOGI("texture1 format==%d", format);
+    if (data1)
+        texture1 = loadTexture(data1, width1, height1, format);
+
+    lightColorShader->use();
+    lightColorShader->setInt("material.diffuse", 0);
 
 
     return true;
@@ -62,25 +82,17 @@ void OpenglesDiffuseMap::renderFrame() {
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
 
-//    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    double timeValue = clock() * 8 / CLOCKS_PER_SEC;
-    vec3 lightColor;
-    lightColor.x = sin(timeValue * 2.0f);
-    lightColor.y = sin(timeValue * 0.7f);
-    lightColor.z = sin(timeValue * 1.3f);
-    vec3 diffuseColor = lightColor * glm::vec3(0.5f); // decrease the influence
-    vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
-    lightColorShader->setVec3("light.ambient", ambientColor);
-    lightColorShader->setVec3("light.diffuse", diffuseColor);
-    lightColorShader->setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
     lightColorShader->setVec3("light.position", DiffuseMapLightPos);
     lightColorShader->setVec3("viewPos", mCamera.Position);
 
-    lightColorShader->setVec3("material.ambient", 1.0f, 0.5f, 0.31f);
-    lightColorShader->setVec3("material.diffuse", 1.0f, 0.5f, 0.31f);
+    // light properties
+    lightColorShader->setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
+    lightColorShader->setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+    lightColorShader->setVec3("light.specular", 0.5f, 0.5f, 0.5f);
+
+    // material properties
     lightColorShader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-    lightColorShader->setFloat("material.shininess", 32.0f);
+    lightColorShader->setFloat("material.shininess", 64.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
@@ -91,9 +103,14 @@ void OpenglesDiffuseMap::renderFrame() {
     lightColorShader->setMat4("projection", projection);
     lightColorShader->setMat4("view", view);
 
+    // world transformation
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, glm::radians(45.0f), DiffuseMapLightPos);
     lightColorShader->setMat4("model", model);
+
+    // bind diffuse map
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, texture1);
 
     // render the cube
     glBindVertexArray(cubeVAO);
@@ -125,10 +142,10 @@ bool OpenglesDiffuseMap::setColorSharderPath(const char *vertexPath, const char 
 }
 
 void OpenglesDiffuseMap::setPicPath(const char *pic1, const char *pic2) {
-    picSrc1 = pic1;
-    picSrc2 = pic2;
-    LOGI("setPicPath picSrc1==%s", picSrc1);
-    LOGI("setPicPath picSrc2==%s", picSrc2);
+    LOGI("setPicPath pic1==%s", pic1);
+    LOGI("setPicPath pic2==%s", pic2);
+    data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
+    data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
 }
 
 void OpenglesDiffuseMap::setMoveXY(float dx, float dy, int actionMode) {
@@ -167,14 +184,22 @@ OpenglesDiffuseMap::OpenglesDiffuseMap() {
 
 OpenglesDiffuseMap::~OpenglesDiffuseMap() {
     texture1 = 0;
-    picSrc1 = nullptr;
-    picSrc2 = nullptr;
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
     glDeleteBuffers(1, &EBO);
     lightCubeShader = nullptr;
     lightColorShader = nullptr;
+
+    if (data1) {
+        stbi_image_free(data1);
+        data1 = nullptr;
+    }
+
+    if (data2) {
+        stbi_image_free(data2);
+        data2 = nullptr;
+    }
 
     colorVertexCode.clear();
     colorFragmentCode.clear();
@@ -196,30 +221,18 @@ void OpenglesDiffuseMap::checkGlError(const char *op) {
  * @param path
  * @return
  */
-int OpenglesDiffuseMap::loadTexture(const char *path) {
+int OpenglesDiffuseMap::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
-
-    int width, height, nrComponents;
-    unsigned char *data = stbi_load(path, &width, &height, &nrComponents, 0);
+    LOGI("loadTexture format =%d", format);
     if (data) {
-        GLenum format;
-        if (nrComponents == 1)
-            format = GL_RED;
-        else if (nrComponents == 3)
-            format = GL_RGB;
-        else if (nrComponents == 4)
-            format = GL_RGBA;
-
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
-
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
         stbi_image_free(data);
     } else {
         checkGlError("Texture failed to load at path: ");
