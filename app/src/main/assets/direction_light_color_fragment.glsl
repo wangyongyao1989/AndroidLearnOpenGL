@@ -10,8 +10,8 @@ struct Material {
 };
 
 struct Light {
-    vec3 position;
-
+    //vec3 position;  //使用定向光就不再需要了
+    vec3 direction;
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
@@ -32,7 +32,8 @@ void main()
 
     // diffuse
     vec3 norm = normalize(Normal);
-    vec3 lightDir = normalize(light.position - FragPos);
+    //光照计算需求一个从片段至光源的光线方向
+    vec3 lightDir = normalize(-light.direction);
     float diff = max(dot(norm, lightDir), 0.0);
     //材质和纹理的漫反射光照的结合
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;

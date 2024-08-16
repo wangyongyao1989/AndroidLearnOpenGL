@@ -94,7 +94,9 @@ void OpenglesDirectionLight::renderFrame() {
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
 
-    lightColorShader->setVec3("light.position", DirectionLightLightPos);
+//    lightColorShader->setVec3("light.position", DirectionLightLightPos);
+
+    lightColorShader->setVec3("light.direction", -0.2f, -1.0f, -0.3f);
     lightColorShader->setVec3("viewPos", mCamera.Position);
 
     // light properties
@@ -128,12 +130,25 @@ void OpenglesDirectionLight::renderFrame() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, specularMapTexture);
 
-    // render the cube
+/*    // render the cube
     glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glDrawArrays(GL_TRIANGLES, 0, 36);*/
+
+    // render containers
+    glBindVertexArray(cubeVAO);
+    for (unsigned int i = 0; i < 10; i++)
+    {
+        // calculate the model matrix for each object and pass it to shader before drawing
+        glm::mat4 model = glm::mat4(1.0f);
+        model = glm::translate(model, DirectionLightCubePositions[i]);
+        float angle = 20.0f * i;
+        model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+        lightColorShader->setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
 
 
-    // also draw the lamp object
+ /*   // also draw the lamp object
     lightCubeShader->use();
     lightCubeShader->setMat4("projection", projection);
     lightCubeShader->setMat4("view", view);
@@ -144,7 +159,7 @@ void OpenglesDirectionLight::renderFrame() {
 
     glBindVertexArray(lightCubeVAO);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    checkGlError("glDrawArrays");
+    checkGlError("glDrawArrays");*/
 }
 
 bool OpenglesDirectionLight::setSharderPath(const char *vertexPath, const char *fragmentPath) {

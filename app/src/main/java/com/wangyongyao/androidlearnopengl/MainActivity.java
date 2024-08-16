@@ -15,6 +15,7 @@ import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
+import com.wangyongyao.androidlearnopengl.view.GLDirectionalLightView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
@@ -135,9 +136,9 @@ public class MainActivity extends AppCompatActivity {
         });
         mBtn13.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLSpecularMapView glSpecularMap
-                    = new GLSpecularMapView(getApplication(), mJniCall);
-            mGlShow1.addView(glSpecularMap);
+            GLDirectionalLightView glDirectionalLight
+                    = new GLDirectionalLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glDirectionalLight);
         });
 
 
