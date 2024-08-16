@@ -20,6 +20,7 @@ import com.wangyongyao.androidlearnopengl.view.GLDirectionalLightView;
 import com.wangyongyao.androidlearnopengl.view.GLFlashLightView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
+import com.wangyongyao.androidlearnopengl.view.GLMultiLightView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularMapView;
 import com.wangyongyao.androidlearnopengl.view.GLSpotLightView;
@@ -167,9 +168,9 @@ public class MainActivity extends AppCompatActivity {
         });
         mBtn17.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLSpotLightView glSpotLightView
-                    = new GLSpotLightView(getApplication(), mJniCall);
-            mGlShow1.addView(glSpotLightView);
+            GLMultiLightView glMultiLightView
+                    = new GLMultiLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glMultiLightView);
         });
 
 

@@ -73,6 +73,14 @@ const vec3 MultiLightCubePositions[] = {
         glm::vec3(-1.3f,  1.0f, -1.5f)
 };
 
+// positions of the point lights
+const vec3 pointLightPositions[] = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+};
+
 class OpenglesMultiLight {
 
 private:
