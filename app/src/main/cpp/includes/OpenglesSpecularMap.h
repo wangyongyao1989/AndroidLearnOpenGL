@@ -63,8 +63,8 @@ const vec3 SpecularMapLightPos(1.2f, 1.0f, 2.0f);
 class OpenglesSpecularMap {
 
 private:
-    unsigned int texture1;
-    unsigned int texture2;
+    unsigned int diffuseMapTexture;
+    unsigned int specularMapTexture;
     unsigned char *data1 = nullptr;
     unsigned char *data2 = nullptr;
     int screenW, screenH;

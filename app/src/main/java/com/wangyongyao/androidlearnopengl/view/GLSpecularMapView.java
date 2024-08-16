@@ -48,8 +48,8 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
         String vertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_cube_vertex.glsl");
         String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_color_fragment.glsl");
         String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_color_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "specular_container2.png");
-        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
+        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
+        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "specular_container2.png");
 
         if (mJniCall != null) {
             mJniCall.setSpecularMapGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);

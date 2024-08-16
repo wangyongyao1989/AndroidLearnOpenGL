@@ -4,6 +4,8 @@ precision mediump float;
 out vec4 FragColor;
 
 struct Material {
+    //sampler2D是所谓的不透明类型(Opaque Type)，也就是说我们不能将它实例化，
+    //只能通过uniform来定义它
     sampler2D diffuse;
     vec3 specular;
     float shininess;
@@ -27,13 +29,14 @@ uniform Light light;
 
 void main()
 {
-    // ambient
+    // ambient 材质和纹理的环境光照的结合
     vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
 
     // diffuse
     vec3 norm = normalize(Normal);
     vec3 lightDir = normalize(light.position - FragPos);
     float diff = max(dot(norm, lightDir), 0.0);
+    //材质和纹理的漫反射光照的结合
     vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
 
     // specular

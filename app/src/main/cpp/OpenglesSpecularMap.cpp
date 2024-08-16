@@ -62,12 +62,24 @@ bool OpenglesSpecularMap::setupGraphics(int w, int h) {
         format = GL_RGBA;
     }
 //    LOGI("texture1 format==%d", format);
-    if (data1)
-        texture1 = loadTexture(data1, width1, height1, format);
+    if (data1) {
+        diffuseMapTexture = loadTexture(data1, width1, height1, format);
+    }
+
+    if (nrChannels2 == 1) {
+        format = GL_RED;
+    } else if (nrChannels2 == 3) {
+        format = GL_RGB;
+    } else if (nrChannels2 == 4) {
+        format = GL_RGBA;
+    }
+    if (data2) {
+        specularMapTexture = loadTexture(data2, width2, height2, format);
+    }
 
     lightColorShader->use();
     lightColorShader->setInt("material.diffuse", 0);
-
+    lightColorShader->setInt("material.specular", 1);
 
     return true;
 }
@@ -110,7 +122,11 @@ void OpenglesSpecularMap::renderFrame() {
 
     // bind diffuse map
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, texture1);
+    glBindTexture(GL_TEXTURE_2D, diffuseMapTexture);
+
+    // bind specular map
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMapTexture);
 
     // render the cube
     glBindVertexArray(cubeVAO);
@@ -183,7 +199,8 @@ OpenglesSpecularMap::OpenglesSpecularMap() {
 }
 
 OpenglesSpecularMap::~OpenglesSpecularMap() {
-    texture1 = 0;
+    diffuseMapTexture = 0;
+    specularMapTexture = 0;
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
