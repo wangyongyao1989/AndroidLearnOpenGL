@@ -29,6 +29,7 @@ add_library(${CMAKE_PROJECT_NAME}
         OpenglesAttenuationLight.cpp
         OpenglesFlashLight.cpp
         OpenglesSpotLight.cpp
+        OpenglesMultiLight.cpp
 
 )
 

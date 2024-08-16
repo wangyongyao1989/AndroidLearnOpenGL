@@ -412,4 +412,34 @@ public class JniCall {
     private native void native_spot_light_move_xy(float dx, float dy, int action);
     private native void native_spot_light_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
+    /**
+     * 多光源
+     */
+    public void setMultiLightGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_multi_light_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+    public void setMultiLightColorGLSLPath(String fragString, String vertexString) {
+        native_multi_light_color_set_glsl_path(fragString, vertexString);
+    }
+    public boolean initMultiLightOpenGl(int w, int h) {
+        return native_multi_light_init_opengl(w, h);
+    }
+    public void multiLightOpenGLRenderFrame() {
+        native_multi_light_render_frame();
+    }
+    public void multiLightMoveXY(float dx, float dy, int action) {
+        native_multi_light_move_xy(dx, dy, action);
+    }
+    public void multiLightOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_multi_light_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_multi_light_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+    private native void native_multi_light_color_set_glsl_path(String fragPath, String vertexPath);
+    private native boolean native_multi_light_init_opengl(int width, int height);
+    private native void native_multi_light_render_frame();
+    private native void native_multi_light_move_xy(float dx, float dy, int action);
+    private native void native_multi_light_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
 }

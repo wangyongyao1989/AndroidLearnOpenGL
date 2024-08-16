@@ -47,6 +47,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn14;
     private Button mBtn15;
     private Button mBtn16;
+    private Button mBtn17;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -164,6 +165,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLSpotLightView(getApplication(), mJniCall);
             mGlShow1.addView(glSpotLightView);
         });
+        mBtn17.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSpotLightView glSpotLightView
+                    = new GLSpotLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glSpotLightView);
+        });
 
 
 
@@ -191,6 +198,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn14 = mBinding.btn14;
         mBtn15 = mBinding.btn15;
         mBtn16 = mBinding.btn16;
+        mBtn17 = mBinding.btn17;
 
     }
 

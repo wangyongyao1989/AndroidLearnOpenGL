@@ -17,6 +17,7 @@
 #include "OpenglesAttenuationLight.h"
 #include "OpenglesFlashLight.h"
 #include "OpenglesSpotLight.h"
+#include "OpenglesMultiLight.h"
 
 
 #define LOG_TAG "wy"
@@ -42,6 +43,7 @@ OpenglesDirectionLight *directionLight;
 OpenglesAttenuationLight *attenuationLight;
 OpenglesFlashLight *flashLight;
 OpenglesSpotLight *spotLight;
+OpenglesMultiLight *multiLight;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -1067,7 +1069,80 @@ cpp_spot_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
     spotLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
+/*********************** GL 多光源*******************/
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_multi_light_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (multiLight == nullptr)
+        multiLight = new OpenglesMultiLight();
+    multiLight->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_light_render_frame(JNIEnv *env, jobject thiz) {
+    if (multiLight == nullptr) return;
+    multiLight->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_light_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (multiLight == nullptr) {
+        multiLight = new OpenglesMultiLight();
+    }
+    multiLight->setSharderPath(vertexPath, fragPath);
+
+    multiLight->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_light_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                      jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (multiLight == nullptr) {
+        multiLight = new OpenglesMultiLight();
+    }
+    multiLight->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_light_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (multiLight == nullptr) return;
+    multiLight->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_multi_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                        jfloat focusY,
+                        jint actionMode) {
+    if (multiLight == nullptr) return;
+    multiLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 
 
@@ -1247,6 +1322,18 @@ static const JNINativeMethod methods[] = {
         {"native_spot_light_move_xy",              "(FFI)V",                (void *) cpp_spot_light_move_xy},
         {"native_spot_light_on_scale",             "(FFFI)V",               (void *) cpp_spot_light_on_scale},
 
+
+        //多光源
+        {"native_multi_light_init_opengl",          "(II)Z",                 (void *) cpp_multi_light_init_opengl},
+        {"native_multi_light_render_frame",         "()V",                   (void *) cpp_multi_light_render_frame},
+        {"native_multi_light_color_set_glsl_path",  "(Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_multi_light_color_frag_vertex_path},
+        {"native_multi_light_set_glsl_path",        "(Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_multi_light_frag_vertex_path},
+        {"native_multi_light_move_xy",              "(FFI)V",                (void *) cpp_multi_light_move_xy},
+        {"native_multi_light_on_scale",             "(FFFI)V",               (void *) cpp_multi_light_on_scale},
 };
 
 
