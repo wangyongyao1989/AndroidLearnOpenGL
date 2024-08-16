@@ -9,8 +9,10 @@
 #include "OpenglesCamera3D.h"
 #include "OpenglesLightCube.h"
 #include "OpenglesDiffuseReflectionLight.h"
-#include "OpenglesMirrorLight.h"
+#include "OpenglesSpecularLight.h"
 #include "OpenglesMaterial.h"
+#include "OpenglesDiffuseMap.h"
+#include "OpenglesSpecularMap.h"
 
 
 #define LOG_TAG "wy"
@@ -28,8 +30,10 @@ OpenglesMultiCube3D *openglMultiCube3D;
 OpenglesCamera3D *openglCamera3D;
 OpenglesLightCube *openglLightCube;
 OpenglesDiffuseReflectionLight *diffuseReflectionLight;
-OpenglesMirrorLight *mirrorLight;
+OpenglesSpecularLight *specularLight;
 OpenglesMaterial *material;
+OpenglesDiffuseMap *diffuseMap;
+OpenglesSpecularMap *specularMap;
 
 
 extern "C" JNIEXPORT jstring JNICALL
@@ -458,36 +462,36 @@ cpp_diffuse_reflection_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, j
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-cpp_mirror_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
-    if (mirrorLight == nullptr)
-        mirrorLight = new OpenglesMirrorLight();
-    mirrorLight->setupGraphics(width, height);
+cpp_specular_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (specularLight == nullptr)
+        specularLight = new OpenglesSpecularLight();
+    specularLight->setupGraphics(width, height);
     return 0;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_mirror_render_frame(JNIEnv *env, jobject thiz) {
-    if (mirrorLight == nullptr) return;
-    mirrorLight->renderFrame();
+cpp_specular_render_frame(JNIEnv *env, jobject thiz) {
+    if (specularLight == nullptr) return;
+    specularLight->renderFrame();
 
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_mirror_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+cpp_specular_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                                         jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
-    if (mirrorLight == nullptr) {
-        mirrorLight = new OpenglesMirrorLight();
+    if (specularLight == nullptr) {
+        specularLight = new OpenglesSpecularLight();
     }
-    mirrorLight->setSharderPath(vertexPath, fragPath);
+    specularLight->setSharderPath(vertexPath, fragPath);
 
-    mirrorLight->setPicPath(picsrc1Path, picsrc2Path);
+    specularLight->setPicPath(picsrc1Path, picsrc2Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
@@ -498,15 +502,15 @@ cpp_mirror_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring ver
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_mirror_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+cpp_specular_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
                                               jstring vertex) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
 
-    if (mirrorLight == nullptr) {
-        mirrorLight = new OpenglesMirrorLight();
+    if (specularLight == nullptr) {
+        specularLight = new OpenglesSpecularLight();
     }
-    mirrorLight->setColorSharderPath(vertexPath, fragPath);
+    specularLight->setColorSharderPath(vertexPath, fragPath);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
@@ -515,18 +519,18 @@ cpp_mirror_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_mirror_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
-    if (mirrorLight == nullptr) return;
-    mirrorLight->setMoveXY(dx, dy, actionMode);
+cpp_specular_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (specularLight == nullptr) return;
+    specularLight->setMoveXY(dx, dy, actionMode);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_mirror_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+cpp_specular_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
                                 jfloat focusY,
                                 jint actionMode) {
-    if (mirrorLight == nullptr) return;
-    mirrorLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
+    if (specularLight == nullptr) return;
+    specularLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
 /*********************** GL材质 *********************/
@@ -604,6 +608,156 @@ cpp_material_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focu
     material->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
+
+/*********************** GL漫反射贴图 *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_diffuse_map_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (diffuseMap == nullptr)
+        diffuseMap = new OpenglesDiffuseMap();
+    diffuseMap->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_diffuse_map_render_frame(JNIEnv *env, jobject thiz) {
+    if (diffuseMap == nullptr) return;
+    diffuseMap->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_diffuse_map_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                              jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (diffuseMap == nullptr) {
+        diffuseMap = new OpenglesDiffuseMap();
+    }
+    diffuseMap->setSharderPath(vertexPath, fragPath);
+
+    diffuseMap->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_diffuse_map_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                    jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (diffuseMap == nullptr) {
+        diffuseMap = new OpenglesDiffuseMap();
+    }
+    diffuseMap->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_diffuse_map_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (diffuseMap == nullptr) return;
+    diffuseMap->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_diffuse_map_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                      jfloat focusY,
+                      jint actionMode) {
+    if (diffuseMap == nullptr) return;
+    diffuseMap->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
+
+/*********************** GL镜面光贴图 *********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_specular_map_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (specularMap == nullptr)
+        specularMap = new OpenglesSpecularMap();
+    specularMap->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_specular_map_render_frame(JNIEnv *env, jobject thiz) {
+    if (specularMap == nullptr) return;
+    specularMap->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_specular_map_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                 jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (specularMap == nullptr) {
+        specularMap = new OpenglesSpecularMap();
+    }
+    specularMap->setSharderPath(vertexPath, fragPath);
+
+    specularMap->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_specular_map_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                       jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (specularMap == nullptr) {
+        specularMap = new OpenglesSpecularMap();
+    }
+    specularMap->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_specular_map_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (specularMap == nullptr) return;
+    specularMap->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_specular_map_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                         jfloat focusY,
+                         jint actionMode) {
+    if (specularMap == nullptr) return;
+    specularMap->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
@@ -683,16 +837,16 @@ static const JNINativeMethod methods[] = {
         {"native_diffuse_reflection_on_scale",            "(FFFI)V",               (void *) cpp_diffuse_reflection_on_scale},
 
         //镜面光照
-        {"native_mirror_init_opengl",                     "(II)Z",                 (void *) cpp_mirror_init_opengl},
-        {"native_mirror_render_frame",                    "()V",                   (void *) cpp_mirror_render_frame},
-        {"native_mirror_color_set_glsl_path",             "(Ljava/lang/String"
-                                                          ";Ljava/lang/String;)V", (void *) cpp_mirror_color_frag_vertex_path},
-        {"native_mirror_set_glsl_path",                   "(Ljava/lang/String"
+        {"native_specular_init_opengl",                     "(II)Z",                 (void *) cpp_specular_init_opengl},
+        {"native_specular_render_frame",                    "()V",                   (void *) cpp_specular_render_frame},
+        {"native_specular_color_set_glsl_path",             "(Ljava/lang/String"
+                                                          ";Ljava/lang/String;)V", (void *) cpp_specular_color_frag_vertex_path},
+        {"native_specular_set_glsl_path",                   "(Ljava/lang/String"
                                                           ";Ljava/lang/String"
                                                           ";Ljava/lang/String"
-                                                          ";Ljava/lang/String;)V", (void *) cpp_mirror_frag_vertex_path},
-        {"native_mirror_move_xy",                         "(FFI)V",                (void *) cpp_mirror_move_xy},
-        {"native_mirror_on_scale",                        "(FFFI)V",               (void *) cpp_mirror_on_scale},
+                                                          ";Ljava/lang/String;)V", (void *) cpp_specular_frag_vertex_path},
+        {"native_specular_move_xy",                         "(FFI)V",                (void *) cpp_specular_move_xy},
+        {"native_specular_on_scale",                        "(FFFI)V",               (void *) cpp_specular_on_scale},
 
         //材质
         {"native_material_init_opengl",                     "(II)Z",                 (void *) cpp_material_init_opengl},
@@ -706,6 +860,29 @@ static const JNINativeMethod methods[] = {
         {"native_material_move_xy",                         "(FFI)V",                (void *) cpp_material_move_xy},
         {"native_material_on_scale",                        "(FFFI)V",               (void *) cpp_material_on_scale},
 
+        //漫反射贴图
+        {"native_diffuse_map_init_opengl",                     "(II)Z",                 (void *) cpp_diffuse_map_init_opengl},
+        {"native_diffuse_map_render_frame",                    "()V",                   (void *) cpp_diffuse_map_render_frame},
+        {"native_diffuse_map_color_set_glsl_path",             "(Ljava/lang/String"
+                                                            ";Ljava/lang/String;)V", (void *) cpp_diffuse_map_color_frag_vertex_path},
+        {"native_diffuse_map_set_glsl_path",                   "(Ljava/lang/String"
+                                                            ";Ljava/lang/String"
+                                                            ";Ljava/lang/String"
+                                                            ";Ljava/lang/String;)V", (void *) cpp_diffuse_map_frag_vertex_path},
+        {"native_diffuse_map_move_xy",                         "(FFI)V",                (void *) cpp_diffuse_map_move_xy},
+        {"native_diffuse_map_on_scale",                        "(FFFI)V",               (void *) cpp_diffuse_map_on_scale},
+
+        //镜面光贴图
+        {"native_specular_map_init_opengl",                     "(II)Z",                 (void *) cpp_specular_map_init_opengl},
+        {"native_specular_map_render_frame",                    "()V",                   (void *) cpp_specular_map_render_frame},
+        {"native_specular_map_color_set_glsl_path",             "(Ljava/lang/String"
+                                                               ";Ljava/lang/String;)V", (void *) cpp_specular_map_color_frag_vertex_path},
+        {"native_specular_map_set_glsl_path",                   "(Ljava/lang/String"
+                                                               ";Ljava/lang/String"
+                                                               ";Ljava/lang/String"
+                                                               ";Ljava/lang/String;)V", (void *) cpp_specular_map_frag_vertex_path},
+        {"native_specular_map_move_xy",                         "(FFI)V",                (void *) cpp_specular_map_move_xy},
+        {"native_specular_map_on_scale",                        "(FFFI)V",               (void *) cpp_specular_map_on_scale},
 
 };
 

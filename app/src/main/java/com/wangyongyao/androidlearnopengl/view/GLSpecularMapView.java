@@ -13,12 +13,12 @@ import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GLMaterialView.class.getSimpleName();
+    private static String TAG = GLSpecularMapView.class.getSimpleName();
     private JniCall mJniCall;
     private Context mContext;
     private boolean isScaleGesture;
@@ -27,14 +27,14 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
     private float downY;
 
 
-    public GLMaterialView(Context context, JniCall jniCall) {
+    public GLSpecularMapView(Context context, JniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GLMaterialView(Context context, AttributeSet attrs) {
+    public GLSpecularMapView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -44,16 +44,16 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "material_cube_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "material_cube_vertex.glsl");
-        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "material_color_fragment.glsl");
-        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "material_color_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
-        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_cube_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_cube_vertex.glsl");
+        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_color_fragment.glsl");
+        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_color_vertex.glsl");
+        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
+        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "specular_container2.png");
 
         if (mJniCall != null) {
-            mJniCall.setMaterialGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
-            mJniCall.setMaterialColorGLSLPath(fragPath, vertexPath);
+            mJniCall.setSpecularMapGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
+            mJniCall.setSpecularMapColorGLSLPath(fragPath, vertexPath);
         }
         setRenderer(this);
 
@@ -67,7 +67,7 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mJniCall.materialOnScale(scaleFactor, detector.getFocusX()
+                mJniCall.specularMapOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -76,7 +76,7 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mJniCall.materialOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.specularMapOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -85,7 +85,7 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mJniCall.materialOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.specularMapOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -95,12 +95,12 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.materialOpenGLRenderFrame();
+            mJniCall.specularMapOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initMaterialOpenGl(width, height);
+            mJniCall.initSpecularMapOpenGl(width, height);
     }
 
 
@@ -130,7 +130,7 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mJniCall.materialMoveXY(0, 0, 1);
+                mJniCall.specularMapMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -139,14 +139,14 @@ public class GLMaterialView extends GLSurfaceView implements GLSurfaceView.Rende
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mJniCall.materialMoveXY(dx, dy, 2);
+                mJniCall.specularMapMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mJniCall.materialMoveXY(0, 0, 3);
+                mJniCall.specularMapMoveXY(0, 0, 3);
             }
             break;
         }

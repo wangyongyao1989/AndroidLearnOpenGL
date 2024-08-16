@@ -64,6 +64,8 @@ void OpenglesLightCube::renderFrame() {
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
+    vec3 cameraMove(0.0f, 0.0f, 5.0f);
+    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     lightColorShader->setMat4("projection", projection);
     lightColorShader->setMat4("view", view);
@@ -83,7 +85,7 @@ void OpenglesLightCube::renderFrame() {
     lightCubeShader->setMat4("view", view);
     model = glm::mat4(1.0f);
     model = glm::translate(model, lightPos);
-    model = glm::scale(model, glm::vec3(0.5f)); // a smaller cube
+    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
     lightCubeShader->setMat4("model", model);
 
     glBindVertexArray(lightCubeVAO);

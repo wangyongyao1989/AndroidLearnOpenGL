@@ -1,8 +1,8 @@
 
-#include "OpenglesMaterial.h"
+#include "OpenglesSpecularMap.h"
 #include <iostream>
 
-bool OpenglesMaterial::setupGraphics(int w, int h) {
+bool OpenglesSpecularMap::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
@@ -33,25 +33,58 @@ bool OpenglesMaterial::setupGraphics(int w, int h) {
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(OpenglesMaterialLightVertices), OpenglesMaterialLightVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SpecularMapVertices), SpecularMapVertices, GL_STATIC_DRAW);
     glBindVertexArray(cubeVAO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void *) (3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float),
+                          (void *) (6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     //绑定灯光立方体数据
     glGenVertexArrays(1, &lightCubeVAO);
     glBindVertexArray(lightCubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
+    // load and create a texture
+    LOGI("load and create a texture!");
+    GLenum format;
+    if (nrChannels1 == 1) {
+        format = GL_RED;
+    } else if (nrChannels1 == 3) {
+        format = GL_RGB;
+    } else if (nrChannels1 == 4) {
+        format = GL_RGBA;
+    }
+//    LOGI("texture1 format==%d", format);
+    if (data1) {
+        diffuseMapTexture = loadTexture(data1, width1, height1, format);
+    }
+
+    if (nrChannels2 == 1) {
+        format = GL_RED;
+    } else if (nrChannels2 == 3) {
+        format = GL_RGB;
+    } else if (nrChannels2 == 4) {
+        format = GL_RGBA;
+    }
+    if (data2) {
+        specularMapTexture = loadTexture(data2, width2, height2, format);
+    }
+
+    lightColorShader->use();
+    lightColorShader->setInt("material.diffuse", 0);
+    lightColorShader->setInt("material.specular", 1);
 
     return true;
 }
 
-void OpenglesMaterial::renderFrame() {
+void OpenglesSpecularMap::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
@@ -61,25 +94,17 @@ void OpenglesMaterial::renderFrame() {
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
 
-//    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
-    double timeValue = clock() * 8 / CLOCKS_PER_SEC;
-    vec3 lightColor;
-    lightColor.x = sin(timeValue * 2.0f);
-    lightColor.y = sin(timeValue * 0.7f);
-    lightColor.z = sin(timeValue * 1.3f);
-    vec3 diffuseColor = lightColor   * glm::vec3(0.5f); // decrease the influence
-    vec3 ambientColor = diffuseColor * glm::vec3(0.2f); // low influence
-    lightColorShader->setVec3("light.ambient", ambientColor);
-    lightColorShader->setVec3("light.diffuse", diffuseColor);
-    lightColorShader->setVec3("light.specular", 1.0f, 1.0f, 1.0f);
-
-    lightColorShader->setVec3("light.position", OpenglesMaterialLightLightPos);
+    lightColorShader->setVec3("light.position", SpecularMapLightPos);
     lightColorShader->setVec3("viewPos", mCamera.Position);
 
-    lightColorShader->setVec3("material.ambient",  1.0f, 0.5f, 0.31f);
-    lightColorShader->setVec3("material.diffuse",  1.0f, 0.5f, 0.31f);
+    // light properties
+    lightColorShader->setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
+    lightColorShader->setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setVec3("light.specular", 0.5f, 0.5f, 0.5f);
+
+    // material properties
     lightColorShader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-    lightColorShader->setFloat("material.shininess", 32.0f);
+    lightColorShader->setFloat("material.shininess", 64.0f);
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
@@ -90,9 +115,18 @@ void OpenglesMaterial::renderFrame() {
     lightColorShader->setMat4("projection", projection);
     lightColorShader->setMat4("view", view);
 
+    // world transformation
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(45.0f), OpenglesMaterialLightLightPos);
+    model = glm::rotate(model, glm::radians(45.0f), SpecularMapLightPos);
     lightColorShader->setMat4("model", model);
+
+    // bind diffuse map
+    glActiveTexture(GL_TEXTURE0);
+    glBindTexture(GL_TEXTURE_2D, diffuseMapTexture);
+
+    // bind specular map
+    glActiveTexture(GL_TEXTURE1);
+    glBindTexture(GL_TEXTURE_2D, specularMapTexture);
 
     // render the cube
     glBindVertexArray(cubeVAO);
@@ -104,7 +138,7 @@ void OpenglesMaterial::renderFrame() {
     lightCubeShader->setMat4("projection", projection);
     lightCubeShader->setMat4("view", view);
     model = glm::mat4(1.0f);
-    model = glm::translate(model, OpenglesMaterialLightLightPos);
+    model = glm::translate(model, SpecularMapLightPos);
     model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
     lightCubeShader->setMat4("model", model);
 
@@ -113,26 +147,24 @@ void OpenglesMaterial::renderFrame() {
     checkGlError("glDrawArrays");
 }
 
-bool OpenglesMaterial::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesSpecularMap::setSharderPath(const char *vertexPath, const char *fragmentPath) {
     lightColorShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
-bool OpenglesMaterial::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesSpecularMap::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
     lightCubeShader->getSharderPath(vertexPath, fragmentPath);
     return false;
 }
 
-void OpenglesMaterial::setPicPath(const char *pic1, const char *pic2) {
+void OpenglesSpecularMap::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
-    // load image, create texture and generate mipmaps
     data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
     data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
-
 }
 
-void OpenglesMaterial::setMoveXY(float dx, float dy, int actionMode) {
+void OpenglesSpecularMap::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -142,7 +174,7 @@ void OpenglesMaterial::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void OpenglesMaterial::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void OpenglesSpecularMap::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -161,16 +193,14 @@ void OpenglesMaterial::setOnScale(float scaleFactor, float focusX, float focusY,
 }
 
 
-OpenglesMaterial::OpenglesMaterial() {
+OpenglesSpecularMap::OpenglesSpecularMap() {
     lightColorShader = new OpenGLShader();
     lightCubeShader = new OpenGLShader();
 }
 
-OpenglesMaterial::~OpenglesMaterial() {
-    texture1 = 0;
-    data1 = nullptr;
-    data2 = nullptr;
-
+OpenglesSpecularMap::~OpenglesSpecularMap() {
+    diffuseMapTexture = 0;
+    specularMapTexture = 0;
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -178,18 +208,54 @@ OpenglesMaterial::~OpenglesMaterial() {
     lightCubeShader = nullptr;
     lightColorShader = nullptr;
 
+    if (data1) {
+        stbi_image_free(data1);
+        data1 = nullptr;
+    }
+
+    if (data2) {
+        stbi_image_free(data2);
+        data2 = nullptr;
+    }
+
     colorVertexCode.clear();
     colorFragmentCode.clear();
 }
 
-void OpenglesMaterial::printGLString(const char *name, GLenum s) {
+void OpenglesSpecularMap::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void OpenglesMaterial::checkGlError(const char *op) {
+void OpenglesSpecularMap::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
+}
+
+/**
+ * 加载纹理
+ * @param path
+ * @return
+ */
+int OpenglesSpecularMap::loadTexture(unsigned char *data, int width, int height, GLenum format) {
+    unsigned int textureID;
+    glGenTextures(1, &textureID);
+//    LOGI("loadTexture format =%d", format);
+    if (data) {
+        glBindTexture(GL_TEXTURE_2D, textureID);
+        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
+        glGenerateMipmap(GL_TEXTURE_2D);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+        stbi_image_free(data);
+    } else {
+        checkGlError("Texture failed to load at path: ");
+        stbi_image_free(data);
+    }
+
+    return textureID;
 }
 

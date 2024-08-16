@@ -57,6 +57,8 @@ void OpenglesDiffuseReflectionLight::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+    //开启深度测试
+    glEnable(GL_DEPTH_TEST);
 
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
@@ -67,6 +69,8 @@ void OpenglesDiffuseReflectionLight::renderFrame() {
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
+    vec3 cameraMove(0.0f, 0.0f, 5.0f);
+    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     lightColorShader->setMat4("projection", projection);
     lightColorShader->setMat4("view", view);
