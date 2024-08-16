@@ -1,8 +1,8 @@
 
-#include "OpenglesFlashLight.h"
+#include "OpenglesSpotLight.h"
 #include <iostream>
 
-bool OpenglesFlashLight::setupGraphics(int w, int h) {
+bool OpenglesSpotLight::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
@@ -33,7 +33,7 @@ bool OpenglesFlashLight::setupGraphics(int w, int h) {
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &VBO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(FlashLightVertices), FlashLightVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(SpotLightVertices), SpotLightVertices, GL_STATIC_DRAW);
     glBindVertexArray(cubeVAO);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
@@ -84,7 +84,7 @@ bool OpenglesFlashLight::setupGraphics(int w, int h) {
     return true;
 }
 
-void OpenglesFlashLight::renderFrame() {
+void OpenglesSpotLight::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
@@ -123,7 +123,7 @@ void OpenglesFlashLight::renderFrame() {
 
     // world transformation
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(45.0f), FlashLightLightPos);
+    model = glm::rotate(model, glm::radians(45.0f), SpotLightLightPos);
     lightColorShader->setMat4("model", model);
 
     // bind diffuse map
@@ -143,7 +143,7 @@ void OpenglesFlashLight::renderFrame() {
     for (unsigned int i = 0; i < 10; i++) {
         // calculate the model matrix for each object and pass it to shader before drawing
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, FlashLightCubePositions[i]);
+        model = glm::translate(model, SpotLightCubePositions[i]);
         float angle = 20.0f * i;
         model = glm::rotate(model, glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
         lightColorShader->setMat4("model", model);
@@ -156,7 +156,7 @@ void OpenglesFlashLight::renderFrame() {
     lightCubeShader->setMat4("projection", projection);
     lightCubeShader->setMat4("view", view);
     model = glm::mat4(1.0f);
-    model = glm::translate(model, FlashLightLightPos);
+    model = glm::translate(model, SpotLightLightPos);
     model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
     lightCubeShader->setMat4("model", model);
 
@@ -165,24 +165,24 @@ void OpenglesFlashLight::renderFrame() {
     checkGlError("glDrawArrays");
 }
 
-bool OpenglesFlashLight::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesSpotLight::setSharderPath(const char *vertexPath, const char *fragmentPath) {
     lightColorShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
-bool OpenglesFlashLight::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesSpotLight::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
     lightCubeShader->getSharderPath(vertexPath, fragmentPath);
     return false;
 }
 
-void OpenglesFlashLight::setPicPath(const char *pic1, const char *pic2) {
+void OpenglesSpotLight::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
     data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
     data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
 }
 
-void OpenglesFlashLight::setMoveXY(float dx, float dy, int actionMode) {
+void OpenglesSpotLight::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -192,7 +192,7 @@ void OpenglesFlashLight::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void OpenglesFlashLight::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void OpenglesSpotLight::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -211,12 +211,12 @@ void OpenglesFlashLight::setOnScale(float scaleFactor, float focusX, float focus
 }
 
 
-OpenglesFlashLight::OpenglesFlashLight() {
+OpenglesSpotLight::OpenglesSpotLight() {
     lightColorShader = new OpenGLShader();
     lightCubeShader = new OpenGLShader();
 }
 
-OpenglesFlashLight::~OpenglesFlashLight() {
+OpenglesSpotLight::~OpenglesSpotLight() {
     diffuseMapTexture = 0;
     specularMapTexture = 0;
     //析构函数中释放资源
@@ -240,12 +240,12 @@ OpenglesFlashLight::~OpenglesFlashLight() {
     colorFragmentCode.clear();
 }
 
-void OpenglesFlashLight::printGLString(const char *name, GLenum s) {
+void OpenglesSpotLight::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void OpenglesFlashLight::checkGlError(const char *op) {
+void OpenglesSpotLight::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
@@ -256,7 +256,7 @@ void OpenglesFlashLight::checkGlError(const char *op) {
  * @param path
  * @return
  */
-int OpenglesFlashLight::loadTexture(unsigned char *data, int width, int height, GLenum format) {
+int OpenglesSpotLight::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 //    LOGI("loadTexture format =%d", format);

@@ -16,6 +16,7 @@
 #include "OpenglesDirectionLight.h"
 #include "OpenglesAttenuationLight.h"
 #include "OpenglesFlashLight.h"
+#include "OpenglesSpotLight.h"
 
 
 #define LOG_TAG "wy"
@@ -40,6 +41,7 @@ OpenglesSpecularMap *specularMap;
 OpenglesDirectionLight *directionLight;
 OpenglesAttenuationLight *attenuationLight;
 OpenglesFlashLight *flashLight;
+OpenglesSpotLight *spotLight;
 
 extern "C" JNIEXPORT jstring JNICALL
 cpp_stringFromJNI(
@@ -989,6 +991,88 @@ cpp_flash_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat f
     flashLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
+
+/*********************** GL 聚光手电筒********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_spot_light_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (spotLight == nullptr)
+        spotLight = new OpenglesSpotLight();
+    spotLight->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_spot_light_render_frame(JNIEnv *env, jobject thiz) {
+    if (spotLight == nullptr) return;
+    spotLight->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_spot_light_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                 jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (spotLight == nullptr) {
+        spotLight = new OpenglesSpotLight();
+    }
+    spotLight->setSharderPath(vertexPath, fragPath);
+
+    spotLight->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_spot_light_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                       jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (spotLight == nullptr) {
+        spotLight = new OpenglesSpotLight();
+    }
+    spotLight->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_spot_light_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (spotLight == nullptr) return;
+    spotLight->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_spot_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                         jfloat focusY,
+                         jint actionMode) {
+    if (spotLight == nullptr) return;
+    spotLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
+
+
+
+
+
+
+//============================================================================================================================
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
         {"stringFromJNI",                                 "()Ljava/lang/String;",  (std::string *) cpp_stringFromJNI},
@@ -1150,6 +1234,18 @@ static const JNINativeMethod methods[] = {
         {"native_flash_light_move_xy",              "(FFI)V",                (void *) cpp_flash_light_move_xy},
         {"native_flash_light_on_scale",             "(FFFI)V",               (void *) cpp_flash_light_on_scale},
 
+
+        //聚光平滑/软化边缘
+        {"native_spot_light_init_opengl",          "(II)Z",                 (void *) cpp_spot_light_init_opengl},
+        {"native_spot_light_render_frame",         "()V",                   (void *) cpp_spot_light_render_frame},
+        {"native_spot_light_color_set_glsl_path",  "(Ljava/lang/String"
+                                                    ";Ljava/lang/String;)V", (void *) cpp_spot_light_color_frag_vertex_path},
+        {"native_spot_light_set_glsl_path",        "(Ljava/lang/String"
+                                                    ";Ljava/lang/String"
+                                                    ";Ljava/lang/String"
+                                                    ";Ljava/lang/String;)V", (void *) cpp_spot_light_frag_vertex_path},
+        {"native_spot_light_move_xy",              "(FFI)V",                (void *) cpp_spot_light_move_xy},
+        {"native_spot_light_on_scale",             "(FFFI)V",               (void *) cpp_spot_light_on_scale},
 
 };
 

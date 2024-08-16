@@ -22,6 +22,7 @@ import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularMapView;
+import com.wangyongyao.androidlearnopengl.view.GLSpotLightView;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -45,6 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn13;
     private Button mBtn14;
     private Button mBtn15;
+    private Button mBtn16;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +158,13 @@ public class MainActivity extends AppCompatActivity {
                     = new GLFlashLightView(getApplication(), mJniCall);
             mGlShow1.addView(glFlashLight);
         });
+        mBtn16.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSpotLightView glSpotLightView
+                    = new GLSpotLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glSpotLightView);
+        });
+
 
 
     }
@@ -181,6 +190,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn13 = mBinding.btn13;
         mBtn14 = mBinding.btn14;
         mBtn15 = mBinding.btn15;
+        mBtn16 = mBinding.btn16;
 
     }
 
