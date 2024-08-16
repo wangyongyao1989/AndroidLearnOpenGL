@@ -94,7 +94,9 @@ void OpenglesFlashLight::renderFrame() {
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
 
-    lightColorShader->setVec3("light.position", FlashLightLightPos);
+    lightColorShader->setVec3("light.position", mCamera.Position);
+    lightColorShader->setVec3("light.direction", mCamera.Front);
+    lightColorShader->setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
     lightColorShader->setVec3("viewPos", mCamera.Position);
 
     // light properties
@@ -113,7 +115,7 @@ void OpenglesFlashLight::renderFrame() {
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
-    vec3 cameraMove(0.0f, 0.0f, 10.0f);
+    vec3 cameraMove(0.0f, 0.0f, 2.0f);
     mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     lightColorShader->setMat4("projection", projection);
@@ -138,8 +140,7 @@ void OpenglesFlashLight::renderFrame() {
 
     // render containers
     glBindVertexArray(cubeVAO);
-    for (unsigned int i = 0; i < 10; i++)
-    {
+    for (unsigned int i = 0; i < 10; i++) {
         // calculate the model matrix for each object and pass it to shader before drawing
         glm::mat4 model = glm::mat4(1.0f);
         model = glm::translate(model, FlashLightCubePositions[i]);
@@ -150,18 +151,18 @@ void OpenglesFlashLight::renderFrame() {
     }
 
 
-       // also draw the lamp object
-       lightCubeShader->use();
-       lightCubeShader->setMat4("projection", projection);
-       lightCubeShader->setMat4("view", view);
-       model = glm::mat4(1.0f);
-       model = glm::translate(model, FlashLightLightPos);
-       model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-       lightCubeShader->setMat4("model", model);
+    /*// also draw the lamp object
+    lightCubeShader->use();
+    lightCubeShader->setMat4("projection", projection);
+    lightCubeShader->setMat4("view", view);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, FlashLightLightPos);
+    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+    lightCubeShader->setMat4("model", model);
 
-       glBindVertexArray(lightCubeVAO);
-       glDrawArrays(GL_TRIANGLES, 0, 36);
-       checkGlError("glDrawArrays");
+    glBindVertexArray(lightCubeVAO);
+    glDrawArrays(GL_TRIANGLES, 0, 36);*/
+    checkGlError("glDrawArrays");
 }
 
 bool OpenglesFlashLight::setSharderPath(const char *vertexPath, const char *fragmentPath) {
