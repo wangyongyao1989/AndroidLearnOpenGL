@@ -97,12 +97,13 @@ void OpenglesSpotLight::renderFrame() {
     lightColorShader->setVec3("light.position", mCamera.Position);
     lightColorShader->setVec3("light.direction", mCamera.Front);
     lightColorShader->setFloat("light.cutOff", glm::cos(glm::radians(12.5f)));
+    lightColorShader->setFloat("light.outerCutOff", glm::cos(glm::radians(17.5f)));
     lightColorShader->setVec3("viewPos", mCamera.Position);
 
     // light properties
-    lightColorShader->setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
-    lightColorShader->setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
-    lightColorShader->setVec3("light.specular", 0.5f, 0.5f, 0.5f);
+    lightColorShader->setVec3("light.ambient", 0.1f, 0.1f, 0.1f);
+    lightColorShader->setVec3("light.diffuse", 0.8f, 0.8f, 0.8f);
+    lightColorShader->setVec3("light.specular", 1.0f, 1.0f, 1.0f);
     lightColorShader->setFloat("light.constant", 1.0f);
     lightColorShader->setFloat("light.linear", 0.09f);
     lightColorShader->setFloat("light.quadratic", 0.032f);
@@ -115,7 +116,7 @@ void OpenglesSpotLight::renderFrame() {
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
-    vec3 cameraMove(0.0f, 0.0f, 3.0f);
+    vec3 cameraMove(0.0f, 0.0f, 4.0f);
     mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     lightColorShader->setMat4("projection", projection);

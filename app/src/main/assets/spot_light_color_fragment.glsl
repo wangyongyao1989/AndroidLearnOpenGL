@@ -34,19 +34,12 @@ uniform Light light;
 
 void main()
 {
-        vec3 lightDir = normalize(light.position - FragPos);
-
-       // 检查聚光灯锥体内是否有照明
-       float theta = dot(lightDir, normalize(-light.direction));
-
-       //我们使用的角度是余弦而不是度数，因此使用了“>”。
-       if(theta > light.cutOff)
-       {
            // ambient
            vec3 ambient = light.ambient * texture(material.diffuse, TexCoords).rgb;
 
            // diffuse
            vec3 norm = normalize(Normal);
+           vec3 lightDir = normalize(light.position - FragPos);
            float diff = max(dot(norm, lightDir), 0.0);
            vec3 diffuse = light.diffuse * diff * texture(material.diffuse, TexCoords).rgb;
 
@@ -56,22 +49,21 @@ void main()
            float spec = pow(max(dot(viewDir, reflectDir), 0.0), material.shininess);
            vec3 specular = light.specular * spec * texture(material.specular, TexCoords).rgb;
 
+           // spotlight (soft edges)
+           float theta = dot(lightDir, normalize(-light.direction));
+           float epsilon = (light.cutOff - light.outerCutOff);
+           float intensity = clamp((theta - light.outerCutOff) / epsilon, 0.0, 1.0);
+           diffuse  *= intensity;
+           specular *= intensity;
+
            // attenuation
            float distance    = length(light.position - FragPos);
-           float attenuation = 1.0 / (light.constant + light.linear * distance
-                                    + light.quadratic * (distance * distance));
-           //消除环境光的衰减，否则在很远的地方，由于else分支中的环境项，聚光灯内部的光线会比外部的光线暗
-           // ambient  *= attenuation;
-           diffuse *= attenuation;
+           float attenuation = 1.0 / (light.constant + light.linear * distance + light.quadratic * (distance * distance));
+           ambient  *= attenuation;
+           diffuse   *= attenuation;
            specular *= attenuation;
 
            vec3 result = ambient + diffuse + specular;
            FragColor = vec4(result, 1.0);
-       }
-       else
-       {
-           // 否则，使用环境光，这样聚光灯外的场景就不会完全黑暗。
-           FragColor = vec4(light.ambient * texture(material.diffuse, TexCoords).rgb, 1.0);
-       }
 
 }
