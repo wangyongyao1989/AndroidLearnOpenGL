@@ -1,10 +1,10 @@
 //
 // Created by MMM on 2024/7/30.
 //
-#include "OpenglesMirrorLight.h"
+#include "OpenglesSpecularLight.h"
 #include <iostream>
 
-bool OpenglesMirrorLight::setupGraphics(int w, int h) {
+bool OpenglesSpecularLight::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
@@ -53,7 +53,7 @@ bool OpenglesMirrorLight::setupGraphics(int w, int h) {
     return true;
 }
 
-void OpenglesMirrorLight::renderFrame() {
+void OpenglesSpecularLight::renderFrame() {
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
@@ -99,17 +99,17 @@ void OpenglesMirrorLight::renderFrame() {
     checkGlError("glDrawArrays");
 }
 
-bool OpenglesMirrorLight::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesSpecularLight::setSharderPath(const char *vertexPath, const char *fragmentPath) {
     lightColorShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
-bool OpenglesMirrorLight::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool OpenglesSpecularLight::setColorSharderPath(const char *vertexPath, const char *fragmentPath) {
     lightCubeShader->getSharderPath(vertexPath, fragmentPath);
     return false;
 }
 
-void OpenglesMirrorLight::setPicPath(const char *pic1, const char *pic2) {
+void OpenglesSpecularLight::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
     // load image, create texture and generate mipmaps
@@ -118,7 +118,7 @@ void OpenglesMirrorLight::setPicPath(const char *pic1, const char *pic2) {
 
 }
 
-void OpenglesMirrorLight::setMoveXY(float dx, float dy, int actionMode) {
+void OpenglesSpecularLight::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -128,7 +128,7 @@ void OpenglesMirrorLight::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void OpenglesMirrorLight::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void OpenglesSpecularLight::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -147,12 +147,12 @@ void OpenglesMirrorLight::setOnScale(float scaleFactor, float focusX, float focu
 }
 
 
-OpenglesMirrorLight::OpenglesMirrorLight() {
+OpenglesSpecularLight::OpenglesSpecularLight() {
     lightColorShader = new OpenGLShader();
     lightCubeShader = new OpenGLShader();
 }
 
-OpenglesMirrorLight::~OpenglesMirrorLight() {
+OpenglesSpecularLight::~OpenglesSpecularLight() {
     texture1 = 0;
     data1 = nullptr;
     data2 = nullptr;
@@ -168,12 +168,12 @@ OpenglesMirrorLight::~OpenglesMirrorLight() {
     colorFragmentCode.clear();
 }
 
-void OpenglesMirrorLight::printGLString(const char *name, GLenum s) {
+void OpenglesSpecularLight::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void OpenglesMirrorLight::checkGlError(const char *op) {
+void OpenglesSpecularLight::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }

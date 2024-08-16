@@ -13,12 +13,12 @@ import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSpecularLightingView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GLMirrorLightingView.class.getSimpleName();
+    private static String TAG = GLSpecularLightingView.class.getSimpleName();
     private JniCall mJniCall;
     private Context mContext;
     private boolean isScaleGesture;
@@ -27,14 +27,14 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
     private float downY;
 
 
-    public GLMirrorLightingView(Context context, JniCall jniCall) {
+    public GLSpecularLightingView(Context context, JniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GLMirrorLightingView(Context context, AttributeSet attrs) {
+    public GLSpecularLightingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -44,16 +44,16 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "mirror_cube_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "mirror_cube_vertex.glsl");
-        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "mirror_color_fragment.glsl");
-        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "mirror_color_vertex.glsl");
+        String fragPath = OpenGLUtil.getModelFilePath(mContext, "specular_cube_fragment.glsl");
+        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_cube_vertex.glsl");
+        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "specular_color_fragment.glsl");
+        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_color_vertex.glsl");
         String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
         String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
-            mJniCall.setMirrorGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
-            mJniCall.setMirrorColorGLSLPath(fragPath, vertexPath);
+            mJniCall.setSpecularGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
+            mJniCall.setSpecularColorGLSLPath(fragPath, vertexPath);
         }
         setRenderer(this);
 
@@ -67,7 +67,7 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mJniCall.mirrorOnScale(scaleFactor, detector.getFocusX()
+                mJniCall.specularOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -76,7 +76,7 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mJniCall.mirrorOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.specularOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -85,7 +85,7 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mJniCall.mirrorOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.specularOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -95,12 +95,12 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.mirrorOpenGLRenderFrame();
+            mJniCall.specularOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initMirrorOpenGl(width, height);
+            mJniCall.initSpecularOpenGl(width, height);
     }
 
 
@@ -130,7 +130,7 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mJniCall.mirrorMoveXY(0, 0, 1);
+                mJniCall.specularMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -139,14 +139,14 @@ public class GLMirrorLightingView extends GLSurfaceView implements GLSurfaceView
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mJniCall.mirrorMoveXY(dx, dy, 2);
+                mJniCall.specularMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mJniCall.mirrorMoveXY(0, 0, 3);
+                mJniCall.specularMoveXY(0, 0, 3);
             }
             break;
         }

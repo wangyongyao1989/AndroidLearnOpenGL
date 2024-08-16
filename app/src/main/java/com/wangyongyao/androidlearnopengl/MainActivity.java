@@ -3,7 +3,6 @@ package com.wangyongyao.androidlearnopengl;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
-import android.view.View;
 import android.widget.Button;
 import android.widget.FrameLayout;
 
@@ -18,7 +17,7 @@ import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
-import com.wangyongyao.androidlearnopengl.view.GLMirrorLightingView;
+import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -109,9 +108,9 @@ public class MainActivity extends AppCompatActivity {
         });
         mBtn9.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLMirrorLightingView glMirrorLightingView
-                    = new GLMirrorLightingView(getApplication(), mJniCall);
-            mGlShow1.addView(glMirrorLightingView);
+            GLSpecularLightingView glSpecularLightingView
+                    = new GLSpecularLightingView(getApplication(), mJniCall);
+            mGlShow1.addView(glSpecularLightingView);
         });
         mBtn10.setOnClickListener(view -> {
             mGlShow1.removeAllViews();

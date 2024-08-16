@@ -86,8 +86,8 @@ void OpenglesDiffuseMap::renderFrame() {
     lightColorShader->setVec3("viewPos", mCamera.Position);
 
     // light properties
-    lightColorShader->setVec3("light.ambient", 0.2f, 0.2f, 0.2f);
-    lightColorShader->setVec3("light.diffuse", 0.5f, 0.5f, 0.5f);
+    lightColorShader->setVec3("light.ambient", 0.5f, 0.5f, 0.5f);
+    lightColorShader->setVec3("light.diffuse", 1.0f, 1.0f, 1.0f);
     lightColorShader->setVec3("light.specular", 0.5f, 0.5f, 0.5f);
 
     // material properties
@@ -224,7 +224,7 @@ void OpenglesDiffuseMap::checkGlError(const char *op) {
 int OpenglesDiffuseMap::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
-    LOGI("loadTexture format =%d", format);
+//    LOGI("loadTexture format =%d", format);
     if (data) {
         glBindTexture(GL_TEXTURE_2D, textureID);
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);

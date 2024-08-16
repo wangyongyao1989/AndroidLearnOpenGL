@@ -59,7 +59,7 @@ const float OpenglesMirrorLightVertices[] = {
 
 const vec3 OpenglesMirrorLightLightPos(1.2f, 1.0f, 2.0f);
 
-class OpenglesMirrorLight {
+class OpenglesSpecularLight {
 
 private:
     unsigned int texture1;
@@ -90,9 +90,9 @@ private:
 
 public:
 
-    OpenglesMirrorLight();
+    OpenglesSpecularLight();
 
-    ~OpenglesMirrorLight();
+    ~OpenglesSpecularLight();
 
     bool setupGraphics(int w, int h);
 
