@@ -17,6 +17,7 @@ import com.wangyongyao.androidlearnopengl.view.GLAttenuationLightView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLDirectionalLightView;
+import com.wangyongyao.androidlearnopengl.view.GLFlashLightView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
@@ -43,6 +44,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn12;
     private Button mBtn13;
     private Button mBtn14;
+    private Button mBtn15;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -148,6 +150,12 @@ public class MainActivity extends AppCompatActivity {
                     = new GLAttenuationLightView(getApplication(), mJniCall);
             mGlShow1.addView(glAttenuationLight);
         });
+        mBtn15.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLFlashLightView glFlashLight
+                    = new GLFlashLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glFlashLight);
+        });
 
 
     }
@@ -172,6 +180,7 @@ public class MainActivity extends AppCompatActivity {
         mBtn12 = mBinding.btn12;
         mBtn13 = mBinding.btn13;
         mBtn14 = mBinding.btn14;
+        mBtn15 = mBinding.btn15;
 
     }
 
