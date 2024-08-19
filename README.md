@@ -33,6 +33,6 @@
 ## 10、Camera3D旋转:
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/Camer3DRotate.gif" width="350px"> <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/Camera3DMoveConrtoller.gif" width="350px">
 
-## 11、光照场景及环境光照:
+## 11、光照场景及环境光照、漫反射、镜面、材质、漫反射贴图、镜面贴图、定向光、点光源、聚光、多光源:
   <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/ambient.png" width="350px"> <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/diffuseReflect.png" width="350px">
-  
+  <img src="https://github.com/wangyongyao1989/AndroidLearnOpenGL/blob/master/pic/OpenGLMutiltLight.gif" width="350px">
