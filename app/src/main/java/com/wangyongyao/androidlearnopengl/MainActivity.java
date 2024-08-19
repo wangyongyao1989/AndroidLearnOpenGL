@@ -13,12 +13,17 @@ import com.wangyongyao.androidlearnopengl.view.GL3DMultiCubeView;
 import com.wangyongyao.androidlearnopengl.view.GL3DView;
 import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
 import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
+import com.wangyongyao.androidlearnopengl.view.GLAttenuationLightView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
 import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
+import com.wangyongyao.androidlearnopengl.view.GLDirectionalLightView;
+import com.wangyongyao.androidlearnopengl.view.GLFlashLightView;
 import com.wangyongyao.androidlearnopengl.view.GLLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
+import com.wangyongyao.androidlearnopengl.view.GLMultiLightView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
 import com.wangyongyao.androidlearnopengl.view.GLSpecularMapView;
+import com.wangyongyao.androidlearnopengl.view.GLSpotLightView;
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -39,6 +44,11 @@ public class MainActivity extends AppCompatActivity {
     private Button mBtn10;
     private Button mBtn11;
     private Button mBtn12;
+    private Button mBtn13;
+    private Button mBtn14;
+    private Button mBtn15;
+    private Button mBtn16;
+    private Button mBtn17;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -132,6 +142,37 @@ public class MainActivity extends AppCompatActivity {
                     = new GLSpecularMapView(getApplication(), mJniCall);
             mGlShow1.addView(glSpecularMap);
         });
+        mBtn13.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLDirectionalLightView glDirectionalLight
+                    = new GLDirectionalLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glDirectionalLight);
+        });
+        mBtn14.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLAttenuationLightView glAttenuationLight
+                    = new GLAttenuationLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glAttenuationLight);
+        });
+        mBtn15.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLFlashLightView glFlashLight
+                    = new GLFlashLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glFlashLight);
+        });
+        mBtn16.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSpotLightView glSpotLightView
+                    = new GLSpotLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glSpotLightView);
+        });
+        mBtn17.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLMultiLightView glMultiLightView
+                    = new GLMultiLightView(getApplication(), mJniCall);
+            mGlShow1.addView(glMultiLightView);
+        });
+
 
 
     }
@@ -154,6 +195,11 @@ public class MainActivity extends AppCompatActivity {
         mBtn10 = mBinding.btn10;
         mBtn11 = mBinding.btn11;
         mBtn12 = mBinding.btn12;
+        mBtn13 = mBinding.btn13;
+        mBtn14 = mBinding.btn14;
+        mBtn15 = mBinding.btn15;
+        mBtn16 = mBinding.btn16;
+        mBtn17 = mBinding.btn17;
 
     }
 
