@@ -95,7 +95,7 @@ void OpenglesMultiLight::renderFrame() {
     lightColorShader->use();
     lightColorShader->setVec3("viewPos", mCamera.Position);
     // material properties
-    lightColorShader->setFloat("material.shininess", 64.0f);
+    lightColorShader->setFloat("material.shininess", 32.0f);
 
 
     //1、定向光照
@@ -138,6 +138,17 @@ void OpenglesMultiLight::renderFrame() {
     lightColorShader->setFloat("pointLights[3].linear", 0.09f);
     lightColorShader->setFloat("pointLights[3].quadratic", 0.032f);
 
+    // 3、聚光
+    lightColorShader->setVec3("spotLight.position", mCamera.Position);
+    lightColorShader->setVec3("spotLight.direction", mCamera.Front);
+    lightColorShader->setVec3("spotLight.ambient", 0.0f, 0.0f, 0.0f);
+    lightColorShader->setVec3("spotLight.diffuse", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setVec3("spotLight.specular", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setFloat("spotLight.constant", 1.0f);
+    lightColorShader->setFloat("spotLight.linear", 0.09f);
+    lightColorShader->setFloat("spotLight.quadratic", 0.032f);
+    lightColorShader->setFloat("spotLight.cutOff", glm::cos(glm::radians(12.5f)));
+    lightColorShader->setFloat("spotLight.outerCutOff", glm::cos(glm::radians(15.0f)));
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
