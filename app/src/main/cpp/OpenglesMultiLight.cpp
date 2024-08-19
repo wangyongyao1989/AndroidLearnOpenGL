@@ -93,20 +93,51 @@ void OpenglesMultiLight::renderFrame() {
     glEnable(GL_DEPTH_TEST);
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
-
-//    lightColorShader->setVec3("light.position", DirectionLightLightPos);
-
-    lightColorShader->setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
     lightColorShader->setVec3("viewPos", mCamera.Position);
+    // material properties
+    lightColorShader->setFloat("material.shininess", 64.0f);
 
-    // light properties
+
+    //1、定向光照
+    lightColorShader->setVec3("dirLight.direction", -0.2f, -1.0f, -0.3f);
     lightColorShader->setVec3("dirLight.ambient", 0.5f, 0.5f, 0.5f);
     lightColorShader->setVec3("dirLight.diffuse", 1.0f, 1.0f, 1.0f);
     lightColorShader->setVec3("dirLight.specular", 0.5f, 0.5f, 0.5f);
 
-    // material properties
-    lightColorShader->setVec3("material.specular", 0.5f, 0.5f, 0.5f);
-    lightColorShader->setFloat("material.shininess", 64.0f);
+    //2、点光源
+    //点光源1
+    lightColorShader->setVec3("pointLights[0].position", pointLightPositions[0]);
+    lightColorShader->setVec3("pointLights[0].ambient", 0.05f, 0.05f, 0.05f);
+    lightColorShader->setVec3("pointLights[0].diffuse", 0.8f, 0.8f, 0.8f);
+    lightColorShader->setVec3("pointLights[0].specular", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setFloat("pointLights[0].constant", 1.0f);
+    lightColorShader->setFloat("pointLights[0].linear", 0.09f);
+    lightColorShader->setFloat("pointLights[0].quadratic", 0.032f);
+    // point light 2
+    lightColorShader->setVec3("pointLights[1].position", pointLightPositions[1]);
+    lightColorShader->setVec3("pointLights[1].ambient", 0.05f, 0.05f, 0.05f);
+    lightColorShader->setVec3("pointLights[1].diffuse", 0.8f, 0.8f, 0.8f);
+    lightColorShader->setVec3("pointLights[1].specular", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setFloat("pointLights[1].constant", 1.0f);
+    lightColorShader->setFloat("pointLights[1].linear", 0.09f);
+    lightColorShader->setFloat("pointLights[1].quadratic", 0.032f);
+    // point light 3
+    lightColorShader->setVec3("pointLights[2].position", pointLightPositions[2]);
+    lightColorShader->setVec3("pointLights[2].ambient", 0.05f, 0.05f, 0.05f);
+    lightColorShader->setVec3("pointLights[2].diffuse", 0.8f, 0.8f, 0.8f);
+    lightColorShader->setVec3("pointLights[2].specular", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setFloat("pointLights[2].constant", 1.0f);
+    lightColorShader->setFloat("pointLights[2].linear", 0.09f);
+    lightColorShader->setFloat("pointLights[2].quadratic", 0.032f);
+    // point light 4
+    lightColorShader->setVec3("pointLights[3].position", pointLightPositions[3]);
+    lightColorShader->setVec3("pointLights[3].ambient", 0.05f, 0.05f, 0.05f);
+    lightColorShader->setVec3("pointLights[3].diffuse", 0.8f, 0.8f, 0.8f);
+    lightColorShader->setVec3("pointLights[3].specular", 1.0f, 1.0f, 1.0f);
+    lightColorShader->setFloat("pointLights[3].constant", 1.0f);
+    lightColorShader->setFloat("pointLights[3].linear", 0.09f);
+    lightColorShader->setFloat("pointLights[3].quadratic", 0.032f);
+
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
@@ -119,7 +150,7 @@ void OpenglesMultiLight::renderFrame() {
 
     // world transformation
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(45.0f), MultiLightLightPos);
+    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.3f, 0.5f));
     lightColorShader->setMat4("model", model);
 
     // bind diffuse map
@@ -130,9 +161,6 @@ void OpenglesMultiLight::renderFrame() {
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, specularMapTexture);
 
-/*    // render the cube
-    glBindVertexArray(cubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);*/
 
     // render containers
     glBindVertexArray(cubeVAO);
@@ -152,13 +180,17 @@ void OpenglesMultiLight::renderFrame() {
     lightCubeShader->use();
     lightCubeShader->setMat4("projection", projection);
     lightCubeShader->setMat4("view", view);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, MultiLightLightPos);
-    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-    lightCubeShader->setMat4("model", model);
 
     glBindVertexArray(lightCubeVAO);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    for (unsigned int i = 0; i < 4; i++)
+    {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, pointLightPositions[i]);
+        model = glm::scale(model, glm::vec3(0.3f)); // Make it a smaller cube
+        lightCubeShader->setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 36);
+    }
+
     checkGlError("glDrawArrays");
 }
 
