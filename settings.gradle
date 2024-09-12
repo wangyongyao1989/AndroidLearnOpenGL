@@ -21,3 +21,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "AndroidLearnOpenGL"
 include ':app'
+include ':glfoundation'
