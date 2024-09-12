@@ -1,4 +1,4 @@
-package com.wangyongyao.androidlearnopengl.view;
+package com.wangyongyao.glfoundation.view;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
@@ -7,19 +7,20 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-import com.wangyongyao.androidlearnopengl.JniCall;
-import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+
+import com.wangyongyao.glfoundation.GLFounationJniCall;
+import com.wangyongyao.glfoundation.utils.OpenGLFoundationUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GLSpecularMapView.class.getSimpleName();
-    private JniCall mJniCall;
+    private static String TAG = GL3DCameraView.class.getSimpleName();
+    private GLFounationJniCall mJniCall;
     private Context mContext;
     private boolean isScaleGesture;
 
@@ -27,14 +28,14 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
     private float downY;
 
 
-    public GLSpecularMapView(Context context, JniCall jniCall) {
+    public GL3DCameraView(Context context, GLFounationJniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GLSpecularMapView(Context context, AttributeSet attrs) {
+    public GL3DCameraView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -44,16 +45,13 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_cube_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_cube_vertex.glsl");
-        String colorFragPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_color_fragment.glsl");
-        String colorVertexPath = OpenGLUtil.getModelFilePath(mContext, "specular_map_color_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "specular_container2.png");
+        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "camera_3d_fragment.glsl");
+        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "camera_3d_vertex.glsl");
+        String picSrc1 = OpenGLFoundationUtil.getModelFilePath(mContext, "yao.jpg");
+        String picSrc2 = OpenGLFoundationUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
-            mJniCall.setSpecularMapGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
-            mJniCall.setSpecularMapColorGLSLPath(fragPath, vertexPath);
+            mJniCall.setCameraGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
         }
         setRenderer(this);
 
@@ -67,7 +65,7 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mJniCall.specularMapOnScale(scaleFactor, detector.getFocusX()
+                mJniCall.CameraOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -76,7 +74,7 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mJniCall.specularMapOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.CameraOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -85,7 +83,7 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mJniCall.specularMapOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.CameraOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -95,12 +93,12 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.specularMapOpenGLRenderFrame();
+            mJniCall.CameraOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initSpecularMapOpenGl(width, height);
+            mJniCall.initCamera3DOpenGl(width, height);
     }
 
 
@@ -130,7 +128,7 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mJniCall.specularMapMoveXY(0, 0, 1);
+                mJniCall.CameraMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -139,14 +137,14 @@ public class GLSpecularMapView extends GLSurfaceView implements GLSurfaceView.Re
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mJniCall.specularMapMoveXY(dx, dy, 2);
+                mJniCall.CameraMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mJniCall.specularMapMoveXY(0, 0, 3);
+                mJniCall.CameraMoveXY(0, 0, 3);
             }
             break;
         }

@@ -1,12 +1,13 @@
-package com.wangyongyao.androidlearnopengl.view;
+package com.wangyongyao.glfoundation.view;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.wangyongyao.androidlearnopengl.JniCall;
-import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+
+import com.wangyongyao.glfoundation.GLFounationJniCall;
+import com.wangyongyao.glfoundation.utils.OpenGLFoundationUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -14,10 +15,10 @@ import javax.microedition.khronos.opengles.GL10;
 public class GL3FoundationView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static String TAG = GL3FoundationView.class.getSimpleName();
-    private JniCall mJniCall;
+    private GLFounationJniCall mJniCall;
     private Context mContext;
 
-    public GL3FoundationView(Context context, JniCall jniCall) {
+    public GL3FoundationView(Context context, GLFounationJniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
@@ -35,14 +36,14 @@ public class GL3FoundationView extends GLSurfaceView implements GLSurfaceView.Re
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         //1、顶点及片段着色器的出入使用
-//        String fragPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
-//        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
+//        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "triangle_shape_fragment.glsl");
+//        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "triangle_shape_vertex.glsl");
         //2、in及out属性的使用
-//        String fragPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_shape_rad_fragment.glsl");
-//        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_shape_rad_vertex.glsl");
+//        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "rectangle_shape_rad_fragment.glsl");
+//        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "rectangle_shape_rad_vertex.glsl");
         //3、uniform的使用
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
+        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
+        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
         if (mJniCall != null)
             mJniCall.setFoundationGLSLPath(fragPath, vertexPath);
         setRenderer(this);

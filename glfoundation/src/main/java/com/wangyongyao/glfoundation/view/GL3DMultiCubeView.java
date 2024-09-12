@@ -1,11 +1,11 @@
-package com.wangyongyao.androidlearnopengl.view;
+package com.wangyongyao.glfoundation.view;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import com.wangyongyao.androidlearnopengl.JniCall;
-import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+import com.wangyongyao.glfoundation.GLFounationJniCall;
+import com.wangyongyao.glfoundation.utils.OpenGLFoundationUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -13,10 +13,10 @@ import javax.microedition.khronos.opengles.GL10;
 public class GL3DMultiCubeView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static String TAG = GL3DMultiCubeView.class.getSimpleName();
-    private JniCall mJniCall;
+    private GLFounationJniCall mJniCall;
     private Context mContext;
 
-    public GL3DMultiCubeView(Context context, JniCall jniCall) {
+    public GL3DMultiCubeView(Context context, GLFounationJniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
@@ -33,10 +33,10 @@ public class GL3DMultiCubeView extends GLSurfaceView implements GLSurfaceView.Re
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "multi_cube_3d_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "multi_cube_3d_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
-        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
+        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "multi_cube_3d_fragment.glsl");
+        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "multi_cube_3d_vertex.glsl");
+        String picSrc1 = OpenGLFoundationUtil.getModelFilePath(mContext, "yao.jpg");
+        String picSrc2 = OpenGLFoundationUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
             mJniCall.setMultiCube3DGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);

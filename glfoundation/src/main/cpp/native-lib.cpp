@@ -26,7 +26,7 @@
 #define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
 #define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
 
-const char *mainactivity_class_name = "com/wangyongyao/androidlearnopengl/JniCall";
+const char *glfounation_class_name = "com/wangyongyao/glfoundation/GLFounationJniCall";
 OpenglesFoundation *openglesFoundation;
 OpenglesTexture *openglTexture;
 Opengles3D *opengl3D;
@@ -1347,7 +1347,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     }
 
     // 获取类引用
-    jclass clazz = env->FindClass(mainactivity_class_name);
+    jclass clazz = env->FindClass(glfounation_class_name);
 
     // 注册native方法
     jint regist_result = env->RegisterNatives(clazz, methods,

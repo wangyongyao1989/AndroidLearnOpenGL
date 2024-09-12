@@ -1,11 +1,13 @@
 
 cmake_minimum_required(VERSION 3.22.1)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++11")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=gnu++14")
 
-project("androidlearnopengl")
+project("glfoundation")
 set(distribution_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
-add_library(${CMAKE_PROJECT_NAME}
+message(${CMAKE_PROJECT_NAME})
+add_library(
+        glfoundation
         SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         native-lib.cpp
@@ -33,7 +35,8 @@ add_library(${CMAKE_PROJECT_NAME}
 
 )
 
-target_link_libraries(${CMAKE_PROJECT_NAME}
+target_link_libraries(
+        glfoundation
         android
 #        jnigraphics
         EGL
@@ -41,5 +44,7 @@ target_link_libraries(${CMAKE_PROJECT_NAME}
         OpenSLES
         log)
 
-target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
+target_include_directories(
+        glfoundation
+        PRIVATE
         ${distribution_DIR}/includes)

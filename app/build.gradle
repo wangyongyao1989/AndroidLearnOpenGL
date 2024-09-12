@@ -16,8 +16,14 @@ android {
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         externalNativeBuild {
             cmake {
-                cppFlags '-std=c++11'
+                //cppFlags '-std=c++11'
+                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_MODE=arm', '-DANDROID_STL=c++_static'
+                cFlags "-ferror-limit=0 -fPIC"
+                cppFlags "-std=c++11 -frtti -fexceptions"
             }
+        }
+        ndk {
+            abiFilters 'armeabi-v7a'
         }
     }
 
@@ -31,12 +37,7 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    externalNativeBuild {
-        cmake {
-            path file('src/main/cpp/CMakeLists.txt')
-            version '3.22.1'
-        }
-    }
+
     buildFeatures {
         viewBinding true
     }
@@ -47,6 +48,7 @@ dependencies {
     implementation libs.appcompat
     implementation libs.material
     implementation libs.constraintlayout
+    implementation project(':glfoundation')
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core

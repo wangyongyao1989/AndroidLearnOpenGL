@@ -1,14 +1,11 @@
-package com.wangyongyao.androidlearnopengl.view;
+package com.wangyongyao.glfoundation.view;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 
-import com.wangyongyao.androidlearnopengl.JniCall;
-import com.wangyongyao.androidlearnopengl.R;
-import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+import com.wangyongyao.glfoundation.GLFounationJniCall;
+import com.wangyongyao.glfoundation.utils.OpenGLFoundationUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -16,10 +13,10 @@ import javax.microedition.khronos.opengles.GL10;
 public class GL3TextureView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static String TAG = GL3TextureView.class.getSimpleName();
-    private JniCall mJniCall;
+    private GLFounationJniCall mJniCall;
     private Context mContext;
 
-    public GL3TextureView(Context context, JniCall jniCall) {
+    public GL3TextureView(Context context, GLFounationJniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
@@ -36,10 +33,10 @@ public class GL3TextureView extends GLSurfaceView implements GLSurfaceView.Rende
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "texture_demo_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "wall.jpg");
-        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
+        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "texture_demo_fragment.glsl");
+        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "texture_demo_vertex.glsl");
+        String picSrc1 = OpenGLFoundationUtil.getModelFilePath(mContext, "wall.jpg");
+        String picSrc2 = OpenGLFoundationUtil.getModelFilePath(mContext, "awesomeface.png");
 
         if (mJniCall != null) {
             mJniCall.setTextureGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);

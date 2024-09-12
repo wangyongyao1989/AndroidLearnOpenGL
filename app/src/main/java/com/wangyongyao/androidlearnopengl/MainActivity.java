@@ -10,23 +10,25 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
-import com.wangyongyao.androidlearnopengl.view.GL3DCameraView;
-import com.wangyongyao.androidlearnopengl.view.GL3DCubeView;
-import com.wangyongyao.androidlearnopengl.view.GL3DMultiCubeView;
-import com.wangyongyao.androidlearnopengl.view.GL3DView;
-import com.wangyongyao.androidlearnopengl.view.GL3FoundationView;
-import com.wangyongyao.androidlearnopengl.view.GL3TextureView;
-import com.wangyongyao.androidlearnopengl.view.GLAttenuationLightView;
-import com.wangyongyao.androidlearnopengl.view.GLDiffuseMapView;
-import com.wangyongyao.androidlearnopengl.view.GLDiffuseReflectionLightingView;
-import com.wangyongyao.androidlearnopengl.view.GLDirectionalLightView;
-import com.wangyongyao.androidlearnopengl.view.GLFlashLightView;
-import com.wangyongyao.androidlearnopengl.view.GLLightingView;
-import com.wangyongyao.androidlearnopengl.view.GLMaterialView;
-import com.wangyongyao.androidlearnopengl.view.GLMultiLightView;
-import com.wangyongyao.androidlearnopengl.view.GLSpecularLightingView;
-import com.wangyongyao.androidlearnopengl.view.GLSpecularMapView;
-import com.wangyongyao.androidlearnopengl.view.GLSpotLightView;
+import com.wangyongyao.glfoundation.GLFounationJniCall;
+import com.wangyongyao.glfoundation.view.GL3DCameraView;
+import com.wangyongyao.glfoundation.view.GL3DCubeView;
+import com.wangyongyao.glfoundation.view.GL3DMultiCubeView;
+import com.wangyongyao.glfoundation.view.GL3DView;
+import com.wangyongyao.glfoundation.view.GL3FoundationView;
+import com.wangyongyao.glfoundation.view.GL3TextureView;
+import com.wangyongyao.glfoundation.view.GLAttenuationLightView;
+import com.wangyongyao.glfoundation.view.GLDiffuseMapView;
+import com.wangyongyao.glfoundation.view.GLDiffuseReflectionLightingView;
+import com.wangyongyao.glfoundation.view.GLDirectionalLightView;
+import com.wangyongyao.glfoundation.view.GLFlashLightView;
+import com.wangyongyao.glfoundation.view.GLLightingView;
+import com.wangyongyao.glfoundation.view.GLMaterialView;
+import com.wangyongyao.glfoundation.view.GLMultiLightView;
+import com.wangyongyao.glfoundation.view.GLSpecularLightingView;
+import com.wangyongyao.glfoundation.view.GLSpecularMapView;
+import com.wangyongyao.glfoundation.view.GLSpotLightView;
+
 
 public class MainActivity extends AppCompatActivity {
     private final static String TAG = MainActivity.class.getSimpleName();
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private ActivityMainBinding mBinding;
     private Button mBtn1;
     private FrameLayout mGlShow1;
-    private JniCall mJniCall;
+    private GLFounationJniCall mFounationJniCall;
     private Button mBtn2;
     private Button mBtn3;
     private Button mBtn4;
@@ -89,97 +91,97 @@ public class MainActivity extends AppCompatActivity {
     private void initListener() {
         mBtn1.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3FoundationView gl3BaseView = new GL3FoundationView(getApplication(), mJniCall);
+            GL3FoundationView gl3BaseView = new GL3FoundationView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3BaseView);
         });
         mBtn2.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3TextureView gl3TextureView = new GL3TextureView(getApplication(), mJniCall);
+            GL3TextureView gl3TextureView = new GL3TextureView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3TextureView);
         });
         mBtn3.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3DView gl3dView = new GL3DView(getApplication(), mJniCall);
+            GL3DView gl3dView = new GL3DView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3dView);
         });
         mBtn4.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3DCubeView gl3DCubeView = new GL3DCubeView(getApplication(), mJniCall);
+            GL3DCubeView gl3DCubeView = new GL3DCubeView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3DCubeView);
         });
         mBtn5.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3DMultiCubeView gl3DMultiCubeView = new GL3DMultiCubeView(getApplication(), mJniCall);
+            GL3DMultiCubeView gl3DMultiCubeView = new GL3DMultiCubeView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3DMultiCubeView);
         });
         mBtn6.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GL3DCameraView gl3DCameraView = new GL3DCameraView(getApplication(), mJniCall);
+            GL3DCameraView gl3DCameraView = new GL3DCameraView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3DCameraView);
         });
         mBtn7.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLLightingView gl3DCameraView = new GLLightingView(getApplication(), mJniCall);
+            GLLightingView gl3DCameraView = new GLLightingView(getApplication(), mFounationJniCall);
             mGlShow1.addView(gl3DCameraView);
         });
         mBtn8.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLDiffuseReflectionLightingView reflectionLightingView
-                    = new GLDiffuseReflectionLightingView(getApplication(), mJniCall);
+                    = new GLDiffuseReflectionLightingView(getApplication(), mFounationJniCall);
             mGlShow1.addView(reflectionLightingView);
         });
         mBtn9.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLSpecularLightingView glSpecularLightingView
-                    = new GLSpecularLightingView(getApplication(), mJniCall);
+                    = new GLSpecularLightingView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glSpecularLightingView);
         });
         mBtn10.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLMaterialView glMaterialView
-                    = new GLMaterialView(getApplication(), mJniCall);
+                    = new GLMaterialView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glMaterialView);
         });
         mBtn11.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLDiffuseMapView glDiffuseMap
-                    = new GLDiffuseMapView(getApplication(), mJniCall);
+                    = new GLDiffuseMapView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glDiffuseMap);
         });
         mBtn12.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLSpecularMapView glSpecularMap
-                    = new GLSpecularMapView(getApplication(), mJniCall);
+                    = new GLSpecularMapView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glSpecularMap);
         });
         mBtn13.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLDirectionalLightView glDirectionalLight
-                    = new GLDirectionalLightView(getApplication(), mJniCall);
+                    = new GLDirectionalLightView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glDirectionalLight);
         });
         mBtn14.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLAttenuationLightView glAttenuationLight
-                    = new GLAttenuationLightView(getApplication(), mJniCall);
+                    = new GLAttenuationLightView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glAttenuationLight);
         });
         mBtn15.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLFlashLightView glFlashLight
-                    = new GLFlashLightView(getApplication(), mJniCall);
+                    = new GLFlashLightView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glFlashLight);
         });
         mBtn16.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLSpotLightView glSpotLightView
-                    = new GLSpotLightView(getApplication(), mJniCall);
+                    = new GLSpotLightView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glSpotLightView);
         });
         mBtn17.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLMultiLightView glMultiLightView
-                    = new GLMultiLightView(getApplication(), mJniCall);
+                    = new GLMultiLightView(getApplication(), mFounationJniCall);
             mGlShow1.addView(glMultiLightView);
         });
 
@@ -188,7 +190,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initData() {
-        mJniCall = new JniCall();
+        mFounationJniCall = new GLFounationJniCall();
     }
 
     private void initView() {

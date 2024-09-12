@@ -1,28 +1,26 @@
-package com.wangyongyao.androidlearnopengl.view;
+package com.wangyongyao.glfoundation.view;
 
 import android.content.Context;
-import android.graphics.Matrix;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
 
-import com.wangyongyao.androidlearnopengl.JniCall;
-import com.wangyongyao.androidlearnopengl.utils.OpenGLUtil;
+import com.wangyongyao.glfoundation.GLFounationJniCall;
+import com.wangyongyao.glfoundation.utils.OpenGLFoundationUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLFlashLightView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GL3DCameraView.class.getSimpleName();
-    private JniCall mJniCall;
+    private static String TAG = GLFlashLightView.class.getSimpleName();
+    private GLFounationJniCall mJniCall;
     private Context mContext;
     private boolean isScaleGesture;
 
@@ -30,14 +28,14 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
     private float downY;
 
 
-    public GL3DCameraView(Context context, JniCall jniCall) {
+    public GLFlashLightView(Context context, GLFounationJniCall jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GL3DCameraView(Context context, AttributeSet attrs) {
+    public GLFlashLightView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -47,13 +45,16 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLUtil.getModelFilePath(mContext, "camera_3d_fragment.glsl");
-        String vertexPath = OpenGLUtil.getModelFilePath(mContext, "camera_3d_vertex.glsl");
-        String picSrc1 = OpenGLUtil.getModelFilePath(mContext, "yao.jpg");
-        String picSrc2 = OpenGLUtil.getModelFilePath(mContext, "awesomeface.png");
+        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "flash_light_cube_fragment.glsl");
+        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "flash_light_cube_vertex.glsl");
+        String colorFragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "flash_light_color_fragment.glsl");
+        String colorVertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "flash_light_color_vertex.glsl");
+        String picSrc1 = OpenGLFoundationUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
+        String picSrc2 = OpenGLFoundationUtil.getModelFilePath(mContext, "specular_container2.png");
 
         if (mJniCall != null) {
-            mJniCall.setCameraGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
+            mJniCall.setFlashLightGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
+            mJniCall.setFlashLightColorGLSLPath(fragPath, vertexPath);
         }
         setRenderer(this);
 
@@ -67,7 +68,7 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mJniCall.CameraOnScale(scaleFactor, detector.getFocusX()
+                mJniCall.flashLightOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -76,7 +77,7 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mJniCall.CameraOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.flashLightOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -85,7 +86,7 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mJniCall.CameraOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.flashLightOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -95,12 +96,12 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null)
-            mJniCall.CameraOpenGLRenderFrame();
+            mJniCall.flashLightOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mJniCall != null)
-            mJniCall.initCamera3DOpenGl(width, height);
+            mJniCall.initFlashLightOpenGl(width, height);
     }
 
 
@@ -130,7 +131,7 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mJniCall.CameraMoveXY(0, 0, 1);
+                mJniCall.flashLightMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -139,14 +140,14 @@ public class GL3DCameraView extends GLSurfaceView implements GLSurfaceView.Rende
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mJniCall.CameraMoveXY(dx, dy, 2);
+                mJniCall.flashLightMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mJniCall.CameraMoveXY(0, 0, 3);
+                mJniCall.flashLightMoveXY(0, 0, 3);
             }
             break;
         }

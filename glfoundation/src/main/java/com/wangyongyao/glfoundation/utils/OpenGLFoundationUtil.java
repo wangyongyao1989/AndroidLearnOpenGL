@@ -1,22 +1,17 @@
-package com.wangyongyao.androidlearnopengl.utils;
+package com.wangyongyao.glfoundation.utils;
 
 import android.content.Context;
-import android.content.res.AssetFileDescriptor;
 import android.content.res.AssetManager;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.os.ParcelFileDescriptor;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 
-public class OpenGLUtil {
+public class OpenGLFoundationUtil {
 
     private static Bitmap getBitmapFromAssetFile(Context context, String name) {
         try {

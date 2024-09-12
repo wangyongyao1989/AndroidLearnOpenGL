@@ -1,10 +1,10 @@
-package com.wangyongyao.androidlearnopengl;
+package com.wangyongyao.glfoundation;
 
-public class JniCall {
+public class GLFounationJniCall {
 
     // Used to load the 'androidlearnopengl' library on application startup.
     static {
-        System.loadLibrary("androidlearnopengl");
+        System.loadLibrary("glfoundation");
     }
 
     public void setFoundationGLSLPath(String fragString, String vertexString) {
