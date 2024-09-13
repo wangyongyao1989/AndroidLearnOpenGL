@@ -1,5 +1,5 @@
 plugins {
-    alias(libs.plugins.android.application)
+    id 'com.android.application'
 }
 
 android {
@@ -48,6 +48,7 @@ dependencies {
     implementation libs.appcompat
     implementation libs.material
     implementation libs.constraintlayout
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation project(':glfoundation')
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
