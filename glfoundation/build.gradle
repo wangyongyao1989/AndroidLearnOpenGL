@@ -1,29 +1,24 @@
 plugins {
-    id 'com.android.application'
+    id 'com.android.library'
 }
 
 android {
-    namespace 'com.wangyongyao.androidlearnopengl'
+    namespace 'com.wangyongyao.glfoundation'
     compileSdk 34
 
     defaultConfig {
-        applicationId "com.wangyongyao.androidlearnopengl"
         minSdk 26
-        targetSdk 34
-        versionCode 1
-        versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
         externalNativeBuild {
             cmake {
-                //cppFlags '-std=c++11'
-                arguments '-DANDROID_TOOLCHAIN=clang', '-DANDROID_ARM_MODE=arm', '-DANDROID_STL=c++_static'
-                cFlags "-ferror-limit=0 -fPIC"
-                cppFlags "-std=c++11 -frtti -fexceptions"
+                cppFlags ""
             }
         }
-        ndk {
-            abiFilters 'armeabi-v7a'
+
+        ndk{
+            abiFilters "armeabi-v7a"
         }
     }
 
@@ -33,13 +28,17 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+
+    externalNativeBuild {
+        cmake {
+            path file('src/main/cpp/CMakeLists.txt')
+            version '3.22.1'
+        }
+    }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    buildFeatures {
-        viewBinding true
     }
 }
 
@@ -47,9 +46,6 @@ dependencies {
 
     implementation libs.appcompat
     implementation libs.material
-    implementation libs.constraintlayout
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation project(':glfoundation')
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
