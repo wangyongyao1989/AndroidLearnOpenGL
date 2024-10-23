@@ -11,6 +11,24 @@ public class GL3DCallJni {
     }
 
 
+    public void setGL3DSLPath(String fragPath, String vertexPath) {
+        native_3d_set_glsl_path(fragPath, vertexPath);
+    }
+
+    public void gl3DRenderFrame() {
+        native_3d_render_frame();
+    }
+
+    public void init3D(int width, int height) {
+        native_3d_init_opengl(width, height);
+    }
+
+    private native void native_3d_set_glsl_path(String fragPath, String vertexPath);
+
+    private native boolean native_3d_init_opengl(int width, int height);
+
+    private native void native_3d_render_frame();
+
 
     private void CppEventCallback(int msgType, float msgValue) {
         Log.e(TAG, "msgType:" + msgType + "====msgValue:" + msgValue);
@@ -21,6 +39,5 @@ public class GL3DCallJni {
         Log.e(TAG, "status:" + status);
 
     }
-
 
 }

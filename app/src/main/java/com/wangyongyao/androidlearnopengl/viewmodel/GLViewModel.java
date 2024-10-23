@@ -12,6 +12,7 @@ public class GLViewModel extends ViewModel {
     public enum FRAGMENT_STATUS {
         MAIN,
         GL_FOUNDATION,
+        GL_3D,
     }
 
 

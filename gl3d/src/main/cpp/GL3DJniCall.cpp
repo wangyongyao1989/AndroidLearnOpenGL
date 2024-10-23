@@ -11,12 +11,40 @@
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/gl3d/GL3DCallJni";
 
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_foundation_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_foundation_render_frame(JNIEnv *env, jobject thiz) {
+
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_foundation_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
 
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-
-
+        {"native_3d_init_opengl", "(II)Z", (void *) cpp_foundation_init_opengl},
+        {"native_3d_render_frame", "()V", (void *) cpp_foundation_render_frame},
+        {"native_3d_set_glsl_path", "(Ljava/lang/String;"
+                                    "Ljava/lang/String;)V",
+         (void *) cpp_foundation_frag_vertex_path},
 };
 
 

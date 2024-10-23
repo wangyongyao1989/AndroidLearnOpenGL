@@ -15,6 +15,7 @@ import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
+import com.wangyongyao.androidlearnopengl.fragment.GL3DFragment;
 import com.wangyongyao.androidlearnopengl.fragment.GLFoundationFragment;
 import com.wangyongyao.androidlearnopengl.fragment.MainFragment;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
@@ -49,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout mFlGlMain;
     private FrameLayout mFlGlFoundation;
     private GLFoundationFragment mFoundationFragment;
+    private FrameLayout mFlGl3d;
+    private GL3DFragment mGl3DFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -99,6 +102,16 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
             }
             break;
+            case GL_3D: {
+                if (mGl3DFragment == null) {
+                    mGl3DFragment = new GL3DFragment();
+                    fragmentTransaction
+                            .add(mFlGl3d.getId(), mGl3DFragment);
+                }
+                fragmentTransaction.show(mGl3DFragment);
+                fragmentTransaction.commit();
+            }
+            break;
         }
     }
 
@@ -108,6 +121,10 @@ public class MainActivity extends AppCompatActivity {
         }
         if (mFoundationFragment != null) {
             frt.hide(mFoundationFragment);
+        }
+
+        if (mGl3DFragment != null) {
+            frt.hide(mGl3DFragment);
         }
 
     }
@@ -142,6 +159,7 @@ public class MainActivity extends AppCompatActivity {
     private void initView() {
         mFlGlMain = mBinding.flGlMain;
         mFlGlFoundation = mBinding.flGlFoundation;
+        mFlGl3d = mBinding.flGl3d;
 
     }
 
