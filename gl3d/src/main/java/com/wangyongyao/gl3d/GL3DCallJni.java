@@ -7,7 +7,7 @@ public class GL3DCallJni {
     private static final String TAG = GL3DCallJni.class.getSimpleName();
 
     static {
-        System.loadLibrary("gl3d");
+        System.loadLibrary("gl3dshow");
     }
 
 

@@ -4,39 +4,19 @@ import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
 
 import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
-import com.wangyongyao.androidlearnopengl.fragment.GL3DFragment;
+import com.wangyongyao.androidlearnopengl.fragment.GL3DShowFragment;
 import com.wangyongyao.androidlearnopengl.fragment.GLFoundationFragment;
 import com.wangyongyao.androidlearnopengl.fragment.MainFragment;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
-import com.wangyongyao.glfoundation.GLFounationJniCall;
-import com.wangyongyao.glfoundation.view.GL3DCameraView;
-import com.wangyongyao.glfoundation.view.GL3DCubeView;
-import com.wangyongyao.glfoundation.view.GL3DMultiCubeView;
-import com.wangyongyao.glfoundation.view.GL3DView;
-import com.wangyongyao.glfoundation.view.GL3FoundationView;
-import com.wangyongyao.glfoundation.view.GL3TextureView;
-import com.wangyongyao.glfoundation.view.GLAttenuationLightView;
-import com.wangyongyao.glfoundation.view.GLDiffuseMapView;
-import com.wangyongyao.glfoundation.view.GLDiffuseReflectionLightingView;
-import com.wangyongyao.glfoundation.view.GLDirectionalLightView;
-import com.wangyongyao.glfoundation.view.GLFlashLightView;
-import com.wangyongyao.glfoundation.view.GLLightingView;
-import com.wangyongyao.glfoundation.view.GLMaterialView;
-import com.wangyongyao.glfoundation.view.GLMultiLightView;
-import com.wangyongyao.glfoundation.view.GLSpecularLightingView;
-import com.wangyongyao.glfoundation.view.GLSpecularMapView;
-import com.wangyongyao.glfoundation.view.GLSpotLightView;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -51,7 +31,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout mFlGlFoundation;
     private GLFoundationFragment mFoundationFragment;
     private FrameLayout mFlGl3d;
-    private GL3DFragment mGl3DFragment;
+    private GL3DShowFragment mGl3DShowFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,12 +83,12 @@ public class MainActivity extends AppCompatActivity {
             }
             break;
             case GL_3D: {
-                if (mGl3DFragment == null) {
-                    mGl3DFragment = new GL3DFragment();
+                if (mGl3DShowFragment == null) {
+                    mGl3DShowFragment = new GL3DShowFragment();
                     fragmentTransaction
-                            .add(mFlGl3d.getId(), mGl3DFragment);
+                            .add(mFlGl3d.getId(), mGl3DShowFragment);
                 }
-                fragmentTransaction.show(mGl3DFragment);
+                fragmentTransaction.show(mGl3DShowFragment);
                 fragmentTransaction.commit();
             }
             break;
@@ -123,8 +103,8 @@ public class MainActivity extends AppCompatActivity {
             frt.hide(mFoundationFragment);
         }
 
-        if (mGl3DFragment != null) {
-            frt.hide(mGl3DFragment);
+        if (mGl3DShowFragment != null) {
+            frt.hide(mGl3DShowFragment);
         }
 
     }
