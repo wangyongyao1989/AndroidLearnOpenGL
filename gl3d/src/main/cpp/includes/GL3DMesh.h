@@ -11,7 +11,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-#include <GLShader.h>
+#include <GL3DShader.h>
 
 #include <string>
 #include <vector>
@@ -57,7 +57,7 @@ public:
 
     ~GL3DMesh();
 
-    void Draw(GLShader &shader);
+    void Draw(GL3DShader &shader);
 
 
 private:

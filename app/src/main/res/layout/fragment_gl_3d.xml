@@ -31,10 +31,20 @@
                 android:id="@+id/btn_3d1"
                 android:layout_width="90dp"
                 android:layout_height="40dp"
-                android:text="GL基础"
+                android:text="GL聚光手电筒"
                 android:textSize="10sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/btn_back"
+                tools:ignore="HardcodedText,SmallSp" />
+
+            <Button
+                android:id="@+id/btn_3d2"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:text="3D模型显示"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_3d1"
                 tools:ignore="HardcodedText,SmallSp" />
 
 

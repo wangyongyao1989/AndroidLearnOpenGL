@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 
 import com.wangyongyao.gl3d.GL3DCallJni;
-import com.wangyongyao.gl3d.utils.OpenGLFoundationUtil;
+import com.wangyongyao.gl3d.utils.GL3DShowUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -34,8 +34,8 @@ public class GL3DShowView extends GLSurfaceView implements GLSurfaceView.Rendere
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = OpenGLFoundationUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
-        String vertexPath = OpenGLFoundationUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
+        String fragPath = GL3DShowUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
+        String vertexPath = GL3DShowUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
         if (mJniCall != null)
             mJniCall.setGL3DSLPath(fragPath, vertexPath);
         setRenderer(this);

@@ -2,8 +2,8 @@
 // Created by MMM on 2024/8/8.
 //
 
-#ifndef ANDROIDLEARNOPENGL_GLSHADER_H
-#define ANDROIDLEARNOPENGL_GLSHADER_H
+#ifndef ANDROIDLEARNOPENGL_GL3DSHADER_H
+#define ANDROIDLEARNOPENGL_GL3DSHADER_H
 
 #include <GLES3/gl3.h>              //导入的包为GL3对应的顶点程序和片元程序为：#version 320 es
 #include <GLES3/gl3ext.h>
@@ -22,7 +22,7 @@
 using namespace std;
 
 
-class GLShader {
+class GL3DShader {
 private:
     //顶点着色器代码
     const char *gVertexShaderCode = nullptr;
@@ -44,9 +44,9 @@ private:
 public:
     GLuint shaderId;
 
-    GLShader();
+    GL3DShader();
 
-    ~GLShader();
+    ~GL3DShader();
 
     bool getSharderPath(const char *vertexPath, const char *fragmentPath);
 
@@ -117,4 +117,4 @@ public:
 };
 
 
-#endif //ANDROIDLEARNOPENGL_GLSHADER_H
+#endif //ANDROIDLEARNOPENGL_GL3DSHADER_H

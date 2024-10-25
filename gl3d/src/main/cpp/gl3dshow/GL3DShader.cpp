@@ -2,12 +2,12 @@
 // Created by MMM on 2024/8/8.
 //
 
-#include "GLShader.h"
+#include "GL3DShader.h"
 
 
 
 GLuint
-GLShader::createProgram() {
+GL3DShader::createProgram() {
     vertexShader = loadShader(GL_VERTEX_SHADER, gVertexShaderCode);
     LOGI("=====gVertexShaderCode :%s", gVertexShaderCode);
     LOGI("======gFragmentShaderCode :%s", gFragmentShaderCode);
@@ -56,7 +56,7 @@ GLShader::createProgram() {
  * @param pSource
  * @return
  */
-GLuint GLShader::loadShader(GLenum shaderType, const char *pSource) {
+GLuint GL3DShader::loadShader(GLenum shaderType, const char *pSource) {
     GLuint shader = glCreateShader(shaderType);     //创建着色器
     if (shader) {
         glShaderSource(shader, 1, &pSource, NULL);  //着色器源码附加到着色器对象上
@@ -82,7 +82,7 @@ GLuint GLShader::loadShader(GLenum shaderType, const char *pSource) {
     return shader;
 }
 
-bool GLShader::getSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool GL3DShader::getSharderPath(const char *vertexPath, const char *fragmentPath) {
     ifstream vShaderFile;
     ifstream fShaderFile;
 
@@ -114,18 +114,18 @@ bool GLShader::getSharderPath(const char *vertexPath, const char *fragmentPath) 
     return true;
 }
 
-void GLShader::printGLString(const char *name, GLenum s) {
+void GL3DShader::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void GLShader::checkGlError(const char *op) {
+void GL3DShader::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 }
 
-GLShader::~GLShader() {
+GL3DShader::~GL3DShader() {
     if (vertexShader) {
         glDeleteShader(vertexShader);
     }
@@ -139,6 +139,6 @@ GLShader::~GLShader() {
     gFragmentShaderCode = nullptr;
 }
 
-GLShader::GLShader() {
+GL3DShader::GL3DShader() {
 
 }

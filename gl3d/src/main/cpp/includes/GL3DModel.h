@@ -12,7 +12,7 @@
 #include <assimp/postprocess.h>
 
 #include <GL3DMesh.h>
-#include <GLShader.h>
+#include <GL3DShader.h>
 
 #include <string>
 #include <fstream>
@@ -35,7 +35,7 @@ private:
     GL3DModel(string const &path, bool gamma = false);
 
     // draws the model, and thus all its meshes
-    void Draw(GLShader &shader);
+    void Draw(GL3DShader &shader);
 
 
 private:

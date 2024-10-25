@@ -14,7 +14,7 @@ GL3DMesh::GL3DMesh(vector <Vertex> vertices, vector<unsigned int> indices,
     setupMesh();
 }
 
-void GL3DMesh::Draw(GLShader &shader) {
+void GL3DMesh::Draw(GL3DShader &shader) {
     // bind appropriate textures
     unsigned int diffuseNr = 1;
     unsigned int specularNr = 1;

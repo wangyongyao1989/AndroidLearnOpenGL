@@ -1,15 +1,88 @@
 #include <jni.h>
 #include <string>
 #include <android/log.h>
-
-#define LOG_TAG "wy"
-#define LOGI(...) __android_log_print(ANDROID_LOG_INFO,LOG_TAG,__VA_ARGS__)
-#define LOGD(...) __android_log_print(ANDROID_LOG_DEBUG, LOG_TAG, __VA_ARGS__)
-#define LOGW(...) __android_log_print(ANDROID_LOG_WARN, LOG_TAG, __VA_ARGS__)
-#define LOGE(...) __android_log_print(ANDROID_LOG_ERROR,LOG_TAG,__VA_ARGS__)
+#include "GL3DLogUtils.h"
+#include "GL3DFlashLight.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/gl3d/GL3DCallJni";
+
+GL3DFlashLight *flashLight;
+
+/*********************** GL 聚光手电筒********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_flash_light_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (flashLight == nullptr)
+        flashLight = new GL3DFlashLight();
+    flashLight->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_flash_light_render_frame(JNIEnv *env, jobject thiz) {
+    if (flashLight == nullptr) return;
+    flashLight->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_flash_light_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                 jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (flashLight == nullptr) {
+        flashLight = new GL3DFlashLight();
+    }
+    flashLight->setSharderPath(vertexPath, fragPath);
+
+    flashLight->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_flash_light_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                       jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (flashLight == nullptr) {
+        flashLight = new GL3DFlashLight();
+    }
+    flashLight->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_flash_light_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (flashLight == nullptr) return;
+    flashLight->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_flash_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                         jfloat focusY,
+                         jint actionMode) {
+    if (flashLight == nullptr) return;
+    flashLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 extern "C"
 JNIEXPORT jboolean JNICALL
@@ -40,13 +113,27 @@ cpp_3dshow_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring ver
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
-        {"native_3d_init_opengl",   "(II)Z", (void *) cpp_3dshow_init_opengl},
-        {"native_3d_render_frame",  "()V",   (void *) cpp_3dshow_render_frame},
-        {"native_3d_set_glsl_path", "(Ljava/lang/String;"
-                                    "Ljava/lang/String;)V",
-                                             (void *) cpp_3dshow_frag_vertex_path},
+        {"native_3d_init_opengl",                  "(II)Z",                 (void *) cpp_3dshow_init_opengl},
+        {"native_3d_render_frame",                 "()V",                   (void *) cpp_3dshow_render_frame},
+        {"native_3d_set_glsl_path",                "(Ljava/lang/String;"
+                                                   "Ljava/lang/String;)V",
+                                                                            (void *) cpp_3dshow_frag_vertex_path},
+
+        //聚光手电筒
+        {"native_flash_light_init_opengl",         "(II)Z",                 (void *) cpp_flash_light_init_opengl},
+        {"native_flash_light_render_frame",        "()V",                   (void *) cpp_flash_light_render_frame},
+        {"native_flash_light_color_set_glsl_path", "(Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_color_frag_vertex_path},
+        {"native_flash_light_set_glsl_path",       "(Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_frag_vertex_path},
+        {"native_flash_light_move_xy",             "(FFI)V",                (void *) cpp_flash_light_move_xy},
+        {"native_flash_light_on_scale",            "(FFFI)V",               (void *) cpp_flash_light_on_scale},
 
 };
+
+
 
 
 

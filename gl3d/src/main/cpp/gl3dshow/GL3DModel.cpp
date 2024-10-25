@@ -8,7 +8,7 @@ GL3DModel::GL3DModel(const string &path, bool gamma) {
     loadModel(path);
 }
 
-void GL3DModel::Draw(GLShader &shader) {
+void GL3DModel::Draw(GL3DShader &shader) {
     for (unsigned int i = 0; i < meshes.size(); i++)
         meshes[i].Draw(shader);
 }

@@ -20,10 +20,12 @@ add_library(
         SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         GL3DJniCall.cpp
+        gl3dshow/GL3DFlashLight.cpp
+
         gl3dshow/GL3DStdImage.cpp
         gl3dshow/GLCamera3D.cpp
         gl3dshow/GL3DShow.cpp
-        gl3dshow/GLShader.cpp
+        gl3dshow/GL3DShader.cpp
         gl3dshow/GL3DMesh.cpp
         gl3dshow/GL3DModel.cpp
 

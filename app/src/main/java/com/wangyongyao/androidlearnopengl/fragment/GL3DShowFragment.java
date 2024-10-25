@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGl3dBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.gl3d.GL3DCallJni;
+import com.wangyongyao.gl3d.view.GL3DFlashLightView;
 import com.wangyongyao.gl3d.view.GL3DShowView;
 
 /**
@@ -29,6 +30,7 @@ public class GL3DShowFragment extends BaseFragment {
     private Button mBtnBack;
     private GLViewModel mGlViewModel;
     private Button mBtn3D1;
+    private Button mBtn3D2;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -43,6 +45,7 @@ public class GL3DShowFragment extends BaseFragment {
         mGlShow1 = mBinding.glShow;
         mBtnBack = mBinding.btnBack;
         mBtn3D1 = mBinding.btn3d1;
+        mBtn3D2 = mBinding.btn3d2;
 
     }
 
@@ -64,6 +67,12 @@ public class GL3DShowFragment extends BaseFragment {
         });
 
         mBtn3D1.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GL3DFlashLightView gl3DFlashLightView = new GL3DFlashLightView(getActivity(), mGL3DCallJni);
+            mGlShow1.addView(gl3DFlashLightView);
+        });
+
+        mBtn3D2.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GL3DShowView gl3DShowView = new GL3DShowView(getActivity(), mGL3DCallJni);
             mGlShow1.addView(gl3DShowView);
