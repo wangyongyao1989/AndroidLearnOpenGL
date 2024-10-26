@@ -27,8 +27,10 @@ void GL3DModel::loadModel(const string &path) {
         LOGE("ERROR::ASSIMP: %s", importer.GetErrorString());
         return;
     }
+
     // retrieve the directory path of the filepath
     directory = path.substr(0, path.find_last_of('/'));
+    LOGD("ASSIMP directory: %s", directory.c_str());
 
     // process ASSIMP's root node recursively
     processNode(scene->mRootNode, scene);

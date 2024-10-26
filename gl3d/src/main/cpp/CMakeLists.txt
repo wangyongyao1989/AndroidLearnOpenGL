@@ -34,7 +34,9 @@ add_library(
 
 target_link_libraries(
         gl3dshow
+        EGL
         GLESv3
+        OpenSLES
         log
         ${third-party-libs}
 

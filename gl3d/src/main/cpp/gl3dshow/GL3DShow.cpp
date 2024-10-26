@@ -19,7 +19,31 @@ bool GL3DShow::setupGraphics(int w, int h) {
 }
 
 void GL3DShow::renderFrame() {
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+
+    //开启深度测试
+    glEnable(GL_DEPTH_TEST);
+    // be sure to activate shader when setting uniforms/drawing objects
+    modelShader->use();
+
+    // view/projection transformations
+    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
+                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
+
+    glm::mat4 view = mCamera.GetViewMatrix();
+    modelShader->setMat4("projection", projection);
+    modelShader->setMat4("view", view);
+
+    // render the loaded model
+    glm::mat4 model = glm::mat4(1.0f);
+    // translate it down so it's at the center of the scene
+    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    // it's a bit too big for our scene, so scale it down
+    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+    modelShader->setMat4("model", model);
+    gl3DModel->Draw(*modelShader);
 }
 
 bool GL3DShow::setSharderPath(const char *vertexPath, const char *fragmentPath) {
@@ -30,7 +54,8 @@ bool GL3DShow::setSharderPath(const char *vertexPath, const char *fragmentPath) 
 
 bool GL3DShow::setModelPath(const char *modelPath) {
     LOGI("setMosetModelPath :%s", modelPath);
-
+    string model(modelPath);
+    gl3DModel = new GL3DModel(model, false);
     return false;
 }
 

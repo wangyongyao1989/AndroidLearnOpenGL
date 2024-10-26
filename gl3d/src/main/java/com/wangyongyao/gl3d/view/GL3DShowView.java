@@ -43,14 +43,12 @@ public class GL3DShowView extends GLSurfaceView implements GLSurfaceView.Rendere
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String fragPath = GL3DShowUtil.getModelFilePath(mContext
-                , "rectangle_uniform_fragment.glsl");
+                , "gl_3d_show_fragment.glsl");
         String vertexPath = GL3DShowUtil.getModelFilePath(mContext
-                , "rectangle_uniform_vertex.glsl");
-        String modelPath = GL3DShowUtil.getModelFilePath(mContext
-                ,"nanosuit.obj");
+                , "gl_3d_show_vertex.glsl");
+
         if (mJniCall != null) {
             mJniCall.setGL3DSLPath(fragPath, vertexPath);
-            mJniCall.setGL3DModelPath(modelPath);
         }
 
         setRenderer(this);
@@ -106,6 +104,14 @@ public class GL3DShowView extends GLSurfaceView implements GLSurfaceView.Rendere
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
+//        String modelPath = GL3DShowUtil.getModelFilePath(mContext
+//                , "nanosuit.obj");
+//        String modelPath = GL3DShowUtil.getModelFilePath(mContext
+//                , "nanosuit.mtl");
+        String modelPath = GL3DShowUtil.getModelFilePath(mContext
+                , "nanosuit.blend");
+        if (mJniCall != null)
+            mJniCall.setGL3DModelPath(modelPath);
 
     }
 

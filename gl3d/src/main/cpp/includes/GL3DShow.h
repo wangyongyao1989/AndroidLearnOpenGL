@@ -11,17 +11,18 @@
 #include "GLCamera3D.h"
 #include "GL3DShader.h"
 
+#include "GL3DModel.h"
+
 class GL3DShow {
 
 private:
-
-
     GLCamera3D mCamera;
     float lastX, lastY;
     int mActionMode;
 
     int screenW, screenH;
-    GL3DShader *modelShader;
+    GL3DShader *modelShader = nullptr;
+    GL3DModel *gl3DModel = nullptr;
 
 
 public:

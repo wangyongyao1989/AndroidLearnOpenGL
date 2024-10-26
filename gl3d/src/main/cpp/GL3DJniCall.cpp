@@ -101,7 +101,8 @@ cpp_3dshow_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_3dshow_render_frame(JNIEnv *env, jobject thiz) {
-
+    if (gl3DShow == nullptr) return;
+    gl3DShow->renderFrame();
 
 }
 
@@ -139,8 +140,8 @@ cpp_3dshow_model_path(JNIEnv *env, jobject thiz, jstring model) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_3d_show_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
-    if (flashLight == nullptr) return;
-    flashLight->setMoveXY(dx, dy, actionMode);
+    if (gl3DShow == nullptr) return;
+    gl3DShow->setMoveXY(dx, dy, actionMode);
 }
 
 extern "C"
@@ -148,8 +149,8 @@ JNIEXPORT void JNICALL
 cpp_3d_show_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
                      jfloat focusY,
                      jint actionMode) {
-    if (flashLight == nullptr) return;
-    flashLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
+    if (gl3DShow == nullptr) return;
+    gl3DShow->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
 

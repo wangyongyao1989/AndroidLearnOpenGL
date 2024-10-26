@@ -4,6 +4,7 @@
 
 #ifndef ANDROIDLEARNOPENGL_GL3DMODEL_H
 #define ANDROIDLEARNOPENGL_GL3DMODEL_H
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <image/stb_image.h>
@@ -20,6 +21,7 @@
 #include <iostream>
 #include <map>
 #include <vector>
+
 using namespace std;
 
 unsigned int TextureFromFile(const char *path, const string &directory, bool gamma = false);
@@ -32,11 +34,14 @@ private:
     string directory;
     bool gammaCorrection;
 
+    // draws the model, and thus all its meshes
+
+
+
+public:
     GL3DModel(string const &path, bool gamma = false);
 
-    // draws the model, and thus all its meshes
     void Draw(GL3DShader &shader);
-
 
 private:
     // loads a model with supported ASSIMP extensions from file and stores
