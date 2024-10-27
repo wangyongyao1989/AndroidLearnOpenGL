@@ -143,16 +143,16 @@ public class GL3DShowView extends GLSurfaceView implements GLSurfaceView.Rendere
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 float dx = event.getX() - downX;
                 float dy = event.getY() - downY;
-//                Log.e(TAG, "ACTION_MOVE:dx= "
-//                        + dx + "==dy:" + dy);
-                mJniCall.flashLightMoveXY(dx, dy, 2);
+                Log.e(TAG, "ACTION_MOVE:dx= "
+                        + dx + "==dy:" + dy);
+                mJniCall.gl3DShowMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mJniCall.flashLightMoveXY(0, 0, 3);
+                mJniCall.gl3DShowMoveXY(0, 0, 3);
             }
             break;
         }

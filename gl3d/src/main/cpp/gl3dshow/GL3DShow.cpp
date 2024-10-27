@@ -32,16 +32,18 @@ void GL3DShow::renderFrame() {
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
 
+    vec3 cameraMove(0.0f, 0.0f, 6.0f);
+    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
     modelShader->setMat4("projection", projection);
     modelShader->setMat4("view", view);
 
     // render the loaded model
-    glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 model = glm::mat4(0.4f);
     // translate it down so it's at the center of the scene
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
     // it's a bit too big for our scene, so scale it down
-    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
+    model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
     modelShader->setMat4("model", model);
     gl3DModel->Draw(*modelShader);
 }
@@ -101,6 +103,22 @@ GL3DShow::GL3DShow() {
 }
 
 GL3DShow::~GL3DShow() {
+    if (modelShader) {
+        delete modelShader;
+        modelShader = nullptr;
+    }
+
+    if (gl3DModel) {
+        delete gl3DModel;
+        gl3DModel = nullptr;
+    }
+
+    lastX = 0;
+    lastY = 0;
+    mActionMode = 0;
+    screenW = 0;
+    screenH = 0;
+
 
 }
 
