@@ -47,6 +47,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/btn_3d1"
                 tools:ignore="HardcodedText,SmallSp" />
 
+            <Button
+                android:id="@+id/btn_3d3"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:text="GL绘制文本"
+                android:textSize="10sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_3d2"
+                tools:ignore="HardcodedText,SmallSp" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

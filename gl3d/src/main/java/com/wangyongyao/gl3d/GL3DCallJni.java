@@ -11,6 +11,7 @@ public class GL3DCallJni {
     }
 
 
+    /*********************** GL 3D模型显示********************/
     public void setGL3DSLPath(String fragPath, String vertexPath) {
         native_3d_set_glsl_path(fragPath, vertexPath);
     }
@@ -46,6 +47,31 @@ public class GL3DCallJni {
     private native void native_3d_move_xy(float dx, float dy, int action);
 
     private native void native_3d_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+
+    /*********************** GL 绘制文本文字********************/
+    public void setGLDrawTextSLPath(String fragPath, String vertexPath) {
+        native_draw_text_set_glsl_path(fragPath, vertexPath);
+    }
+
+    public void glDrawTextRenderFrame() {
+        native_draw_text_render_frame();
+    }
+
+    public void initGLDrawText(int width, int height) {
+        native_draw_text_init_opengl(width, height);
+    }
+    public void setGLDrawTextTypePath(String modelPath) {
+        native_draw_text_type_path(modelPath);
+    }
+
+    private native void native_draw_text_set_glsl_path(String fragPath, String vertexPath);
+
+    private native boolean native_draw_text_init_opengl(int width, int height);
+
+    private native void native_draw_text_render_frame();
+    private native void native_draw_text_type_path(String modelPath);
+
 
     private void CppEventCallback(int msgType, float msgValue) {
         Log.e(TAG, "msgType:" + msgType + "====msgValue:" + msgValue);

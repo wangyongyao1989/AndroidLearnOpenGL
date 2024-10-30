@@ -12,8 +12,13 @@ set(jnilibs ${CMAKE_SOURCE_DIR}/jniLibs)
 
 set(third-party-libs
         ${jnilibs}/${ANDROID_ABI}/libassimp.so
+        ${jnilibs}/${ANDROID_ABI}/libfreetype.a
 )
 
+include_directories(
+        includes/freetype_2_9_1
+
+)
 
 add_library(
         gl3dshow
@@ -28,6 +33,7 @@ add_library(
         gl3dshow/GL3DShader.cpp
         gl3dshow/GL3DMesh.cpp
         gl3dshow/GL3DModel.cpp
+        gl3dshow/GLDrawText.cpp
 
 
 )
@@ -38,6 +44,7 @@ target_link_libraries(
         GLESv3
         OpenSLES
         log
+        android
         ${third-party-libs}
 
 )

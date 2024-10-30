@@ -4,12 +4,14 @@
 #include "GL3DLogUtils.h"
 #include "GL3DFlashLight.h"
 #include "GL3DShow.h"
+#include "GLDrawText.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/gl3d/GL3DCallJni";
 
 GL3DFlashLight *flashLight;
 GL3DShow *gl3DShow;
+GLDrawText *glDrawText;
 
 /*********************** GL 聚光手电筒********************/
 
@@ -153,9 +155,70 @@ cpp_3d_show_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focus
     gl3DShow->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
+/*********************** GL 3d模型显示********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_draw_text_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (glDrawText == nullptr)
+        glDrawText = new GLDrawText();
+    glDrawText->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_draw_text_render_frame(JNIEnv *env, jobject thiz) {
+    if (glDrawText == nullptr) return;
+    glDrawText->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_draw_text_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    if (glDrawText == nullptr) {
+        glDrawText = new GLDrawText();
+    }
+
+    glDrawText->setSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_draw_text_type_path(JNIEnv *env, jobject thiz, jstring path) {
+    const char *typePath = env->GetStringUTFChars(path, nullptr);
+    if (glDrawText == nullptr) {
+        glDrawText = new GLDrawText();
+    }
+
+    glDrawText->setDrawTextTypePath(typePath);
+
+    env->ReleaseStringUTFChars(path, typePath);
+
+}
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
+
+        /*********************** GL 3d模型显示********************/
+        {"native_draw_text_init_opengl",           "(II)Z",                 (void *) cpp_draw_text_init_opengl},
+        {"native_draw_text_render_frame",          "()V",                   (void *) cpp_draw_text_render_frame},
+        {"native_draw_text_set_glsl_path",         "(Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   ")V",
+                                                                            (void *) cpp_draw_text_frag_vertex_path},
+        {"native_draw_text_type_path",             "(Ljava/lang/String;"
+                                                   ")V",
+                                                                            (void *) cpp_draw_text_type_path},
+
+
 
         /*********************** GL 3d模型显示********************/
         {"native_3d_init_opengl",                  "(II)Z",                 (void *) cpp_3dshow_init_opengl},
