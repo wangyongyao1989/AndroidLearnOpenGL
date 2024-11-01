@@ -142,3 +142,11 @@ GL3DShader::~GL3DShader() {
 GL3DShader::GL3DShader() {
 
 }
+
+void GL3DShader::setGVertexShaderCode(const char *gVertexShaderCode) {
+    GL3DShader::gVertexShaderCode = gVertexShaderCode;
+}
+
+void GL3DShader::setGFragmentShaderCode(const char *gFragmentShaderCode) {
+    GL3DShader::gFragmentShaderCode = gFragmentShaderCode;
+}

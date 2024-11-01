@@ -27,10 +27,13 @@ private:
     int screenW, screenH;
     GL3DShader *drawTextShader = nullptr;
     map<GLchar, Character> Characters;
-    GLuint VAO, VBO;
+    GLuint VAO = GL_NONE;
+    GLuint VBO = GL_NONE;
 
     void RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
-                    glm::vec3 color);
+                    glm::vec3 color, glm::vec2 viewport);
+
+    void LoadFacesByASCII(const char *path);
 
     void printGLString(const char *name, GLenum s);
 
@@ -42,13 +45,13 @@ public:
 
     ~GLDrawText();
 
-    bool setupGraphics(int w, int h);
+    bool setupGraphics(int w, int h, const char *path);
 
     void renderFrame();
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath);
 
-    void setDrawTextTypePath(const char *typePath);
+//    void setDrawTextTypePath(const char *typePath);
 
 };
 

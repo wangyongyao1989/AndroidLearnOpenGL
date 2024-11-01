@@ -57,17 +57,21 @@ public class GLDrawTextView extends GLSurfaceView implements GLSurfaceView.Rende
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.e(TAG, "onSurfaceChanged: ");
-        if (mJniCall != null)
-            mJniCall.initGLDrawText(width, height);
+
+        if (mJniCall != null) {
+            String modelPath = GL3DShowUtil.getModelFilePath(mContext
+                    , "arial.ttf");
+            mJniCall.initGLDrawText(width, height,modelPath);
+        }
     }
 
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        String modelPath = GL3DShowUtil.getModelFilePath(mContext
-                , "jianti.ttf");
-        if (mJniCall != null)
-            mJniCall.setGLDrawTextTypePath(modelPath);
+//        String modelPath = GL3DShowUtil.getModelFilePath(mContext
+//                , "jianti.ttf");
+//        if (mJniCall != null)
+//            mJniCall.setGLDrawTextTypePath(modelPath);
     }
 
 

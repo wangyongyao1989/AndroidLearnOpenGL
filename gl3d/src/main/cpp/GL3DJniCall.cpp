@@ -159,10 +159,15 @@ cpp_3d_show_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focus
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-cpp_draw_text_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+cpp_draw_text_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height, jstring path) {
     if (glDrawText == nullptr)
         glDrawText = new GLDrawText();
-    glDrawText->setupGraphics(width, height);
+    const char *typePath = env->GetStringUTFChars(path, nullptr);
+
+    glDrawText->setupGraphics(width, height, typePath);
+
+    env->ReleaseStringUTFChars(path, typePath);
+
     return 0;
 }
 
@@ -190,60 +195,43 @@ cpp_draw_text_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring 
 
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-cpp_draw_text_type_path(JNIEnv *env, jobject thiz, jstring path) {
-    const char *typePath = env->GetStringUTFChars(path, nullptr);
-    if (glDrawText == nullptr) {
-        glDrawText = new GLDrawText();
-    }
-
-    glDrawText->setDrawTextTypePath(typePath);
-
-    env->ReleaseStringUTFChars(path, typePath);
-
-}
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
         /*********************** GL 3d模型显示********************/
-        {"native_draw_text_init_opengl",           "(II)Z",                 (void *) cpp_draw_text_init_opengl},
-        {"native_draw_text_render_frame",          "()V",                   (void *) cpp_draw_text_render_frame},
+        {"native_draw_text_init_opengl",           "(IILjava/lang/String;)Z", (void *) cpp_draw_text_init_opengl},
+        {"native_draw_text_render_frame",          "()V",                     (void *) cpp_draw_text_render_frame},
         {"native_draw_text_set_glsl_path",         "(Ljava/lang/String;"
                                                    "Ljava/lang/String;"
                                                    ")V",
-                                                                            (void *) cpp_draw_text_frag_vertex_path},
-        {"native_draw_text_type_path",             "(Ljava/lang/String;"
-                                                   ")V",
-                                                                            (void *) cpp_draw_text_type_path},
-
+                                                                              (void *) cpp_draw_text_frag_vertex_path},
 
 
         /*********************** GL 3d模型显示********************/
-        {"native_3d_init_opengl",                  "(II)Z",                 (void *) cpp_3dshow_init_opengl},
-        {"native_3d_render_frame",                 "()V",                   (void *) cpp_3dshow_render_frame},
+        {"native_3d_init_opengl",                  "(II)Z",                   (void *) cpp_3dshow_init_opengl},
+        {"native_3d_render_frame",                 "()V",                     (void *) cpp_3dshow_render_frame},
         {"native_3d_set_glsl_path",                "(Ljava/lang/String;"
                                                    "Ljava/lang/String;"
                                                    ")V",
-                                                                            (void *) cpp_3dshow_frag_vertex_path},
+                                                                              (void *) cpp_3dshow_frag_vertex_path},
         {"native_3d_set_model_path",               "(Ljava/lang/String;)V",
-                                                                            (void *) cpp_3dshow_model_path},
-        {"native_3d_move_xy",                      "(FFI)V",                (void *) cpp_3d_show_move_xy},
-        {"native_3d_on_scale",                     "(FFFI)V",               (void *) cpp_3d_show_on_scale},
+                                                                              (void *) cpp_3dshow_model_path},
+        {"native_3d_move_xy",                      "(FFI)V",                  (void *) cpp_3d_show_move_xy},
+        {"native_3d_on_scale",                     "(FFFI)V",                 (void *) cpp_3d_show_on_scale},
 
 
         /*********************** GL 聚光手电筒********************/
-        {"native_flash_light_init_opengl",         "(II)Z",                 (void *) cpp_flash_light_init_opengl},
-        {"native_flash_light_render_frame",        "()V",                   (void *) cpp_flash_light_render_frame},
+        {"native_flash_light_init_opengl",         "(II)Z",                   (void *) cpp_flash_light_init_opengl},
+        {"native_flash_light_render_frame",        "()V",                     (void *) cpp_flash_light_render_frame},
         {"native_flash_light_color_set_glsl_path", "(Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_color_frag_vertex_path},
+                                                   ";Ljava/lang/String;)V",   (void *) cpp_flash_light_color_frag_vertex_path},
         {"native_flash_light_set_glsl_path",       "(Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_frag_vertex_path},
-        {"native_flash_light_move_xy",             "(FFI)V",                (void *) cpp_flash_light_move_xy},
-        {"native_flash_light_on_scale",            "(FFFI)V",               (void *) cpp_flash_light_on_scale},
+                                                   ";Ljava/lang/String;)V",   (void *) cpp_flash_light_frag_vertex_path},
+        {"native_flash_light_move_xy",             "(FFI)V",                  (void *) cpp_flash_light_move_xy},
+        {"native_flash_light_on_scale",            "(FFFI)V",                 (void *) cpp_flash_light_on_scale},
 
 };
 

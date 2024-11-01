@@ -58,19 +58,15 @@ public class GL3DCallJni {
         native_draw_text_render_frame();
     }
 
-    public void initGLDrawText(int width, int height) {
-        native_draw_text_init_opengl(width, height);
-    }
-    public void setGLDrawTextTypePath(String modelPath) {
-        native_draw_text_type_path(modelPath);
+    public void initGLDrawText(int width, int height, String modelPath) {
+        native_draw_text_init_opengl(width, height, modelPath);
     }
 
     private native void native_draw_text_set_glsl_path(String fragPath, String vertexPath);
 
-    private native boolean native_draw_text_init_opengl(int width, int height);
+    private native boolean native_draw_text_init_opengl(int width, int height, String modelPath);
 
     private native void native_draw_text_render_frame();
-    private native void native_draw_text_type_path(String modelPath);
 
 
     private void CppEventCallback(int msgType, float msgValue) {

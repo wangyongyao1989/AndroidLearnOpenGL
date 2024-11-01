@@ -28,11 +28,14 @@ bool OpenglesTexture::setupGraphics(int w, int h) {
     checkGlError("glClear");
 
     glGenVertexArrays(1, &VAO);
+    checkGlError("glGenVertexArrays(1, &VAO);");
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
     //绑定VAO
     glBindVertexArray(VAO);
+    checkGlError("vertex");
+
     //把顶点数组复制到缓冲中供OpenGL使用
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(textureDemoVertices), textureDemoVertices, GL_STATIC_DRAW);
