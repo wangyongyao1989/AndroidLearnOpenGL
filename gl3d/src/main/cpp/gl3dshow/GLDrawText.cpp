@@ -94,9 +94,26 @@ GLDrawText::GLDrawText() {
 
 GLDrawText::~GLDrawText() {
 
+    //析构函数中释放资源
     if (drawTextShader) {
         delete drawTextShader;
         drawTextShader = nullptr;
+    }
+
+    screenH = 0;
+    screenW = 0;
+
+    if (VAO) {
+        glDeleteVertexArrays(1, &VAO);
+
+    }
+    if (VBO) {
+        glDeleteBuffers(1, &VBO);
+    }
+
+    std::map<GLchar, Character>::const_iterator iter;
+    for (iter = Characters.begin(); iter != Characters.end(); iter++) {
+        glDeleteTextures(1, &Characters[iter->first].TextureID);
     }
 
 
@@ -129,8 +146,7 @@ GLDrawText::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 
     // 遍历文本中所有的字符
     std::string::const_iterator c;
-//    x *= viewport.x;
-//    y *= viewport.y;
+
     LOGE("RenderText x:%f == y:%f", x, y);
     LOGE("RenderText viewportX:%f == viewportY:%f", viewport.x, viewport.y);
 
@@ -139,15 +155,10 @@ GLDrawText::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 
         GLfloat xpos = x + ch.Bearing.x * scale;
         GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
-        // 归一化
-//        xpos /= viewport.x;
-//        ypos /= viewport.y;
 
         GLfloat w = ch.Size.x * scale;
         GLfloat h = ch.Size.y * scale;
 
-//        w /= viewport.x;
-//        h /= viewport.y;
 //        LOGE("TextRenderSample::RenderText [xpos,ypos,w,h]=[%f, %f, %f, %f], ch.advance >> 6 = %d"
 //                , xpos, ypos, w, h, ch.Advance >> 6);
 
