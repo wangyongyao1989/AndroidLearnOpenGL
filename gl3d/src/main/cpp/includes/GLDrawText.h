@@ -51,7 +51,6 @@ public:
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath);
 
-//    void setDrawTextTypePath(const char *typePath);
 
 };
 

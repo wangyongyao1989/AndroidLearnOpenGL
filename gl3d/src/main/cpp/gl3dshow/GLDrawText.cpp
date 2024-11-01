@@ -46,7 +46,7 @@ bool GLDrawText::setupGraphics(int w, int h, const char *path) {
                                       static_cast<GLfloat>(screenH));
     drawTextShader->use();
     drawTextShader->setMat4("projection", projection);
-    checkGlError("drawTextShader->setMat4(\"projection\", projection)");
+    checkGlError("drawTextShader->setMat4(projection");
 
 
     // Configure VAO/VBO for texture quads
@@ -61,9 +61,7 @@ bool GLDrawText::setupGraphics(int w, int h, const char *path) {
     glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(GLfloat), 0);
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
-
-    drawTextShader->use();
-
+    checkGlError("glBindVertexArray");
 
     return false;
 }
@@ -80,8 +78,7 @@ void GLDrawText::renderFrame() {
 
     glm::vec2 viewport(screenW, screenH);
 
-    RenderText("This is sample text", -1.0f, 0.2f, 1.0f, glm::vec3(0.8, 0.1f, 0.1f), viewport);
-    RenderText("(C) LearnOpenGL.com", -0.9f, 0.0f, 2.0f, glm::vec3(0.3, 0.7f, 0.9f), viewport);
+    RenderText("This is sample text", 300.0f, 500.0f, 2.0f, glm::vec3(0.8, 0.1f, 0.1f), viewport);
 
 }
 
@@ -132,31 +129,36 @@ GLDrawText::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
 
     // 遍历文本中所有的字符
     std::string::const_iterator c;
-    x *= viewport.x;
-    y *= viewport.y;
+//    x *= viewport.x;
+//    y *= viewport.y;
+    LOGE("RenderText x:%f == y:%f", x, y);
+    LOGE("RenderText viewportX:%f == viewportY:%f", viewport.x, viewport.y);
+
     for (c = text.begin(); c != text.end(); c++) {
         Character ch = Characters[*c];
 
         GLfloat xpos = x + ch.Bearing.x * scale;
         GLfloat ypos = y - (ch.Size.y - ch.Bearing.y) * scale;
         // 归一化
-        xpos /= viewport.x;
-        ypos /= viewport.y;
+//        xpos /= viewport.x;
+//        ypos /= viewport.y;
 
         GLfloat w = ch.Size.x * scale;
         GLfloat h = ch.Size.y * scale;
 
-        w /= viewport.x;
-        h /= viewport.y;
+//        w /= viewport.x;
+//        h /= viewport.y;
+//        LOGE("TextRenderSample::RenderText [xpos,ypos,w,h]=[%f, %f, %f, %f], ch.advance >> 6 = %d"
+//                , xpos, ypos, w, h, ch.Advance >> 6);
 
         // 对每个字符更新VBO
         GLfloat vertices[6][4] = {
-                {xpos, ypos + h, 0.0, 0.0},
-                {xpos, ypos, 0.0, 1.0},
-                {xpos + w, ypos, 1.0, 1.0},
+                {xpos,     ypos + h, 0.0, 0.0},
+                {xpos,     ypos,     0.0, 1.0},
+                {xpos + w, ypos,     1.0, 1.0},
 
-                {xpos, ypos + h, 0.0, 0.0},
-                {xpos + w, ypos, 1.0, 1.0},
+                {xpos,     ypos + h, 0.0, 0.0},
+                {xpos + w, ypos,     1.0, 1.0},
                 {xpos + w, ypos + h, 1.0, 0.0}
         };
         // 在四边形上绘制字形纹理
@@ -169,8 +171,11 @@ GLDrawText::RenderText(std::string text, GLfloat x, GLfloat y, GLfloat scale,
         glBufferSubData(GL_ARRAY_BUFFER, 0, sizeof(vertices), vertices);
         checkGlError("glBufferSubData");
         glBindBuffer(GL_ARRAY_BUFFER, 0);
+        checkGlError("glBindBuffer(GL_ARRAY_BUFFER");
         // 绘制四边形
         glDrawArrays(GL_TRIANGLES, 0, 6);
+        checkGlError("glDrawArrays(GL_TRIANGLES");
+
         // 更新位置到下一个字形的原点，注意单位是1/64像素
         // 位偏移6个单位来获取单位为像素的值 (2^6 = 64)
         x += (ch.Advance >> 6) * scale;
@@ -209,16 +214,20 @@ void GLDrawText::LoadFacesByASCII(const char *path) {
         GLuint texture;
         glGenTextures(1, &texture);
         checkGlError("LoadFacesByASCII glGenTextures");
+//        LOGE("fore c= %d",c);
+//        LOGE("texture === %d",texture);
 
         glBindTexture(GL_TEXTURE_2D, texture);
         glTexImage2D(
                 GL_TEXTURE_2D,
                 0,
-                GL_RED,
+                //选择GL_LUMINANCE来于:
+                // https://stackoverflow.com/questions/70285879/android12-opengles3-0-glteximage2d-0x502-error
+                GL_LUMINANCE,
                 face->glyph->bitmap.width,
                 face->glyph->bitmap.rows,
                 0,
-                GL_RED,
+                GL_LUMINANCE,
                 GL_UNSIGNED_BYTE,
                 face->glyph->bitmap.buffer
         );
