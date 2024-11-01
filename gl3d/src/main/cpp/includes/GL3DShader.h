@@ -26,6 +26,12 @@ class GL3DShader {
 private:
     //顶点着色器代码
     const char *gVertexShaderCode = nullptr;
+public:
+    void setGVertexShaderCode(const char *gVertexShaderCode);
+
+    void setGFragmentShaderCode(const char *gFragmentShaderCode);
+
+private:
     //片段着色器代码
     const char *gFragmentShaderCode = nullptr;
 

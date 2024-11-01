@@ -42,6 +42,8 @@ void GL3DShow::renderFrame() {
     glm::mat4 model = glm::mat4(0.4f);
     // translate it down so it's at the center of the scene
     model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
+    float angle = 60;
+    model = glm::rotate(model,glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
     // it's a bit too big for our scene, so scale it down
     model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
     modelShader->setMat4("model", model);
