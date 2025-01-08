@@ -199,7 +199,7 @@ cpp_draw_text_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
-        /*********************** GL 3d模型显示********************/
+        /*********************** GL 文本绘制********************/
         {"native_draw_text_init_opengl",           "(IILjava/lang/String;)Z", (void *) cpp_draw_text_init_opengl},
         {"native_draw_text_render_frame",          "()V",                     (void *) cpp_draw_text_render_frame},
         {"native_draw_text_set_glsl_path",         "(Ljava/lang/String;"

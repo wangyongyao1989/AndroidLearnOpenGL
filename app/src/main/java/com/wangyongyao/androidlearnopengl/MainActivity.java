@@ -15,6 +15,7 @@ import android.widget.FrameLayout;
 import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
 import com.wangyongyao.androidlearnopengl.fragment.GL3DShowFragment;
 import com.wangyongyao.androidlearnopengl.fragment.GLFoundationFragment;
+import com.wangyongyao.androidlearnopengl.fragment.GLSeniorFragment;
 import com.wangyongyao.androidlearnopengl.fragment.MainFragment;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private GLFoundationFragment mFoundationFragment;
     private FrameLayout mFlGl3d;
     private GL3DShowFragment mGl3DShowFragment;
+    private GLSeniorFragment mGLSeniorFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -92,6 +94,16 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
             }
             break;
+            case GL_SENIOR: {
+                if (mGLSeniorFragment == null) {
+                    mGLSeniorFragment = new GLSeniorFragment();
+                    fragmentTransaction
+                            .add(mFlGl3d.getId(), mGLSeniorFragment);
+                }
+                fragmentTransaction.show(mGLSeniorFragment);
+                fragmentTransaction.commit();
+            }
+            break;
         }
     }
 
@@ -105,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (mGl3DShowFragment != null) {
             frt.hide(mGl3DShowFragment);
+        }
+
+        if (mGLSeniorFragment != null) {
+            frt.hide(mGLSeniorFragment);
         }
 
     }

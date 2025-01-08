@@ -24,5 +24,15 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="HardcodedText" />
 
+    <Button
+        android:id="@+id/btn_gl_senior"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="10dp"
+        android:text="OpenGL高级"
+        app:layout_constraintStart_toEndOf="@+id/btn_gl_3d"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:ignore="HardcodedText" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
