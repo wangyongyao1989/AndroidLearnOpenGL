@@ -11,9 +11,11 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
 
+import com.wangyongyao.GLSeniorCallJni;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlSeniorBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
-import com.wangyongyao.gl3d.GL3DCallJni;
+import com.wangyongyao.views.GLSeniorFlashLightView;
+
 
 /**
  * author : wangyongyao https://github.com/wangyongyao1989
@@ -24,7 +26,7 @@ public class GLSeniorFragment extends BaseFragment {
 
     private FragmentGlSeniorBinding mBinding;
     private FrameLayout mGlShow1;
-    private GL3DCallJni mGL3DCallJni;
+    private GLSeniorCallJni mGLSeniorCallJni;
     private Button mBtnBack;
     private GLViewModel mGlViewModel;
     private Button mBtnSenior1;
@@ -46,7 +48,7 @@ public class GLSeniorFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mGL3DCallJni = new GL3DCallJni();
+        mGLSeniorCallJni = new GLSeniorCallJni();
     }
 
     @Override
@@ -62,7 +64,9 @@ public class GLSeniorFragment extends BaseFragment {
         });
 
         mBtnSenior1.setOnClickListener(view -> {
-
+            mGlShow1.removeAllViews();
+            GLSeniorFlashLightView glSeniorFlashLightView = new GLSeniorFlashLightView(getActivity(), mGLSeniorCallJni);
+            mGlShow1.addView(glSeniorFlashLightView);
         });
 
     }

@@ -51,6 +51,7 @@ dependencies {
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     implementation project(':glfoundation')
     implementation project(':gl3d')
+    implementation project(':glsenior')
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
