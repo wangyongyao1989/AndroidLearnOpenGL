@@ -3,11 +3,89 @@
 #include <android/log.h>
 #include "includes/GLSeniorLogUtils.h"
 #include "GLSeniorFlashLight.h"
+#include "GLSeniorDepthTest.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
 
 GLSeniorFlashLight *flashLight;
+GLSeniorDepthTest *depthTest;
+
+
+/*********************** GL 深度测试********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_depth_test_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (depthTest == nullptr)
+        depthTest = new GLSeniorDepthTest();
+    depthTest->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_depth_test_render_frame(JNIEnv *env, jobject thiz) {
+    if (depthTest == nullptr) return;
+    depthTest->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_depth_test_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                 jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (depthTest == nullptr) {
+        depthTest = new GLSeniorDepthTest();
+    }
+    depthTest->setSharderPath(vertexPath, fragPath);
+
+    depthTest->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_depth_test_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
+                                       jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+
+    if (depthTest == nullptr) {
+        depthTest = new GLSeniorDepthTest();
+    }
+    depthTest->setColorSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_depth_test_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (depthTest == nullptr) return;
+    depthTest->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                         jfloat focusY,
+                         jint actionMode) {
+    if (depthTest == nullptr) return;
+    depthTest->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 /*********************** GL 聚光手电筒********************/
 
@@ -85,24 +163,33 @@ cpp_flash_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat f
 }
 
 
-
-
-
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
+        /*********************** GL 深度测试********************/
+        {"native_depth_test_init_opengl",         "(II)Z",                 (void *) cpp_depth_test_init_opengl},
+        {"native_depth_test_render_frame",        "()V",                   (void *) cpp_depth_test_render_frame},
+        {"native_depth_test_color_set_glsl_path", "(Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_depth_test_color_frag_vertex_path},
+        {"native_depth_test_set_glsl_path",       "(Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_depth_test_frag_vertex_path},
+        {"native_depth_test_move_xy",             "(FFI)V",                (void *) cpp_depth_test_move_xy},
+        {"native_depth_test_on_scale",            "(FFFI)V",               (void *) cpp_depth_test_on_scale},
+
 
         /*********************** GL 聚光手电筒********************/
-        {"native_flash_light_init_opengl",         "(II)Z",                   (void *) cpp_flash_light_init_opengl},
-        {"native_flash_light_render_frame",        "()V",                     (void *) cpp_flash_light_render_frame},
+        {"native_flash_light_init_opengl",         "(II)Z",                 (void *) cpp_flash_light_init_opengl},
+        {"native_flash_light_render_frame",        "()V",                   (void *) cpp_flash_light_render_frame},
         {"native_flash_light_color_set_glsl_path", "(Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V",   (void *) cpp_flash_light_color_frag_vertex_path},
+                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_color_frag_vertex_path},
         {"native_flash_light_set_glsl_path",       "(Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V",   (void *) cpp_flash_light_frag_vertex_path},
-        {"native_flash_light_move_xy",             "(FFI)V",                  (void *) cpp_flash_light_move_xy},
-        {"native_flash_light_on_scale",            "(FFFI)V",                 (void *) cpp_flash_light_on_scale},
+                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_frag_vertex_path},
+        {"native_flash_light_move_xy",             "(FFI)V",                (void *) cpp_flash_light_move_xy},
+        {"native_flash_light_on_scale",            "(FFFI)V",               (void *) cpp_flash_light_on_scale},
 
 };
 

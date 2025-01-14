@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.GLSeniorCallJni;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlSeniorBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
+import com.wangyongyao.views.GLSeniorDepthTestView;
 import com.wangyongyao.views.GLSeniorFlashLightView;
 
 
@@ -30,6 +31,7 @@ public class GLSeniorFragment extends BaseFragment {
     private Button mBtnBack;
     private GLViewModel mGlViewModel;
     private Button mBtnSenior1;
+    private Button mBtnSenior2;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -44,6 +46,8 @@ public class GLSeniorFragment extends BaseFragment {
         mGlShow1 = mBinding.glShow;
         mBtnBack = mBinding.btnBack;
         mBtnSenior1 = mBinding.btnSenior1;
+        mBtnSenior2 = mBinding.btnSenior2;
+
     }
 
     @Override
@@ -65,8 +69,16 @@ public class GLSeniorFragment extends BaseFragment {
 
         mBtnSenior1.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLSeniorFlashLightView glSeniorFlashLightView = new GLSeniorFlashLightView(getActivity(), mGLSeniorCallJni);
+            GLSeniorFlashLightView glSeniorFlashLightView = new GLSeniorFlashLightView(getActivity()
+                    , mGLSeniorCallJni);
             mGlShow1.addView(glSeniorFlashLightView);
+        });
+
+        mBtnSenior2.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSeniorDepthTestView glSeniorDepthTestView = new GLSeniorDepthTestView(getActivity()
+                    , mGLSeniorCallJni);
+            mGlShow1.addView(glSeniorDepthTestView);
         });
 
     }

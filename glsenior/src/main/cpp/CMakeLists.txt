@@ -28,6 +28,7 @@ add_library(
         senior/GLSeniorFlashLight.cpp
         senior/GLCameraSenior.cpp
         senior/GLSeniorShader.cpp
+        senior/GLSeniorDepthTest.cpp
 
 
 )

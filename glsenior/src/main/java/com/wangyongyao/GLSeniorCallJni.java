@@ -23,6 +23,46 @@ public class GLSeniorCallJni {
 
 
     /**
+     * 深度测试
+     */
+    public void setDepthTestGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_depth_test_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public void setDepthTestColorGLSLPath(String fragString, String vertexString) {
+        native_depth_test_color_set_glsl_path(fragString, vertexString);
+    }
+
+    public boolean initDepthTestOpenGl(int w, int h) {
+        return native_depth_test_init_opengl(w, h);
+    }
+
+    public void depthTestOpenGLRenderFrame() {
+        native_depth_test_render_frame();
+    }
+
+    public void dpthTestMoveXY(float dx, float dy, int action) {
+        native_depth_test_move_xy(dx, dy, action);
+    }
+
+    public void depthTestOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_depth_test_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_depth_test_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+    private native void native_depth_test_color_set_glsl_path(String fragPath, String vertexPath);
+
+    private native boolean native_depth_test_init_opengl(int width, int height);
+
+    private native void native_depth_test_render_frame();
+
+    private native void native_depth_test_move_xy(float dx, float dy, int action);
+
+    private native void native_depth_test_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+    /**
      * 聚光手电筒
      */
     public void setFlashLightGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
