@@ -88,12 +88,11 @@ private:
     unsigned int planeVAO;
     unsigned int planeVBO;
 
-    string colorVertexCode;
-    string colorFragmentCode;
 
     // camera
     GLCameraSenior mCamera;
     GLSeniorShader *stencilTestShader;
+    GLSeniorShader *shaderSingleColor;
 
 public:
 
@@ -106,6 +105,8 @@ public:
     void renderFrame();
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath);
+
+    bool setSingleColorSharderPath(const char *vertexPath, const char *fragmentPath);
 
     void setPicPath(const char *pic1, const char *pic2);
 

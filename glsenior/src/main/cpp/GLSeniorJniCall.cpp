@@ -37,16 +37,18 @@ cpp_stencil_test_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_stencil_test_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                jstring picsrc1, jstring picsrc2) {
+                                  jstring picsrc1, jstring picsrc2, jstring singleColorfrag) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+    const char *singleColorfragPath = env->GetStringUTFChars(singleColorfrag, nullptr);
 
     if (stencilTest == nullptr) {
         stencilTest = new GLSeniorStencilTest();
     }
     stencilTest->setSharderPath(vertexPath, fragPath);
+    stencilTest->setSingleColorSharderPath(vertexPath, singleColorfragPath);
 
     stencilTest->setPicPath(picsrc1Path, picsrc2Path);
 
@@ -54,6 +56,7 @@ cpp_stencil_test_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstri
     env->ReleaseStringUTFChars(vertex, vertexPath);
     env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
     env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+    env->ReleaseStringUTFChars(singleColorfrag, singleColorfragPath);
 
 }
 
@@ -68,8 +71,8 @@ cpp_stencil_test_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint a
 extern "C"
 JNIEXPORT void JNICALL
 cpp_stencil_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                        jfloat focusY,
-                        jint actionMode) {
+                          jfloat focusY,
+                          jint actionMode) {
     if (stencilTest == nullptr) return;
     stencilTest->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -96,7 +99,7 @@ cpp_depth_test_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_depth_test_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                 jstring picsrc1, jstring picsrc2) {
+                                jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
@@ -127,8 +130,8 @@ cpp_depth_test_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint act
 extern "C"
 JNIEXPORT void JNICALL
 cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                         jfloat focusY,
-                         jint actionMode) {
+                        jfloat focusY,
+                        jint actionMode) {
     if (depthTest == nullptr) return;
     depthTest->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -213,24 +216,25 @@ cpp_flash_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat f
 static const JNINativeMethod methods[] = {
 
         /*********************** GL 模版测试********************/
-        {"native_stencil_test_init_opengl",         "(II)Z",                 (void *) cpp_stencil_test_init_opengl},
-        {"native_stencil_test_render_frame",        "()V",                   (void *) cpp_stencil_test_render_frame},
-        {"native_stencil_test_set_glsl_path",       "(Ljava/lang/String"
-                                                  ";Ljava/lang/String"
-                                                  ";Ljava/lang/String"
-                                                  ";Ljava/lang/String;)V", (void *) cpp_stencil_test_frag_vertex_path},
-        {"native_stencil_test_move_xy",             "(FFI)V",                (void *) cpp_stencil_test_move_xy},
-        {"native_stencil_test_on_scale",            "(FFFI)V",               (void *) cpp_stencil_test_on_scale},
+        {"native_stencil_test_init_opengl",        "(II)Z",                 (void *) cpp_stencil_test_init_opengl},
+        {"native_stencil_test_render_frame",       "()V",                   (void *) cpp_stencil_test_render_frame},
+        {"native_stencil_test_set_glsl_path",      "(Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_stencil_test_frag_vertex_path},
+        {"native_stencil_test_move_xy",            "(FFI)V",                (void *) cpp_stencil_test_move_xy},
+        {"native_stencil_test_on_scale",           "(FFFI)V",               (void *) cpp_stencil_test_on_scale},
 
         /*********************** GL 深度测试********************/
-        {"native_depth_test_init_opengl",         "(II)Z",                 (void *) cpp_depth_test_init_opengl},
-        {"native_depth_test_render_frame",        "()V",                   (void *) cpp_depth_test_render_frame},
-        {"native_depth_test_set_glsl_path",       "(Ljava/lang/String"
+        {"native_depth_test_init_opengl",          "(II)Z",                 (void *) cpp_depth_test_init_opengl},
+        {"native_depth_test_render_frame",         "()V",                   (void *) cpp_depth_test_render_frame},
+        {"native_depth_test_set_glsl_path",        "(Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String;)V", (void *) cpp_depth_test_frag_vertex_path},
-        {"native_depth_test_move_xy",             "(FFI)V",                (void *) cpp_depth_test_move_xy},
-        {"native_depth_test_on_scale",            "(FFFI)V",               (void *) cpp_depth_test_on_scale},
+        {"native_depth_test_move_xy",              "(FFI)V",                (void *) cpp_depth_test_move_xy},
+        {"native_depth_test_on_scale",             "(FFFI)V",               (void *) cpp_depth_test_on_scale},
 
 
         /*********************** GL 聚光手电筒********************/

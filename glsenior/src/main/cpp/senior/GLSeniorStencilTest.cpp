@@ -21,22 +21,28 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
+    // configure global opengl state
+    // -----------------------------
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    //深度函数(Depth Function)
-//    glDepthFunc(GL_ALWAYS);
+    //开启模版测试
+    glEnable(GL_STENCIL_TEST);
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
 
     // cube VAO
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(StencilTestVertices), &StencilTestVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(StencilTestVertices), &StencilTestVertices,
+                 GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                          (void *) (3 * sizeof(float)));
     glBindVertexArray(0);
 
     // plane VAO
@@ -44,11 +50,13 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
     glGenBuffers(1, &planeVBO);
     glBindVertexArray(planeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(stencilTestPlaneVertices), &stencilTestPlaneVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(stencilTestPlaneVertices), &stencilTestPlaneVertices,
+                 GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                          (void *) (3 * sizeof(float)));
     glBindVertexArray(0);
 
 
@@ -92,6 +100,9 @@ void GLSeniorStencilTest::renderFrame() {
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    // set uniforms
+    shaderSingleColor->use();
+
     // be sure to activate shader when setting uniforms/drawing objects
     // view/projection transformations
     glm::mat4 model = glm::mat4(1.0f);
@@ -101,8 +112,27 @@ void GLSeniorStencilTest::renderFrame() {
     mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
 
+    shaderSingleColor->setMat4("view", view);
+    shaderSingleColor->setMat4("projection", projection);
+
+    stencilTestShader->use();
     stencilTestShader->setMat4("view", view);
     stencilTestShader->setMat4("projection", projection);
+
+    // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
+    glStencilMask(0x00);
+    // floor
+    glBindVertexArray(planeVAO);
+    glBindTexture(GL_TEXTURE_2D, floorTexture);
+    stencilTestShader->setMat4("model", glm::mat4(1.0f));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+    glBindVertexArray(0);
+
+    // 1st. render pass, draw objects as normal, writing to the stencil buffer
+    // --------------------------------------------------------------------
+    glStencilFunc(GL_ALWAYS, 1, 0xFF);
+    glStencilMask(0xFF);
+
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
@@ -114,6 +144,35 @@ void GLSeniorStencilTest::renderFrame() {
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
     stencilTestShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
+    // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
+    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing
+    // the objects' size differences, making it look like borders.
+    // -----------------------------------------------------------------------------------------------------------------------------
+    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
+    glStencilMask(0x00);
+    glDisable(GL_DEPTH_TEST);
+    shaderSingleColor->use();
+    float scale = 1.1f;
+
+    // cubes
+    glBindVertexArray(cubeVAO);
+    glBindTexture(GL_TEXTURE_2D, cubeTexture);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+    model = glm::scale(model, glm::vec3(scale, scale, scale));
+    shaderSingleColor->setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(scale, scale, scale));
+    shaderSingleColor->setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    glBindVertexArray(0);
+    glStencilMask(0xFF);
+    glStencilFunc(GL_ALWAYS, 0, 0xFF);
+    glEnable(GL_DEPTH_TEST);
+
     // floor
     glBindVertexArray(planeVAO);
     glBindTexture(GL_TEXTURE_2D, floorTexture);
@@ -129,6 +188,11 @@ bool GLSeniorStencilTest::setSharderPath(const char *vertexPath, const char *fra
     return 0;
 }
 
+bool GLSeniorStencilTest::setSingleColorSharderPath(const char *vertexPath,
+                                                    const char *singleColorfragPath) {
+    shaderSingleColor->getSharderPath(vertexPath, singleColorfragPath);
+    return 0;
+}
 
 
 void GLSeniorStencilTest::setPicPath(const char *pic1, const char *pic2) {
@@ -148,7 +212,8 @@ void GLSeniorStencilTest::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void GLSeniorStencilTest::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void
+GLSeniorStencilTest::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -169,6 +234,7 @@ void GLSeniorStencilTest::setOnScale(float scaleFactor, float focusX, float focu
 
 GLSeniorStencilTest::GLSeniorStencilTest() {
     stencilTestShader = new GLSeniorShader();
+    shaderSingleColor = new GLSeniorShader();
 }
 
 GLSeniorStencilTest::~GLSeniorStencilTest() {
@@ -181,8 +247,8 @@ GLSeniorStencilTest::~GLSeniorStencilTest() {
     glDeleteBuffers(1, &planeVBO);
 
 
-
     stencilTestShader = nullptr;
+    shaderSingleColor = nullptr;
 
     if (data1) {
         stbi_image_free(data1);
@@ -194,8 +260,6 @@ GLSeniorStencilTest::~GLSeniorStencilTest() {
         data2 = nullptr;
     }
 
-    colorVertexCode.clear();
-    colorFragmentCode.clear();
 }
 
 void GLSeniorStencilTest::printGLString(const char *name, GLenum s) {

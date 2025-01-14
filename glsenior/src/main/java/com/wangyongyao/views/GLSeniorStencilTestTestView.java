@@ -46,11 +46,14 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String fragPath = GLSeniorUtil.getModelFilePath(mContext, "stencil_test_fragment.glsl");
         String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "stencil_test_vertex.glsl");
+
+        String singleColorfragPath = GLSeniorUtil.getModelFilePath(mContext, "stencil_single_color_fragment.glsl");
+
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
         String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "specular_container2.png");
 
         if (mGLSeniorCallJni != null) {
-            mGLSeniorCallJni.setStencilTestGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
+            mGLSeniorCallJni.setStencilTestGLSLPath(fragPath, vertexPath, picSrc1, picSrc2,singleColorfragPath);
         }
         setRenderer(this);
 
@@ -127,7 +130,7 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mGLSeniorCallJni.dpthTestMoveXY(0, 0, 1);
+                mGLSeniorCallJni.stencilTestMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -136,14 +139,14 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mGLSeniorCallJni.dpthTestMoveXY(dx, dy, 2);
+                mGLSeniorCallJni.stencilTestMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mGLSeniorCallJni.dpthTestMoveXY(0, 0, 3);
+                mGLSeniorCallJni.stencilTestMoveXY(0, 0, 3);
             }
             break;
         }
