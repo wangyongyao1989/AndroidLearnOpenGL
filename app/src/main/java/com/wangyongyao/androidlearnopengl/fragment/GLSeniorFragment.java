@@ -16,6 +16,7 @@ import com.wangyongyao.androidlearnopengl.databinding.FragmentGlSeniorBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.views.GLSeniorDepthTestView;
 import com.wangyongyao.views.GLSeniorFlashLightView;
+import com.wangyongyao.views.GLSeniorStencilTestTestView;
 
 
 /**
@@ -32,6 +33,7 @@ public class GLSeniorFragment extends BaseFragment {
     private GLViewModel mGlViewModel;
     private Button mBtnSenior1;
     private Button mBtnSenior2;
+    private Button mBtnSenior3;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -47,6 +49,7 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnBack = mBinding.btnBack;
         mBtnSenior1 = mBinding.btnSenior1;
         mBtnSenior2 = mBinding.btnSenior2;
+        mBtnSenior3 = mBinding.btnSenior3;
 
     }
 
@@ -79,6 +82,13 @@ public class GLSeniorFragment extends BaseFragment {
             GLSeniorDepthTestView glSeniorDepthTestView = new GLSeniorDepthTestView(getActivity()
                     , mGLSeniorCallJni);
             mGlShow1.addView(glSeniorDepthTestView);
+        });
+
+        mBtnSenior3.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSeniorStencilTestTestView glSeniorStencilTestTestView = new GLSeniorStencilTestTestView(getActivity()
+                    , mGLSeniorCallJni);
+            mGlShow1.addView(glSeniorStencilTestTestView);
         });
 
     }

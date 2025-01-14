@@ -29,6 +29,7 @@ add_library(
         senior/GLCameraSenior.cpp
         senior/GLSeniorShader.cpp
         senior/GLSeniorDepthTest.cpp
+        senior/GLSeniorStencilTest.cpp
 
 
 )
