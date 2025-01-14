@@ -54,22 +54,6 @@ cpp_depth_test_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring
 
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-cpp_depth_test_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
-                                       jstring vertex) {
-    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
-    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-
-    if (depthTest == nullptr) {
-        depthTest = new GLSeniorDepthTest();
-    }
-    depthTest->setColorSharderPath(vertexPath, fragPath);
-
-    env->ReleaseStringUTFChars(frag, fragPath);
-    env->ReleaseStringUTFChars(vertex, vertexPath);
-
-}
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -169,8 +153,6 @@ static const JNINativeMethod methods[] = {
         /*********************** GL 深度测试********************/
         {"native_depth_test_init_opengl",         "(II)Z",                 (void *) cpp_depth_test_init_opengl},
         {"native_depth_test_render_frame",        "()V",                   (void *) cpp_depth_test_render_frame},
-        {"native_depth_test_color_set_glsl_path", "(Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_depth_test_color_frag_vertex_path},
         {"native_depth_test_set_glsl_path",       "(Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String"

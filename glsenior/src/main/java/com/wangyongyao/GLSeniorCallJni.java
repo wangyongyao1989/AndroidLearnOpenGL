@@ -29,10 +29,6 @@ public class GLSeniorCallJni {
         native_depth_test_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
     }
 
-    public void setDepthTestColorGLSLPath(String fragString, String vertexString) {
-        native_depth_test_color_set_glsl_path(fragString, vertexString);
-    }
-
     public boolean initDepthTestOpenGl(int w, int h) {
         return native_depth_test_init_opengl(w, h);
     }
@@ -52,7 +48,6 @@ public class GLSeniorCallJni {
     private native void native_depth_test_set_glsl_path(String fragPath, String vertexPath
             , String picSrc1, String picSrc2);
 
-    private native void native_depth_test_color_set_glsl_path(String fragPath, String vertexPath);
 
     private native boolean native_depth_test_init_opengl(int width, int height);
 

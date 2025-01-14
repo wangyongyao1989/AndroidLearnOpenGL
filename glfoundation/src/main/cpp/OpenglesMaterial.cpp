@@ -61,7 +61,7 @@ void OpenglesMaterial::renderFrame() {
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
 
-//    lightColorShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
+//    depthTestShader->setVec3("lightColor", 1.0f, 1.0f, 1.0f);
     double timeValue = clock() * 8 / CLOCKS_PER_SEC;
     vec3 lightColor;
     lightColor.x = sin(timeValue * 2.0f);
