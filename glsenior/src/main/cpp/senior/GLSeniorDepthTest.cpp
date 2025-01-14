@@ -24,6 +24,8 @@ bool GLSeniorDepthTest::setupGraphics(int w, int h) {
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
+    //深度函数(Depth Function)
+//    glDepthFunc(GL_ALWAYS);
 
     // cube VAO
     glGenVertexArrays(1, &cubeVAO);
