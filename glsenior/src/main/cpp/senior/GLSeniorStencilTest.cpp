@@ -7,9 +7,16 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint lightingProgram = stencilTestShader->createProgram();
-    if (!lightingProgram) {
-        LOGE("Could not create shaderId.");
+    GLuint stencilTestProgram = stencilTestShader->createProgram();
+
+    if (!stencilTestProgram) {
+        LOGE("Could not create stencilTestProgram shaderId.");
+        return false;
+    }
+
+    GLuint singleColorProgram = shaderSingleColor->createProgram();
+    if (!singleColorProgram) {
+        LOGE("Could not create singleColorProgram shaderId.");
         return false;
     }
 
@@ -95,23 +102,17 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
 }
 
 void GLSeniorStencilTest::renderFrame() {
+
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // don't forget to clear the stencil buffer!
 
     // set uniforms
     shaderSingleColor->use();
-
-    // be sure to activate shader when setting uniforms/drawing objects
-    // view/projection transformations
     glm::mat4 model = glm::mat4(1.0f);
-    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
-                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
-    vec3 cameraMove(0.0f, 0.0f, 3.0f);
-    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
-
+    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom), (float)screenW / (float)screenH, 0.1f, 100.0f);
     shaderSingleColor->setMat4("view", view);
     shaderSingleColor->setMat4("projection", projection);
 
@@ -132,7 +133,6 @@ void GLSeniorStencilTest::renderFrame() {
     // --------------------------------------------------------------------
     glStencilFunc(GL_ALWAYS, 1, 0xFF);
     glStencilMask(0xFF);
-
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
@@ -140,13 +140,14 @@ void GLSeniorStencilTest::renderFrame() {
     model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
     stencilTestShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
+
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
     stencilTestShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
 
     // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
-    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing
+    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing 
     // the objects' size differences, making it look like borders.
     // -----------------------------------------------------------------------------------------------------------------------------
     glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
@@ -158,29 +159,26 @@ void GLSeniorStencilTest::renderFrame() {
     // cubes
     glBindVertexArray(cubeVAO);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-    model = glm::scale(model, glm::vec3(scale, scale, scale));
-    shaderSingleColor->setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+//    model = glm::mat4(1.0f);
+//    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
+//    model = glm::scale(model, glm::vec3(scale, scale, scale));
+//    shaderSingleColor->setMat4("model", model);
+//    glDrawArrays(GL_TRIANGLES, 0, 36);
+
+
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
     model = glm::scale(model, glm::vec3(scale, scale, scale));
     shaderSingleColor->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
+
+
     glStencilMask(0xFF);
     glStencilFunc(GL_ALWAYS, 0, 0xFF);
     glEnable(GL_DEPTH_TEST);
 
-    // floor
-    glBindVertexArray(planeVAO);
-    glBindTexture(GL_TEXTURE_2D, floorTexture);
-    stencilTestShader->setMat4("model", glm::mat4(1.0f));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
-
-    checkGlError("glDrawArrays");
 }
 
 bool GLSeniorStencilTest::setSharderPath(const char *vertexPath, const char *fragmentPath) {
