@@ -12,7 +12,7 @@ using namespace std;
 using namespace glm;
 
 
-const float BlendingVertices[] = {
+const float BlendingDiscardVertices[] = {
         // positions          // texture Coords
         -0.5f, -0.5f, -0.5f, 0.0f, 0.0f,
         0.5f, -0.5f, -0.5f, 1.0f, 0.0f,
@@ -57,7 +57,7 @@ const float BlendingVertices[] = {
         -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 };
 
-const float blendingPlaneVertices[] = {
+const float blendingDiscardPlaneVertices[] = {
         // positions          // texture Coords (note we set these higher than 1
         // (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
         5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
@@ -68,7 +68,7 @@ const float blendingPlaneVertices[] = {
         -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
         5.0f, -0.5f, -5.0f, 2.0f, 2.0f
 };
-const float transparentVertices[] = {
+const float transparentDiscardVertices[] = {
         // positions         // texture Coords (swapped y coordinates because texture is flipped upside down)
         0.0f, 0.5f, 0.0f, 0.0f, 0.0f,
         0.0f, -0.5f, 0.0f, 0.0f, 1.0f,
@@ -80,7 +80,7 @@ const float transparentVertices[] = {
 };
 
 
-class GLSeniorBlending {
+class GLSeniorBlendingDiscard {
 
 private:
     unsigned int cubeTexture;
@@ -112,7 +112,7 @@ private:
 
     // camera
     GLCameraSenior mCamera;
-    GLSeniorShader *blendingShader;
+    GLSeniorShader *blendingDiscardShader;
 
     std::vector<glm::vec3> gressVegetation {
             glm::vec3(-1.5f, 0.0f, -0.48f),
@@ -124,9 +124,9 @@ private:
 
 public:
 
-    GLSeniorBlending();
+    GLSeniorBlendingDiscard();
 
-    ~GLSeniorBlending();
+    ~GLSeniorBlendingDiscard();
 
     bool setupGraphics(int w, int h);
 

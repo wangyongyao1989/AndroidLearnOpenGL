@@ -1,13 +1,13 @@
 
 
 #include <iostream>
-#include "../includes/GLSeniorBlending.h"
+#include "../includes/GLSeniorBlendingDiscard.h"
 
-bool GLSeniorBlending::setupGraphics(int w, int h) {
+bool GLSeniorBlendingDiscard::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint lightingProgram = blendingShader->createProgram();
+    GLuint lightingProgram = blendingDiscardShader->createProgram();
     if (!lightingProgram) {
         LOGE("Could not create shaderId.");
         return false;
@@ -32,7 +32,7 @@ bool GLSeniorBlending::setupGraphics(int w, int h) {
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(BlendingVertices), &BlendingVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(BlendingDiscardVertices), &BlendingDiscardVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
@@ -45,7 +45,7 @@ bool GLSeniorBlending::setupGraphics(int w, int h) {
     glGenBuffers(1, &planeVBO);
     glBindVertexArray(planeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(blendingPlaneVertices), &blendingPlaneVertices,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(blendingDiscardPlaneVertices), &blendingDiscardPlaneVertices,
                  GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
@@ -59,7 +59,7 @@ bool GLSeniorBlending::setupGraphics(int w, int h) {
     glGenBuffers(1, &transparentVBO);
     glBindVertexArray(transparentVAO);
     glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentDiscardVertices), transparentDiscardVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
@@ -107,13 +107,13 @@ bool GLSeniorBlending::setupGraphics(int w, int h) {
 
     // shader configuration
     // --------------------
-    blendingShader->use();
-    blendingShader->setInt("texture1", 0);
+    blendingDiscardShader->use();
+    blendingDiscardShader->setInt("texture1", 0);
 
     return true;
 }
 
-void GLSeniorBlending::renderFrame() {
+void GLSeniorBlendingDiscard::renderFrame() {
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -128,23 +128,23 @@ void GLSeniorBlending::renderFrame() {
     mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
 
-    blendingShader->setMat4("view", view);
-    blendingShader->setMat4("projection", projection);
+    blendingDiscardShader->setMat4("view", view);
+    blendingDiscardShader->setMat4("projection", projection);
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
     model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-    blendingShader->setMat4("model", model);
+    blendingDiscardShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-    blendingShader->setMat4("model", model);
+    blendingDiscardShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     // floor
     glBindVertexArray(planeVAO);
     glBindTexture(GL_TEXTURE_2D, floorTexture);
-    blendingShader->setMat4("model", glm::mat4(1.0f));
+    blendingDiscardShader->setMat4("model", glm::mat4(1.0f));
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
@@ -155,21 +155,21 @@ void GLSeniorBlending::renderFrame() {
     {
         model = glm::mat4(1.0f);
         model = glm::translate(model, gressVegetation[i]);
-        blendingShader->setMat4("model", model);
+        blendingDiscardShader->setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     checkGlError("glDrawArrays");
 }
 
-bool GLSeniorBlending::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    blendingShader->getSharderPath(vertexPath, fragmentPath);
+bool GLSeniorBlendingDiscard::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+    blendingDiscardShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
 
-void GLSeniorBlending::setPicPath(const char *pic1, const char *pic2,
-                                  const char *pic3) {
+void GLSeniorBlendingDiscard::setPicPath(const char *pic1, const char *pic2,
+                                         const char *pic3) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
     data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
@@ -178,7 +178,7 @@ void GLSeniorBlending::setPicPath(const char *pic1, const char *pic2,
 
 }
 
-void GLSeniorBlending::setMoveXY(float dx, float dy, int actionMode) {
+void GLSeniorBlendingDiscard::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -188,7 +188,7 @@ void GLSeniorBlending::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void GLSeniorBlending::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void GLSeniorBlendingDiscard::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -207,11 +207,11 @@ void GLSeniorBlending::setOnScale(float scaleFactor, float focusX, float focusY,
 }
 
 
-GLSeniorBlending::GLSeniorBlending() {
-    blendingShader = new GLSeniorShader();
+GLSeniorBlendingDiscard::GLSeniorBlendingDiscard() {
+    blendingDiscardShader = new GLSeniorShader();
 }
 
-GLSeniorBlending::~GLSeniorBlending() {
+GLSeniorBlendingDiscard::~GLSeniorBlendingDiscard() {
     cubeTexture = 0;
     floorTexture = 0;
     transparentTexture = 0;
@@ -222,7 +222,7 @@ GLSeniorBlending::~GLSeniorBlending() {
     glDeleteBuffers(1, &planeVBO);
 
 
-    blendingShader = nullptr;
+    blendingDiscardShader = nullptr;
 
     if (data1) {
         stbi_image_free(data1);
@@ -243,12 +243,12 @@ GLSeniorBlending::~GLSeniorBlending() {
     colorFragmentCode.clear();
 }
 
-void GLSeniorBlending::printGLString(const char *name, GLenum s) {
+void GLSeniorBlendingDiscard::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void GLSeniorBlending::checkGlError(const char *op) {
+void GLSeniorBlendingDiscard::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
@@ -259,7 +259,7 @@ void GLSeniorBlending::checkGlError(const char *op) {
  * @param path
  * @return
  */
-int GLSeniorBlending::loadTexture(unsigned char *data, int width, int height, GLenum format) {
+int GLSeniorBlendingDiscard::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 //    LOGI("loadTexture format =%d", format);

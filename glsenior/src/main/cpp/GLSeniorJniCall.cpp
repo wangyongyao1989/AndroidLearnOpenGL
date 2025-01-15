@@ -5,7 +5,7 @@
 #include "GLSeniorFlashLight.h"
 #include "GLSeniorDepthTest.h"
 #include "GLSeniorStencilTest.h"
-#include "GLSeniorBlending.h"
+#include "GLSeniorBlendingDiscard.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
@@ -13,30 +13,30 @@ const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
 GLSeniorFlashLight *flashLight;
 GLSeniorDepthTest *depthTest;
 GLSeniorStencilTest *stencilTest;
-GLSeniorBlending *blending;
+GLSeniorBlendingDiscard *blendingDiscard;
 
-/*********************** GL 混合********************/
+/*********************** GL 混合--丢弃********************/
 
 extern "C"
 JNIEXPORT jboolean JNICALL
-cpp_blending_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
-    if (blending == nullptr)
-        blending = new GLSeniorBlending();
-    blending->setupGraphics(width, height);
+cpp_blending_discardinit_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (blendingDiscard == nullptr)
+        blendingDiscard = new GLSeniorBlendingDiscard();
+    blendingDiscard->setupGraphics(width, height);
     return 0;
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_blending_render_frame(JNIEnv *env, jobject thiz) {
-    if (blending == nullptr) return;
-    blending->renderFrame();
+cpp_blending_discardrender_frame(JNIEnv *env, jobject thiz) {
+    if (blendingDiscard == nullptr) return;
+    blendingDiscard->renderFrame();
 
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_blending_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+cpp_blending_discardfrag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                               jstring picsrc1, jstring picsrc2, jstring picsrc3) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
@@ -44,12 +44,12 @@ cpp_blending_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring v
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
     const char *picsrc3Path = env->GetStringUTFChars(picsrc3, nullptr);
 
-    if (blending == nullptr) {
-        blending = new GLSeniorBlending();
+    if (blendingDiscard == nullptr) {
+        blendingDiscard = new GLSeniorBlendingDiscard();
     }
-    blending->setSharderPath(vertexPath, fragPath);
+    blendingDiscard->setSharderPath(vertexPath, fragPath);
 
-    blending->setPicPath(picsrc1Path, picsrc2Path, picsrc3Path);
+    blendingDiscard->setPicPath(picsrc1Path, picsrc2Path, picsrc3Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
@@ -62,18 +62,18 @@ cpp_blending_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring v
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_blending_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
-    if (blending == nullptr) return;
-    blending->setMoveXY(dx, dy, actionMode);
+cpp_blending_discardmove_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (blendingDiscard == nullptr) return;
+    blendingDiscard->setMoveXY(dx, dy, actionMode);
 }
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_blending_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+cpp_blending_discardon_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
                       jfloat focusY,
                       jint actionMode) {
-    if (blending == nullptr) return;
-    blending->setOnScale(scaleFactor, focusX, focusY, actionMode);
+    if (blendingDiscard == nullptr) return;
+    blendingDiscard->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
 /*********************** GL 模版测试********************/
@@ -276,16 +276,16 @@ cpp_flash_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat f
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
-        /*********************** GL 混合********************/
-        {"native_blending_init_opengl",            "(II)Z",                 (void *) cpp_blending_init_opengl},
-        {"native_blending_render_frame",           "()V",                   (void *) cpp_blending_render_frame},
-        {"native_blending_set_glsl_path",          "(Ljava/lang/String"
+        /*********************** GL 混合--丢弃********************/
+        {"native_blending_discardinit_opengl",            "(II)Z",                 (void *) cpp_blending_discardinit_opengl},
+        {"native_blending_discardrender_frame",           "()V",                   (void *) cpp_blending_discardrender_frame},
+        {"native_blending_discardset_glsl_path",          "(Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String"
                                                    ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_blending_frag_vertex_path},
-        {"native_blending_move_xy",                "(FFI)V",                (void *) cpp_blending_move_xy},
-        {"native_blending_on_scale",               "(FFFI)V",               (void *) cpp_blending_on_scale},
+                                                   ";Ljava/lang/String;)V", (void *) cpp_blending_discardfrag_vertex_path},
+        {"native_blending_discardmove_xy",                "(FFI)V",                (void *) cpp_blending_discardmove_xy},
+        {"native_blending_discardon_scale",               "(FFFI)V",               (void *) cpp_blending_discardon_scale},
 
         /*********************** GL 模版测试********************/
         {"native_stencil_test_init_opengl",        "(II)Z",                 (void *) cpp_stencil_test_init_opengl},

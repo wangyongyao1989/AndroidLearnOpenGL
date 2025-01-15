@@ -411,9 +411,9 @@ FT_BEGIN_HEADER
    *   is the default).
    *
    *   Stem darkening emboldens glyphs at smaller sizes to make them more
-   *   readable on common low-DPI screens when using linear alpha blending
+   *   readable on common low-DPI screens when using linear alpha blendingDiscard
    *   and gamma correction, see @FT_Render_Glyph.  When not using linear
-   *   alpha blending and gamma correction, glyphs will appear heavy and
+   *   alpha blendingDiscard and gamma correction, glyphs will appear heavy and
    *   fuzzy!
    *
    *   Gamma correction essentially lightens fonts since shades of grey are

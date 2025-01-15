@@ -30,7 +30,7 @@ add_library(
         senior/GLSeniorShader.cpp
         senior/GLSeniorDepthTest.cpp
         senior/GLSeniorStencilTest.cpp
-        senior/GLSeniorBlending.cpp
+        senior/GLSeniorBlendingDiscard.cpp
 
 
 )

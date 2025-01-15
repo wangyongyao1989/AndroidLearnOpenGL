@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.GLSeniorCallJni;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlSeniorBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
-import com.wangyongyao.views.GLSeniorBlendingView;
+import com.wangyongyao.views.GLSeniorBlendingDiscardView;
 import com.wangyongyao.views.GLSeniorDepthTestView;
 import com.wangyongyao.views.GLSeniorFlashLightView;
 import com.wangyongyao.views.GLSeniorStencilTestView;
@@ -96,7 +96,7 @@ public class GLSeniorFragment extends BaseFragment {
 
         mBtnSenior4.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLSeniorBlendingView glView = new GLSeniorBlendingView(getActivity()
+            GLSeniorBlendingDiscardView glView = new GLSeniorBlendingDiscardView(getActivity()
                     , mGLSeniorCallJni);
             mGlShow1.addView(glView);
         });

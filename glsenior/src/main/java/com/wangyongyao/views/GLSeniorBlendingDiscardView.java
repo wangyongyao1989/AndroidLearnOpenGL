@@ -13,12 +13,12 @@ import com.wangyongyao.utils.GLSeniorUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSeniorBlendingDiscardView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GLSeniorBlendingView.class.getSimpleName();
+    private static String TAG = GLSeniorBlendingDiscardView.class.getSimpleName();
     private GLSeniorCallJni mGLSeniorCallJni;
     private Context mContext;
     private boolean isScaleGesture;
@@ -27,14 +27,14 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
     private float downY;
 
 
-    public GLSeniorBlendingView(Context context, GLSeniorCallJni jniCall) {
+    public GLSeniorBlendingDiscardView(Context context, GLSeniorCallJni jniCall) {
         super(context);
         mContext = context;
         mGLSeniorCallJni = jniCall;
         init();
     }
 
-    public GLSeniorBlendingView(Context context, AttributeSet attrs) {
+    public GLSeniorBlendingDiscardView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -44,8 +44,8 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "blending_fragment.glsl");
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "blending_vertex.glsl");
+        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "blending_discard_fragment.glsl");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "blending_discard_vertex.glsl");
 
 
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
@@ -53,7 +53,7 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
         String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "grass.png");
 
         if (mGLSeniorCallJni != null) {
-            mGLSeniorCallJni.setBlendingGLSLPath(fragPath, vertexPath, picSrc1, picSrc2, picSrc3);
+            mGLSeniorCallJni.setBlendingDiscardGLSLPath(fragPath, vertexPath, picSrc1, picSrc2, picSrc3);
         }
         setRenderer(this);
 
@@ -67,7 +67,7 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mGLSeniorCallJni.blendingOnScale(scaleFactor, detector.getFocusX()
+                mGLSeniorCallJni.blendingDiscardOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -76,7 +76,7 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mGLSeniorCallJni.blendingOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mGLSeniorCallJni.blendingDiscardOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -85,7 +85,7 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mGLSeniorCallJni.blendingOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mGLSeniorCallJni.blendingDiscardOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -95,12 +95,12 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
 
     public void onDrawFrame(GL10 gl) {
         if (mGLSeniorCallJni != null)
-            mGLSeniorCallJni.blendingOpenGLRenderFrame();
+            mGLSeniorCallJni.blendingDiscardOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mGLSeniorCallJni != null)
-            mGLSeniorCallJni.initBlendingOpenGl(width, height);
+            mGLSeniorCallJni.initBlendingDiscardOpenGl(width, height);
     }
 
 
@@ -130,7 +130,7 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mGLSeniorCallJni.blendingMoveXY(0, 0, 1);
+                mGLSeniorCallJni.blendingDiscardMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -139,14 +139,14 @@ public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mGLSeniorCallJni.blendingMoveXY(dx, dy, 2);
+                mGLSeniorCallJni.blendingDiscardMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mGLSeniorCallJni.blendingMoveXY(0, 0, 3);
+                mGLSeniorCallJni.blendingDiscardMoveXY(0, 0, 3);
             }
             break;
         }

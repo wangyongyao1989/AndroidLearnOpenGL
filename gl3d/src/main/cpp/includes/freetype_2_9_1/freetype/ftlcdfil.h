@@ -77,7 +77,7 @@ FT_BEGIN_HEADER
    *      subpixel to all subpixels equally, sacrificing some won resolution
    *      but drastically reducing color-fringing.  Positioning improvements
    *      remain!  Note that color-fringing can only really be minimized
-   *      when using a color-balanced filter and alpha-blending the glyph
+   *      when using a color-balanced filter and alpha-blendingDiscard the glyph
    *      onto a surface in linear space; see @FT_Render_Glyph.
    *
    *   Regarding the form, a filter can be a `boxy' filter or a `beveled'
@@ -117,7 +117,7 @@ FT_BEGIN_HEADER
    *   accordingly, so clients shouldn't need to modify their layout and
    *   glyph positioning code when enabling the filter.
    *
-   *   It is important to understand that linear alpha blending and gamma
+   *   It is important to understand that linear alpha blendingDiscard and gamma
    *   correction is critical for correctly rendering glyphs onto surfaces
    *   without artifacts and even more critical when subpixel rendering is
    *   involved.
@@ -126,7 +126,7 @@ FT_BEGIN_HEADER
    *   one color channel.  That is, red alpha blends the red channel of the
    *   text color with the red channel of the background pixel.  The
    *   distribution of density values by the color-balanced filter assumes
-   *   alpha blending is done in linear space; only then color artifacts
+   *   alpha blendingDiscard is done in linear space; only then color artifacts
    *   cancel out.
    */
 
@@ -151,7 +151,7 @@ FT_BEGIN_HEADER
    *     It is a beveled, normalized, and color-balanced five-tap filter
    *     that is more forgiving to screens with non-ideal gamma curves and
    *     viewing angles.  Note that while color-fringing is reduced, it can
-   *     only be minimized by using linear alpha blending and gamma
+   *     only be minimized by using linear alpha blendingDiscard and gamma
    *     correction to render glyphs onto surfaces.  The default filter
    *     weights are [0x08 0x4D 0x56 0x4D 0x08].
    *
@@ -162,7 +162,7 @@ FT_BEGIN_HEADER
    *     It is a boxy, normalized, and color-balanced three-tap filter that
    *     is less forgiving to screens with non-ideal gamma curves and
    *     viewing angles.  This filter works best when the rendering system
-   *     uses linear alpha blending and gamma correction to render glyphs
+   *     uses linear alpha blendingDiscard and gamma correction to render glyphs
    *     onto surfaces.  The light filter weights are
    *     [0x00 0x55 0x56 0x55 0x00].
    *

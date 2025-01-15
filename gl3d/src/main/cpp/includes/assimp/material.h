@@ -429,7 +429,7 @@ enum aiBlendMode
      */
     aiBlendMode_Default = 0x0,
 
-    /** Additive blending
+    /** Additive blendingDiscard
      *
      *  Formula:
      *  @code
