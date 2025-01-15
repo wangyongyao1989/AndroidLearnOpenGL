@@ -13,12 +13,12 @@ import com.wangyongyao.utils.GLSeniorUtil;
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSeniorBlendingView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GLSeniorStencilTestTestView.class.getSimpleName();
+    private static String TAG = GLSeniorBlendingView.class.getSimpleName();
     private GLSeniorCallJni mGLSeniorCallJni;
     private Context mContext;
     private boolean isScaleGesture;
@@ -27,14 +27,14 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
     private float downY;
 
 
-    public GLSeniorStencilTestTestView(Context context, GLSeniorCallJni jniCall) {
+    public GLSeniorBlendingView(Context context, GLSeniorCallJni jniCall) {
         super(context);
         mContext = context;
         mGLSeniorCallJni = jniCall;
         init();
     }
 
-    public GLSeniorStencilTestTestView(Context context, AttributeSet attrs) {
+    public GLSeniorBlendingView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -44,16 +44,16 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "stencil_test_fragment.glsl");
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "stencil_test_vertex.glsl");
+        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "blending_fragment.glsl");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "blending_vertex.glsl");
 
-        String singleColorfragPath = GLSeniorUtil.getModelFilePath(mContext, "stencil_single_color_fragment.glsl");
 
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
         String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "specular_container2.png");
+        String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "grass.png");
 
         if (mGLSeniorCallJni != null) {
-            mGLSeniorCallJni.setStencilTestGLSLPath(fragPath, vertexPath, picSrc1, picSrc2,singleColorfragPath);
+            mGLSeniorCallJni.setBlendingGLSLPath(fragPath, vertexPath, picSrc1, picSrc2, picSrc3);
         }
         setRenderer(this);
 
@@ -67,7 +67,7 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mGLSeniorCallJni.stencilTestOnScale(scaleFactor, detector.getFocusX()
+                mGLSeniorCallJni.blendingOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -76,7 +76,7 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mGLSeniorCallJni.stencilTestOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mGLSeniorCallJni.blendingOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -85,7 +85,7 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mGLSeniorCallJni.stencilTestOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mGLSeniorCallJni.blendingOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -95,12 +95,12 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
 
     public void onDrawFrame(GL10 gl) {
         if (mGLSeniorCallJni != null)
-            mGLSeniorCallJni.stencilTestOpenGLRenderFrame();
+            mGLSeniorCallJni.blendingOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mGLSeniorCallJni != null)
-            mGLSeniorCallJni.initStencilTestOpenGl(width, height);
+            mGLSeniorCallJni.initBlendingOpenGl(width, height);
     }
 
 
@@ -130,7 +130,7 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mGLSeniorCallJni.stencilTestMoveXY(0, 0, 1);
+                mGLSeniorCallJni.blendingMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -139,14 +139,14 @@ public class GLSeniorStencilTestTestView extends GLSurfaceView implements GLSurf
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mGLSeniorCallJni.stencilTestMoveXY(dx, dy, 2);
+                mGLSeniorCallJni.blendingMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mGLSeniorCallJni.stencilTestMoveXY(0, 0, 3);
+                mGLSeniorCallJni.blendingMoveXY(0, 0, 3);
             }
             break;
         }

@@ -22,6 +22,43 @@ public class GLSeniorCallJni {
     }
 
     /**
+     * 混合
+     */
+    public void setBlendingGLSLPath(String fragString, String vertexString
+            , String picSrc1, String picSrc2, String picSrc3) {
+        native_blending_set_glsl_path(fragString, vertexString
+                , picSrc1, picSrc2, picSrc3);
+    }
+
+    public boolean initBlendingOpenGl(int w, int h) {
+        return native_blending_init_opengl(w, h);
+    }
+
+    public void blendingOpenGLRenderFrame() {
+        native_blending_render_frame();
+    }
+
+    public void blendingMoveXY(float dx, float dy, int action) {
+        native_blending_move_xy(dx, dy, action);
+    }
+
+    public void blendingOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_blending_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_blending_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2, String picSrc3);
+
+
+    private native boolean native_blending_init_opengl(int width, int height);
+
+    private native void native_blending_render_frame();
+
+    private native void native_blending_move_xy(float dx, float dy, int action);
+
+    private native void native_blending_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+    /**
      * 模版测试
      */
     public void setStencilTestGLSLPath(String fragString, String vertexString

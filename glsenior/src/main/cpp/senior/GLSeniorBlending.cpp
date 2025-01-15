@@ -1,22 +1,15 @@
 
 
 #include <iostream>
-#include "../includes/GLSeniorStencilTest.h"
+#include "../includes/GLSeniorBlending.h"
 
-bool GLSeniorStencilTest::setupGraphics(int w, int h) {
+bool GLSeniorBlending::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint stencilTestProgram = stencilTestShader->createProgram();
-
-    if (!stencilTestProgram) {
-        LOGE("Could not create stencilTestProgram shaderId.");
-        return false;
-    }
-
-    GLuint singleColorProgram = shaderSingleColor->createProgram();
-    if (!singleColorProgram) {
-        LOGE("Could not create singleColorProgram shaderId.");
+    GLuint lightingProgram = blendingShader->createProgram();
+    if (!lightingProgram) {
+        LOGE("Could not create shaderId.");
         return false;
     }
 
@@ -28,23 +21,18 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
     checkGlError("glClear");
 
-    // configure global opengl state
-    // -----------------------------
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LESS);
-    //开启模版测试
-    glEnable(GL_STENCIL_TEST);
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilOp(GL_KEEP, GL_KEEP, GL_REPLACE);
+    //深度函数(Depth Function)
+//    glDepthFunc(GL_ALWAYS);
 
     // cube VAO
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(StencilTestVertices), &StencilTestVertices,
-                 GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(BlendingVertices), &BlendingVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
@@ -57,13 +45,25 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
     glGenBuffers(1, &planeVBO);
     glBindVertexArray(planeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(stencilTestPlaneVertices), &stencilTestPlaneVertices,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(blendingPlaneVertices), &blendingPlaneVertices,
                  GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
     glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
                           (void *) (3 * sizeof(float)));
+    glBindVertexArray(0);
+
+    // transparent VAO
+    glGenVertexArrays(1, &transparentVAO);
+    glGenBuffers(1, &transparentVBO);
+    glBindVertexArray(transparentVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentVertices), transparentVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
     glBindVertexArray(0);
 
 
@@ -93,115 +93,92 @@ bool GLSeniorStencilTest::setupGraphics(int w, int h) {
         floorTexture = loadTexture(data2, width2, height2, format);
     }
 
+    if (nrChannels3 == 1) {
+        format = GL_RED;
+    } else if (nrChannels3 == 3) {
+        format = GL_RGB;
+    } else if (nrChannels3 == 4) {
+        format = GL_RGBA;
+    }
+
+    if (data3) {
+        transparentTexture = loadTexture(data3, width3, height3, format);
+    }
+
     // shader configuration
     // --------------------
-    stencilTestShader->use();
-    stencilTestShader->setInt("texture1", 0);
+    blendingShader->use();
+    blendingShader->setInt("texture1", 0);
 
     return true;
 }
 
-void GLSeniorStencilTest::renderFrame() {
-
+void GLSeniorBlending::renderFrame() {
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // don't forget to clear the stencil buffer!
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // set uniforms
-    shaderSingleColor->use();
+    // be sure to activate shader when setting uniforms/drawing objects
+    // view/projection transformations
     glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
+                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
+    vec3 cameraMove(0.0f, 0.0f, 3.0f);
+    mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom), (float)screenW / (float)screenH, 0.1f, 100.0f);
-    shaderSingleColor->setMat4("view", view);
-    shaderSingleColor->setMat4("projection", projection);
 
-    stencilTestShader->use();
-    stencilTestShader->setMat4("view", view);
-    stencilTestShader->setMat4("projection", projection);
-
-    // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
-    glStencilMask(0x00);
-    // floor
-    glBindVertexArray(planeVAO);
-    glBindTexture(GL_TEXTURE_2D, floorTexture);
-    stencilTestShader->setMat4("model", glm::mat4(1.0f));
-    glDrawArrays(GL_TRIANGLES, 0, 6);
-    glBindVertexArray(0);
-
-    // 1st. render pass, draw objects as normal, writing to the stencil buffer
-    // --------------------------------------------------------------------
-    glStencilFunc(GL_ALWAYS, 1, 0xFF);
-    glStencilMask(0xFF);
+    blendingShader->setMat4("view", view);
+    blendingShader->setMat4("projection", projection);
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
     model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-    stencilTestShader->setMat4("model", model);
+    blendingShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 3.0f));
-    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-    stencilTestShader->setMat4("model", model);
+    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
+    blendingShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
-    // 2nd. render pass: now draw slightly scaled versions of the objects, this time disabling stencil writing.
-    // Because the stencil buffer is now filled with several 1s. The parts of the buffer that are 1 are not drawn, thus only drawing 
-    // the objects' size differences, making it look like borders.
-    // -----------------------------------------------------------------------------------------------------------------------------
-    glStencilFunc(GL_NOTEQUAL, 1, 0xFF);
-    glStencilMask(0x00);
-    glDisable(GL_DEPTH_TEST);
-    shaderSingleColor->use();
-    float scale = 1.1f;
-
-    // cubes
-    glBindVertexArray(cubeVAO);
-    glBindTexture(GL_TEXTURE_2D, cubeTexture);
-
-//    model = glm::mat4(1.0f);
-//    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-//    model = glm::scale(model, glm::vec3(scale, scale, scale));
-//    shaderSingleColor->setMat4("model", model);
-//    glDrawArrays(GL_TRIANGLES, 0, 36);
-
-
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 3.0f));
-    model = glm::scale(model, glm::vec3(scale, scale, scale));
-    shaderSingleColor->setMat4("model", model);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // floor
+    glBindVertexArray(planeVAO);
+    glBindTexture(GL_TEXTURE_2D, floorTexture);
+    blendingShader->setMat4("model", glm::mat4(1.0f));
+    glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
+    // gressVegetation
+    glBindVertexArray(transparentVAO);
+    glBindTexture(GL_TEXTURE_2D, transparentTexture);
+    for (unsigned int i = 0; i < gressVegetation.size(); i++)
+    {
+        model = glm::mat4(1.0f);
+        model = glm::translate(model, gressVegetation[i]);
+        blendingShader->setMat4("model", model);
+        glDrawArrays(GL_TRIANGLES, 0, 6);
+    }
 
-    glStencilMask(0xFF);
-    glStencilFunc(GL_ALWAYS, 0, 0xFF);
-    glEnable(GL_DEPTH_TEST);
-
+    checkGlError("glDrawArrays");
 }
 
-bool GLSeniorStencilTest::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    stencilTestShader->getSharderPath(vertexPath, fragmentPath);
+bool GLSeniorBlending::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+    blendingShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
-bool GLSeniorStencilTest::setSingleColorSharderPath(const char *vertexPath,
-                                                    const char *singleColorfragPath) {
-    shaderSingleColor->getSharderPath(vertexPath, singleColorfragPath);
-    return 0;
-}
 
-
-void GLSeniorStencilTest::setPicPath(const char *pic1, const char *pic2) {
+void GLSeniorBlending::setPicPath(const char *pic1, const char *pic2,
+                                  const char *pic3) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
     data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
     data2 = stbi_load(pic2, &width2, &height2, &nrChannels2, 0);
+    data3 = stbi_load(pic3, &width3, &height3, &nrChannels3, 0);
+
 }
 
-void GLSeniorStencilTest::setMoveXY(float dx, float dy, int actionMode) {
+void GLSeniorBlending::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -211,8 +188,7 @@ void GLSeniorStencilTest::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void
-GLSeniorStencilTest::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void GLSeniorBlending::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -231,14 +207,14 @@ GLSeniorStencilTest::setOnScale(float scaleFactor, float focusX, float focusY, i
 }
 
 
-GLSeniorStencilTest::GLSeniorStencilTest() {
-    stencilTestShader = new GLSeniorShader();
-    shaderSingleColor = new GLSeniorShader();
+GLSeniorBlending::GLSeniorBlending() {
+    blendingShader = new GLSeniorShader();
 }
 
-GLSeniorStencilTest::~GLSeniorStencilTest() {
+GLSeniorBlending::~GLSeniorBlending() {
     cubeTexture = 0;
     floorTexture = 0;
+    transparentTexture = 0;
     //析构函数中释放资源
     glDeleteVertexArrays(1, &cubeVAO);
     glDeleteVertexArrays(1, &planeVAO);
@@ -246,8 +222,7 @@ GLSeniorStencilTest::~GLSeniorStencilTest() {
     glDeleteBuffers(1, &planeVBO);
 
 
-    stencilTestShader = nullptr;
-    shaderSingleColor = nullptr;
+    blendingShader = nullptr;
 
     if (data1) {
         stbi_image_free(data1);
@@ -259,14 +234,21 @@ GLSeniorStencilTest::~GLSeniorStencilTest() {
         data2 = nullptr;
     }
 
+    if (data3) {
+        stbi_image_free(data3);
+        data3 = nullptr;
+    }
+
+    colorVertexCode.clear();
+    colorFragmentCode.clear();
 }
 
-void GLSeniorStencilTest::printGLString(const char *name, GLenum s) {
+void GLSeniorBlending::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void GLSeniorStencilTest::checkGlError(const char *op) {
+void GLSeniorBlending::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
@@ -277,7 +259,7 @@ void GLSeniorStencilTest::checkGlError(const char *op) {
  * @param path
  * @return
  */
-int GLSeniorStencilTest::loadTexture(unsigned char *data, int width, int height, GLenum format) {
+int GLSeniorBlending::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 //    LOGI("loadTexture format =%d", format);
