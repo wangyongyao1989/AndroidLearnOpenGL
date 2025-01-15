@@ -22,41 +22,78 @@ public class GLSeniorCallJni {
     }
 
     /**
+     * 混合--排序
+     */
+    public void setBlendingSortGLSLPath(String fragString, String vertexString
+            , String picSrc1, String picSrc2, String picSrc3) {
+        native_blending_sort_set_glsl_path(fragString, vertexString
+                , picSrc1, picSrc2, picSrc3);
+    }
+
+    public boolean initBlendingSortOpenGl(int w, int h) {
+        return native_blending_sort_init_opengl(w, h);
+    }
+
+    public void blendingSortOpenGLRenderFrame() {
+        native_blending_sort_render_frame();
+    }
+
+    public void blendingSortMoveXY(float dx, float dy, int action) {
+        native_blending_sort_move_xy(dx, dy, action);
+    }
+
+    public void blendingSortOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_blending_sort_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_blending_sort_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2, String picSrc3);
+
+
+    private native boolean native_blending_sort_init_opengl(int width, int height);
+
+    private native void native_blending_sort_render_frame();
+
+    private native void native_blending_sort_move_xy(float dx, float dy, int action);
+
+    private native void native_blending_sort_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+    /**
      * 混合--丢弃
      */
     public void setBlendingDiscardGLSLPath(String fragString, String vertexString
             , String picSrc1, String picSrc2, String picSrc3) {
-        native_blending_discardset_glsl_path(fragString, vertexString
+        native_blending_discard_set_glsl_path(fragString, vertexString
                 , picSrc1, picSrc2, picSrc3);
     }
 
     public boolean initBlendingDiscardOpenGl(int w, int h) {
-        return native_blending_discardinit_opengl(w, h);
+        return native_blending_discard_init_opengl(w, h);
     }
 
     public void blendingDiscardOpenGLRenderFrame() {
-        native_blending_discardrender_frame();
+        native_blending_discard_render_frame();
     }
 
     public void blendingDiscardMoveXY(float dx, float dy, int action) {
-        native_blending_discardmove_xy(dx, dy, action);
+        native_blending_discard_move_xy(dx, dy, action);
     }
 
     public void blendingDiscardOnScale(float scaleFactor, float focusX, float focusY, int action) {
-        native_blending_discardon_scale(scaleFactor, focusX, focusY, action);
+        native_blending_discard_on_scale(scaleFactor, focusX, focusY, action);
     }
 
-    private native void native_blending_discardset_glsl_path(String fragPath, String vertexPath
+    private native void native_blending_discard_set_glsl_path(String fragPath, String vertexPath
             , String picSrc1, String picSrc2, String picSrc3);
 
 
-    private native boolean native_blending_discardinit_opengl(int width, int height);
+    private native boolean native_blending_discard_init_opengl(int width, int height);
 
-    private native void native_blending_discardrender_frame();
+    private native void native_blending_discard_render_frame();
 
-    private native void native_blending_discardmove_xy(float dx, float dy, int action);
+    private native void native_blending_discard_move_xy(float dx, float dy, int action);
 
-    private native void native_blending_discardon_scale(float scaleFactor, float focusX, float focusY, int action);
+    private native void native_blending_discard_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
     /**
      * 模版测试

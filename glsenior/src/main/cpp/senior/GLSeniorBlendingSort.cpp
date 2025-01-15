@@ -1,13 +1,13 @@
 
 
 #include <iostream>
-#include "../includes/GLSeniorBlendingDiscard.h"
+#include "../includes/GLSeniorBlendingSort.h"
 
-bool GLSeniorBlendingDiscard::setupGraphics(int w, int h) {
+bool GLSeniorBlendingSort::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint lightingProgram = blendingDiscardShader->createProgram();
+    GLuint lightingProgram = blendingSortShader->createProgram();
     if (!lightingProgram) {
         LOGE("Could not create shaderId.");
         return false;
@@ -23,16 +23,20 @@ bool GLSeniorBlendingDiscard::setupGraphics(int w, int h) {
 
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
+//    glDepthFunc(GL_LESS);
     //深度函数(Depth Function)
 //    glDepthFunc(GL_ALWAYS);
+
+    // 设置混合
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
     // cube VAO
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(BlendingDiscardVertices), &BlendingDiscardVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(BlendingSortVertices), &BlendingSortVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
@@ -45,7 +49,7 @@ bool GLSeniorBlendingDiscard::setupGraphics(int w, int h) {
     glGenBuffers(1, &planeVBO);
     glBindVertexArray(planeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(blendingDiscardPlaneVertices), &blendingDiscardPlaneVertices,
+    glBufferData(GL_ARRAY_BUFFER, sizeof(blendingSortPlaneVertices), &blendingSortPlaneVertices,
                  GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
@@ -59,7 +63,7 @@ bool GLSeniorBlendingDiscard::setupGraphics(int w, int h) {
     glGenBuffers(1, &transparentVBO);
     glBindVertexArray(transparentVAO);
     glBindBuffer(GL_ARRAY_BUFFER, transparentVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentDiscardVertices), transparentDiscardVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(transparentSortVertices), transparentSortVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(1);
@@ -107,13 +111,24 @@ bool GLSeniorBlendingDiscard::setupGraphics(int w, int h) {
 
     // shader configuration
     // --------------------
-    blendingDiscardShader->use();
-    blendingDiscardShader->setInt("texture1", 0);
+    blendingSortShader->use();
+    blendingSortShader->setInt("texture1", 0);
 
     return true;
 }
 
-void GLSeniorBlendingDiscard::renderFrame() {
+void GLSeniorBlendingSort::renderFrame() {
+
+    // sort the transparent windows before rendering
+    // map会自动根据键值(Key)对它的值排序，所以只要我们添加了所有的位置，
+    // 并以它的距离作为键，它们就会自动根据距离值排序了。
+    map<float, glm::vec3> sorted;
+    for (unsigned int i = 0; i < windows.size(); i++)
+    {
+        float distance = glm::length(mCamera.Position - windows[i]);
+        sorted[distance] = windows[i];
+    }
+
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
@@ -128,47 +143,49 @@ void GLSeniorBlendingDiscard::renderFrame() {
     mCamera.Position = cameraMove;
     glm::mat4 view = mCamera.GetViewMatrix();
 
-    blendingDiscardShader->setMat4("view", view);
-    blendingDiscardShader->setMat4("projection", projection);
+    blendingSortShader->setMat4("view", view);
+    blendingSortShader->setMat4("projection", projection);
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
     model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
-    blendingDiscardShader->setMat4("model", model);
+    blendingSortShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     model = glm::mat4(1.0f);
     model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
-    blendingDiscardShader->setMat4("model", model);
+    blendingSortShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     // floor
     glBindVertexArray(planeVAO);
     glBindTexture(GL_TEXTURE_2D, floorTexture);
-    blendingDiscardShader->setMat4("model", glm::mat4(1.0f));
+    blendingSortShader->setMat4("model", glm::mat4(1.0f));
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
     // windows
     glBindVertexArray(transparentVAO);
     glBindTexture(GL_TEXTURE_2D, transparentTexture);
-    for (unsigned int i = 0; i < gressVegetation.size(); i++)
+
+   //将以逆序（从远到近）从map中获取值，之后以正确的顺序绘制对应的窗户：
+    for (std::map<float, glm::vec3>::reverse_iterator it = sorted.rbegin(); it != sorted.rend(); ++it)
     {
         model = glm::mat4(1.0f);
-        model = glm::translate(model, gressVegetation[i]);
-        blendingDiscardShader->setMat4("model", model);
+        model = glm::translate(model, it->second);
+        blendingSortShader->setMat4("model", model);
         glDrawArrays(GL_TRIANGLES, 0, 6);
     }
 
     checkGlError("glDrawArrays");
 }
 
-bool GLSeniorBlendingDiscard::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    blendingDiscardShader->getSharderPath(vertexPath, fragmentPath);
+bool GLSeniorBlendingSort::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+    blendingSortShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
 
-void GLSeniorBlendingDiscard::setPicPath(const char *pic1, const char *pic2,
+void GLSeniorBlendingSort::setPicPath(const char *pic1, const char *pic2,
                                          const char *pic3) {
     LOGI("setPicPath pic1==%s", pic1);
     LOGI("setPicPath pic2==%s", pic2);
@@ -178,7 +195,7 @@ void GLSeniorBlendingDiscard::setPicPath(const char *pic1, const char *pic2,
 
 }
 
-void GLSeniorBlendingDiscard::setMoveXY(float dx, float dy, int actionMode) {
+void GLSeniorBlendingSort::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -188,7 +205,7 @@ void GLSeniorBlendingDiscard::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void GLSeniorBlendingDiscard::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void GLSeniorBlendingSort::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
 //    LOGI("setOnScale scaleFactor:%f,focusX:%f,focusY:%f,actionMode:%d", scaleFactor, focusX, focusY,
 //         actionMode);
 //    LOGI("setOnScale scaleFactor:%f", scaleFactor);
@@ -207,11 +224,11 @@ void GLSeniorBlendingDiscard::setOnScale(float scaleFactor, float focusX, float 
 }
 
 
-GLSeniorBlendingDiscard::GLSeniorBlendingDiscard() {
-    blendingDiscardShader = new GLSeniorShader();
+GLSeniorBlendingSort::GLSeniorBlendingSort() {
+    blendingSortShader = new GLSeniorShader();
 }
 
-GLSeniorBlendingDiscard::~GLSeniorBlendingDiscard() {
+GLSeniorBlendingSort::~GLSeniorBlendingSort() {
     cubeTexture = 0;
     floorTexture = 0;
     transparentTexture = 0;
@@ -222,7 +239,7 @@ GLSeniorBlendingDiscard::~GLSeniorBlendingDiscard() {
     glDeleteBuffers(1, &planeVBO);
 
 
-    blendingDiscardShader = nullptr;
+    blendingSortShader = nullptr;
 
     if (data1) {
         stbi_image_free(data1);
@@ -243,12 +260,12 @@ GLSeniorBlendingDiscard::~GLSeniorBlendingDiscard() {
     colorFragmentCode.clear();
 }
 
-void GLSeniorBlendingDiscard::printGLString(const char *name, GLenum s) {
+void GLSeniorBlendingSort::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void GLSeniorBlendingDiscard::checkGlError(const char *op) {
+void GLSeniorBlendingSort::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
@@ -259,7 +276,7 @@ void GLSeniorBlendingDiscard::checkGlError(const char *op) {
  * @param path
  * @return
  */
-int GLSeniorBlendingDiscard::loadTexture(unsigned char *data, int width, int height, GLenum format) {
+int GLSeniorBlendingSort::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 //    LOGI("loadTexture format =%d", format);

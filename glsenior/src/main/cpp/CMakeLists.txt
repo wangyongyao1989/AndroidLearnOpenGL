@@ -31,6 +31,7 @@ add_library(
         senior/GLSeniorDepthTest.cpp
         senior/GLSeniorStencilTest.cpp
         senior/GLSeniorBlendingDiscard.cpp
+        senior/GLSeniorBlendingSort.cpp
 
 
 )
