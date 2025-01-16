@@ -1,9 +1,6 @@
 package com.wangyongyao;
 
-import android.content.res.AssetManager;
 import android.util.Log;
-import android.view.Surface;
-
 public class GLSeniorCallJni {
 
     private static final String TAG = GLSeniorCallJni.class.getSimpleName();
@@ -27,38 +24,27 @@ public class GLSeniorCallJni {
     /**
      * 帧缓冲FBO——后期处理
      */
-    public void glFBOPostProcessingCreate(int type
-            , String vertexPath, String fragPath
-            , String picSrc1, String picSrc2
-            , String vertexScreenPath, String fragScreenPath
-
-
-    ) {
-        native_fbo_post_processing_create(type
-                , vertexPath, fragPath
-                , picSrc1, picSrc2
-                , vertexScreenPath, fragScreenPath
-
-        );
+    public void setFBOPostProcessingGLSLPath(String fragString, String vertexString
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2) {
+        native_fbo_post_processing_set_glsl_path(fragString, vertexString
+                , fragScreenString, vertexScreenString
+                , picSrc1, picSrc2);
     }
 
-    public void glFBOPostProcessingDestroy() {
-        native_fbo_post_processing_destroy();
+    public boolean initFBOPostProcessing(int w, int h) {
+        return native_fbo_post_processing_init_opengl(w, h);
     }
 
-    public void glFBOPostProcessingInit(Surface surface, AssetManager assetManager, int width, int height) {
-        native_fbo_post_processing_init(surface, assetManager, width, height);
+    public void glFBOPostProcessingRenderFrame() {
+        native_fbo_post_processing_render_frame();
     }
 
-    public void glFBOPostProcessingRender() {
-        native_fbo_post_processing_render();
-    }
-
-    public void glFBOPostMoveXY(float dx, float dy, int action) {
+    public void glFBOPostProcessingMoveXY(float dx, float dy, int action) {
         native_fbo_post_processing_move_xy(dx, dy, action);
     }
 
-    public void glFBOPostOnScale(float scaleFactor, float focusX, float focusY, int action) {
+    public void glFBOPostProcessingOnScale(float scaleFactor, float focusX, float focusY, int action) {
         native_fbo_post_processing_on_scale(scaleFactor, focusX, focusY, action);
     }
 
@@ -70,18 +56,13 @@ public class GLSeniorCallJni {
         return native_fbo_post_processing_get_parameters();
     }
 
-    private native void native_fbo_post_processing_create(int type
-            , String vertexPath, String fragPath
-            , String picSrc1, String picSrc2
-            , String vertexScreenPath, String fragScreenPath
+    private native void native_fbo_post_processing_set_glsl_path(String fragPath, String vertexPath
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2);
 
-    );
+    private native boolean native_fbo_post_processing_init_opengl(int width, int height);
 
-    private native void native_fbo_post_processing_destroy();
-
-    private native void native_fbo_post_processing_init(Surface surface, AssetManager assetManager, int width, int height);
-
-    private native void native_fbo_post_processing_render();
+    private native void native_fbo_post_processing_render_frame();
 
     private native void native_fbo_post_processing_move_xy(float dx, float dy, int action);
 

@@ -23,72 +23,98 @@ GLFBOPostProcessing *postProcessing;
 
 
 /*********************** GL 帧缓冲FBO——后期处理********************/
+//extern "C"
+//JNIEXPORT void JNICALL
+//cpp_fbo_post_processing_creat(JNIEnv *env, jobject thiz, jint typ, jstring vertex, jstring frag,
+//                              jstring picSrc1, jstring picSrc2, jstring vertexScreen,
+//                              jstring fragScreen
+//
+//) {
+//    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+//    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+//    const char *picSrc1Path = env->GetStringUTFChars(picSrc1, nullptr);
+//    const char *picSrc2Path = env->GetStringUTFChars(picSrc2, nullptr);
+//    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
+//    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
+//
+//    if (postProcessing == nullptr)
+//        postProcessing = new GLFBOPostProcessing();
+//
+//    postProcessing->setSharderPath(vertexPath, fragPath);
+//    postProcessing->setPicPath(picSrc1Path, picSrc2Path);
+//
+//    string sVertexScreenPath(vertexScreenPath);
+//    string sFragScreenPath(fragScreenPath);
+//    vector<string> sFragPathes;
+//    sFragPathes.push_back(sFragScreenPath);
+//
+//
+//    postProcessing->setSharderPostStringPathes(sVertexScreenPath, sFragPathes);
+//
+//    env->ReleaseStringUTFChars(vertex, vertexPath);
+//    env->ReleaseStringUTFChars(frag, fragPath);
+//    env->ReleaseStringUTFChars(picSrc1, picSrc1Path);
+//    env->ReleaseStringUTFChars(picSrc2, picSrc2Path);
+//    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
+//    env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
+//
+//
+//}
+
 extern "C"
-JNIEXPORT void JNICALL
-cpp_fbo_post_processing_creat(JNIEnv *env, jobject thiz, jint typ, jstring vertex, jstring frag,
-                              jstring picSrc1, jstring picSrc2, jstring vertexScreen,
-                              jstring fragScreen
-
-) {
-    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
-    const char *picSrc1Path = env->GetStringUTFChars(picSrc1, nullptr);
-    const char *picSrc2Path = env->GetStringUTFChars(picSrc2, nullptr);
-    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
-    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
-
+JNIEXPORT jboolean JNICALL
+cpp_fbo_post_processing_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
     if (postProcessing == nullptr)
         postProcessing = new GLFBOPostProcessing();
+    postProcessing->setupGraphics(width, height);
+    return 0;
+}
 
+extern "C"
+JNIEXPORT void JNICALL
+cpp_fbo_post_processing_render_frame(JNIEnv *env, jobject thiz) {
+    if (postProcessing == nullptr) return;
+    postProcessing->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_fbo_post_processing_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                         jstring fragScreen, jstring vertexScreen, jstring picsrc1,
+                                         jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
+    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (postProcessing == nullptr) {
+        postProcessing = new GLFBOPostProcessing();
+    }
     postProcessing->setSharderPath(vertexPath, fragPath);
-    postProcessing->setPicPath(picSrc1Path, picSrc2Path);
 
     string sVertexScreenPath(vertexScreenPath);
     string sFragScreenPath(fragScreenPath);
+
     vector<string> sFragPathes;
+
     sFragPathes.push_back(sFragScreenPath);
 
+    postProcessing->setSharderScreenPathes(sVertexScreenPath, sFragPathes);
 
-    postProcessing->setSharderPostStringPathes(sVertexScreenPath, sFragPathes);
+    postProcessing->setPicPath(picsrc1Path, picsrc2Path);
 
-    env->ReleaseStringUTFChars(vertex, vertexPath);
     env->ReleaseStringUTFChars(frag, fragPath);
-    env->ReleaseStringUTFChars(picSrc1, picSrc1Path);
-    env->ReleaseStringUTFChars(picSrc2, picSrc2Path);
-    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
     env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
-
-
-}
-
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_fbo_post_processing_destroy(JNIEnv *env, jobject thiz) {
+    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
 
 }
 
-extern "C"
-JNIEXPORT void JNICALL
-cpp_fbo_post_processing_init(JNIEnv *env, jobject thiz,
-                             jobject surface,
-                             jobject assetManager,
-                             jint width,
-                             jint height) {
-    if (postProcessing != nullptr) {
-        ANativeWindow *window = surface ? ANativeWindow_fromSurface(env, surface) : nullptr;
-        auto *aAssetManager = assetManager ? AAssetManager_fromJava(env, assetManager) : nullptr;
-        postProcessing->init(window, aAssetManager, (size_t) width, (size_t) height);
-    }
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_fbo_post_processing_render(JNIEnv *env, jobject thiz) {
-    if (postProcessing != nullptr) {
-        postProcessing->render();
-    }
-}
 
 extern "C"
 JNIEXPORT void JNICALL
@@ -104,13 +130,12 @@ cpp_fbo_post_processing_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, 
                                  jint actionMode) {
     if (postProcessing == nullptr) return;
     postProcessing->setOnScale(scaleFactor, focusX, focusY, actionMode);
-}
 
+}
 
 extern "C"
 JNIEXPORT void JNICALL
 cpp_fbo_post_processing_setParameters(JNIEnv *env, jobject thiz, jint p) {
-
     if (postProcessing != nullptr) {
         postProcessing->setParameters((uint32_t) p);
     }
@@ -441,19 +466,14 @@ static const JNINativeMethod methods[] = {
 
 
         /*********************** GL 帧缓冲FBO——后期处理********************/
-        {"native_fbo_post_processing_create",         "(I"
-                                                      "Ljava/lang/String;"
-                                                      "Ljava/lang/String;"
-                                                      "Ljava/lang/String;"
-                                                      "Ljava/lang/String;"
-                                                      "Ljava/lang/String;"
-                                                      "Ljava/lang/String;"
-                                                      ")V",                    (void *) cpp_fbo_post_processing_creat},
-        {"native_fbo_post_processing_destroy",        "()V",                   (void *) cpp_fbo_post_processing_destroy},
-        {"native_fbo_post_processing_init",           "(Landroid/view/Surface;"
-                                                      "Landroid/content/res"
-                                                      "/AssetManager;II)V",    (void *) cpp_fbo_post_processing_init},
-        {"native_fbo_post_processing_render",         "()V",                   (void *) cpp_fbo_post_processing_render},
+        {"native_fbo_post_processing_init_opengl",    "(II)Z",                 (void *) cpp_fbo_post_processing_init_opengl},
+        {"native_fbo_post_processing_render_frame",   "()V",                   (void *) cpp_fbo_post_processing_render_frame},
+        {"native_fbo_post_processing_set_glsl_path",  "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String;)V", (void *) cpp_fbo_post_processing_frag_vertex_path},
         {"native_fbo_post_processing_move_xy",        "(FFI)V",                (void *) cpp_fbo_post_processing_move_xy},
         {"native_fbo_post_processing_on_scale",       "(FFFI)V",               (void *) cpp_fbo_post_processing_on_scale},
         {"native_fbo_post_processing_set_parameters", "(I)V",                  (void *) cpp_fbo_post_processing_setParameters},

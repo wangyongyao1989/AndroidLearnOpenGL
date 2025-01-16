@@ -7,27 +7,23 @@
 #include <GLES3/gl3.h>
 #include "../includes/GLFBOPostProcessing.h"
 
-void
-GLFBOPostProcessing::init(ANativeWindow *window, AAssetManager *assetManager,
-                                     size_t width,
-                                     size_t height) {
-    LOGI("GLFBOPostProcessing init==%d, %d", width, height);
-    screenW = width;
-    screenH = height;
-    LOGI("setupGraphics(%d, %d)", width, height);
+bool GLFBOPostProcessing::setupGraphics(int w, int h) {
+    screenW = w;
+    screenH = h;
+    LOGI("setupGraphics(%d, %d)", w, h);
     GLuint fBOProgram = fBOShader->createProgram();
     if (!fBOProgram) {
         LOGE("Could not create fBOProgram shaderId.");
-        return;
+        return false;
     }
 
     GLuint screenProgram = screenShader->createProgram();
     if (!screenProgram) {
         LOGE("Could not create screenProgram shaderId.");
-        return ;
+        return false;
     }
 
-    glViewport(0, 0, width, height);
+    glViewport(0, 0, w, h);
     checkGlError("glViewport");
     LOGI("glViewport successed!");
 
@@ -139,10 +135,10 @@ GLFBOPostProcessing::init(ANativeWindow *window, AAssetManager *assetManager,
     }
     glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+    return true;
 }
 
-void GLFBOPostProcessing::render() {
-    LOGI("GLFBOPostProcessing::render()");
+void GLFBOPostProcessing::renderFrame() {
 
     //绑定到帧缓冲区，像往常一样绘制场景以着色纹理
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -164,12 +160,11 @@ void GLFBOPostProcessing::render() {
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
     glBindTexture(GL_TEXTURE_2D, cubeTexture);
-    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -2.0f));
+    model = glm::translate(model, glm::vec3(-1.0f, 0.0f, -1.0f));
     fBOShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-
     model = glm::mat4(1.0f);
-    model = glm::translate(model, glm::vec3(3.0f, 0.0f, 0.0f));
+    model = glm::translate(model, glm::vec3(2.0f, 0.0f, 0.0f));
     fBOShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     // floor
@@ -198,66 +193,20 @@ void GLFBOPostProcessing::render() {
     checkGlError("glDrawArrays");
 }
 
-void GLFBOPostProcessing::release() {
-
-    cubeTexture = 0;
-    floorTexture = 0;
-    textureColorbuffer = 0;
-
-    //析构函数中释放资源
-    glDeleteVertexArrays(1, &cubeVAO);
-    glDeleteVertexArrays(1, &planeVAO);
-    glDeleteVertexArrays(1, &quadVAO);
-
-    glDeleteBuffers(1, &cubeVBO);
-    glDeleteBuffers(1, &planeVBO);
-    glDeleteBuffers(1, &quadVBO);
-
-    glDeleteRenderbuffers(1, &rbo);
-    glDeleteFramebuffers(1, &framebuffer);
-
-
-    fBOShader = nullptr;
-    screenShader = nullptr;
-
-    if (data1) {
-        stbi_image_free(data1);
-        data1 = nullptr;
-    }
-
-    if (data2) {
-        stbi_image_free(data2);
-        data2 = nullptr;
-    }
-
-    colorVertexCode.clear();
-    colorFragmentCode.clear();
+bool GLFBOPostProcessing::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+    fBOShader->getSharderPath(vertexPath, fragmentPath);
+    return 0;
 }
-
-
-
-void GLFBOPostProcessing::setParameters(uint32_t params) {
-    m_filter = params;
-}
-
-uint32_t GLFBOPostProcessing::getParameters() {
-    return m_filter;
-}
-
-
-int
-GLFBOPostProcessing::createProgram() {
-
-  
-
-    return m_program;
-}
-
-
 
 bool
-GLFBOPostProcessing::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    fBOShader->getSharderPath(vertexPath, fragmentPath);
+GLFBOPostProcessing::setSharderScreenPath(const char *vertexScreenPath, const char *fragmentScreenPath) {
+    screenShader->getSharderPath(vertexScreenPath, fragmentScreenPath);
+    return 0;
+}
+
+bool
+GLFBOPostProcessing::setSharderScreenPathes(string vertexScreenPath, vector<string> fragmentScreenPathes) {
+    screenShader->getSharderStringPath(vertexScreenPath, fragmentScreenPathes.front());
     return 0;
 }
 
@@ -293,12 +242,6 @@ void GLFBOPostProcessing::setOnScale(float scaleFactor, float focusX, float focu
     mCamera.ProcessScroll(scale);
 }
 
-void GLFBOPostProcessing::setSharderPostStringPathes(string vertexPath,
-                                                         vector<string> fragmentPathes) {
-    m_fragmentStringPathes = fragmentPathes;
-    m_vertexStringPath = vertexPath;
-    screenShader->getSharderStringPath(vertexPath,fragmentPathes.front());
-}
 
 GLFBOPostProcessing::GLFBOPostProcessing() {
     fBOShader = new GLSeniorShader();
@@ -340,10 +283,6 @@ GLFBOPostProcessing::~GLFBOPostProcessing() {
     colorFragmentCode.clear();
 }
 
-
-
-
-
 void GLFBOPostProcessing::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
@@ -379,4 +318,13 @@ int GLFBOPostProcessing::loadTexture(unsigned char *data, int width, int height,
     }
 
     return textureID;
+}
+
+void GLFBOPostProcessing::setParameters(uint32_t i) {
+
+}
+
+jint GLFBOPostProcessing::getParameters() {
+
+    return 0;
 }

@@ -14,6 +14,7 @@
 #include <GLES3/gl3.h>
 #include <vector>
 #include <image/stb_image.h>
+#include <jni.h>
 
 
 #include "GLCameraSenior.h"
@@ -95,47 +96,6 @@ const float PostProcessingQuadVertices[] = {
 };
 
 class GLFBOPostProcessing {
-
-public:
-    GLFBOPostProcessing();
-
-    ~GLFBOPostProcessing();
-
-    void
-    init(ANativeWindow *window, AAssetManager *assetManager, size_t width, size_t height);
-
-    void setPicPath(const char *pic1, const char *pic2);
-
-    void setMoveXY(float dx, float dy, int actionMode);
-
-    void setOnScale(float scaleFactor, float focusX, float focusY, int actionMode);
-
-    void render();
-
-    void release();
-
-    void setParameters(uint32_t params);
-
-    uint32_t getParameters();
-
-    int createProgram();
-
-    bool setSharderPath(const char *vertexPath, const char *fragmentPath);
-
-
-    void setSharderPostStringPathes(string vertexPath, vector<string> fragmentPathes);
-
-    GLuint m_program = 0;
-
-
-private:
-
-    int loadTexture(unsigned char *data, int width, int height, GLenum format);
-    void printGLString(const char *name, GLenum s);
-
-    void checkGlError(const char *op);
-
-
 private:
     unsigned int cubeTexture;
     unsigned int floorTexture;
@@ -147,6 +107,7 @@ private:
     double timeValue;
     float lastX, lastY;
     int mActionMode;
+
 
     unsigned int cubeVAO;
     unsigned int cubeVBO;
@@ -162,6 +123,7 @@ private:
     unsigned int textureColorbuffer;
 
 
+
     string colorVertexCode;
     string colorFragmentCode;
 
@@ -169,6 +131,39 @@ private:
     GLCameraSenior mCamera;
     GLSeniorShader *fBOShader;
     GLSeniorShader *screenShader;
+
+public:
+
+    GLFBOPostProcessing();
+
+    ~GLFBOPostProcessing();
+
+    bool setupGraphics(int w, int h);
+
+    void renderFrame();
+
+    bool setSharderPath(const char *vertexPath, const char *fragmentPath);
+
+    bool setSharderScreenPath(const char *vertexPathScreen, const char *fragmentPathScreen);
+
+    bool setSharderScreenPathes(string vertexScreenPath, vector<string> fragmentScreenPathes);
+
+    void setPicPath(const char *pic1, const char *pic2);
+
+    void setMoveXY(float dx, float dy, int actionMode);
+
+    void setOnScale(float scaleFactor, float focusX, float focusY, int actionMode);
+
+    void printGLString(const char *name, GLenum s);
+
+    void checkGlError(const char *op);
+
+    int loadTexture(unsigned char *data, int width, int height, GLenum format);
+
+
+    void setParameters(uint32_t i);
+
+    jint getParameters();
 
     size_t m_filter = 0;
 

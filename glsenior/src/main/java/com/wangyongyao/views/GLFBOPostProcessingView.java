@@ -24,7 +24,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
-    
+
     private GLSeniorCallJni mJniCall;
     private Context mContext;
     private boolean isScaleGesture;
@@ -58,17 +58,16 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
         String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "metal.png");
 
-        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_screen_fragment.glsl");
+        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_opposition_fragment.glsl");
         String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_screen_vertex.glsl");
 
-        mJniCall.glFBOPostProcessingCreate(0
-                , vertexPath, fragPath
-                , picSrc1, picSrc2
-                , vertexScreenPath, fragScreenPath
-        );
+        if (mJniCall != null) {
+            mJniCall.setFBOPostProcessingGLSLPath(fragPath, vertexPath
+                    , fragScreenPath, vertexScreenPath
+                    , picSrc1, picSrc2);
+        }
 
         setRenderer(this);
-        setRenderMode(GLSurfaceView.RENDERMODE_WHEN_DIRTY);
 
         gestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener());
         scaleGestureDetector = new ScaleGestureDetector(getContext()
@@ -77,10 +76,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
             public boolean onScale(ScaleGestureDetector detector) {
                 // 处理缩放事件
                 float scaleFactor = detector.getScaleFactor();
-//                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
-//                        + "==getFocusX:" + detector.getFocusX()
-//                        + "===getFocusY" + detector.getFocusY());
-                mJniCall.glFBOPostOnScale(scaleFactor, detector.getFocusX()
+                mJniCall.glFBOPostProcessingOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -89,7 +85,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mJniCall.glFBOPostOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.glFBOPostProcessingOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -98,11 +94,13 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mJniCall.glFBOPostOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mJniCall.glFBOPostProcessingOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
         });
+
+
     }
 
     public void setFBOPostProcessingType(int type) {
@@ -123,7 +121,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
 
     public void onDrawFrame(GL10 gl) {
         if (mJniCall != null) {
-            mJniCall.glFBOPostProcessingRender();
+            mJniCall.glFBOPostProcessingRenderFrame();
         }
 
     }
@@ -131,7 +129,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.e(TAG, "onSurfaceChanged width:" + width + ",height" + height);
         if (mJniCall != null) {
-            mJniCall.glFBOPostProcessingInit(null, null, width, height);
+            mJniCall.initFBOPostProcessing(width, height);
         }
         mWidth = width;
         mHeight = height;
@@ -145,10 +143,6 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
 
     }
 
-    public void destroyRender() {
-        mJniCall.glFBOPostProcessingDestroy();
-
-    }
 
 
     @Override
@@ -171,7 +165,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mJniCall.glFBOPostMoveXY(0, 0, 1);
+                mJniCall.glFBOPostProcessingMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -180,14 +174,14 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mJniCall.glFBOPostMoveXY(dx, dy, 2);
+                mJniCall.glFBOPostProcessingMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mJniCall.glFBOPostMoveXY(0, 0, 3);
+                mJniCall.glFBOPostProcessingMoveXY(0, 0, 3);
             }
             break;
         }
