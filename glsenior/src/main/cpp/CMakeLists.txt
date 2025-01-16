@@ -25,13 +25,13 @@ add_library(
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         GLSeniorJniCall.cpp
         GLSeniorStdImage.cpp
-        senior/GLSeniorFlashLight.cpp
         senior/GLCameraSenior.cpp
         senior/GLSeniorShader.cpp
         senior/GLSeniorDepthTest.cpp
         senior/GLSeniorStencilTest.cpp
         senior/GLSeniorBlendingDiscard.cpp
         senior/GLSeniorBlendingSort.cpp
+        senior/GLSeniorFBO.cpp
 
 
 )

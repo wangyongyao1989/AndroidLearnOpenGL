@@ -2,20 +2,82 @@
 #include <string>
 #include <android/log.h>
 #include "includes/GLSeniorLogUtils.h"
-#include "GLSeniorFlashLight.h"
 #include "GLSeniorDepthTest.h"
 #include "GLSeniorStencilTest.h"
 #include "GLSeniorBlendingDiscard.h"
 #include "GLSeniorBlendingSort.h"
+#include "GLSeniorFBO.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
 
-GLSeniorFlashLight *flashLight;
 GLSeniorDepthTest *depthTest;
 GLSeniorStencilTest *stencilTest;
 GLSeniorBlendingDiscard *blendingDiscard;
 GLSeniorBlendingSort *blendingSort;
+GLSeniorFBO *fbo;
+
+
+
+
+/*********************** GL 帧缓冲FBO********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_fbo_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (fbo == nullptr)
+        fbo = new GLSeniorFBO();
+    fbo->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_fbo_render_frame(JNIEnv *env, jobject thiz) {
+    if (fbo == nullptr) return;
+    fbo->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_fbo_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                                jstring picsrc1, jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (fbo == nullptr) {
+        fbo = new GLSeniorFBO();
+    }
+    fbo->setSharderPath(vertexPath, fragPath);
+
+    fbo->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_fbo_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (fbo == nullptr) return;
+    fbo->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_fbo_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                        jfloat focusY,
+                        jint actionMode) {
+    if (fbo == nullptr) return;
+    fbo->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 /*********************** GL 混合--排序********************/
 
@@ -260,86 +322,19 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
     depthTest->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
 
-/*********************** GL 聚光手电筒********************/
-
-extern "C"
-JNIEXPORT jboolean JNICALL
-cpp_flash_light_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
-    if (flashLight == nullptr)
-        flashLight = new GLSeniorFlashLight();
-    flashLight->setupGraphics(width, height);
-    return 0;
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_flash_light_render_frame(JNIEnv *env, jobject thiz) {
-    if (flashLight == nullptr) return;
-    flashLight->renderFrame();
-
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_flash_light_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                 jstring picsrc1, jstring picsrc2) {
-    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
-    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
-
-    if (flashLight == nullptr) {
-        flashLight = new GLSeniorFlashLight();
-    }
-    flashLight->setSharderPath(vertexPath, fragPath);
-
-    flashLight->setPicPath(picsrc1Path, picsrc2Path);
-
-    env->ReleaseStringUTFChars(frag, fragPath);
-    env->ReleaseStringUTFChars(vertex, vertexPath);
-    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
-    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
-
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_flash_light_color_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag,
-                                       jstring vertex) {
-    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
-    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-
-    if (flashLight == nullptr) {
-        flashLight = new GLSeniorFlashLight();
-    }
-    flashLight->setColorSharderPath(vertexPath, fragPath);
-
-    env->ReleaseStringUTFChars(frag, fragPath);
-    env->ReleaseStringUTFChars(vertex, vertexPath);
-
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_flash_light_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
-    if (flashLight == nullptr) return;
-    flashLight->setMoveXY(dx, dy, actionMode);
-}
-
-extern "C"
-JNIEXPORT void JNICALL
-cpp_flash_light_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                         jfloat focusY,
-                         jint actionMode) {
-    if (flashLight == nullptr) return;
-    flashLight->setOnScale(scaleFactor, focusX, focusY, actionMode);
-}
-
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
-
+        /*********************** GL 帧缓冲FBO********************/
+        {"native_fbo_init_opengl",          "(II)Z",                 (void *) cpp_fbo_init_opengl},
+        {"native_fbo_render_frame",         "()V",                   (void *) cpp_fbo_render_frame},
+        {"native_fbo_set_glsl_path",        "(Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String"
+                                                   ";Ljava/lang/String;)V", (void *) cpp_fbo_frag_vertex_path},
+        {"native_fbo_move_xy",              "(FFI)V",                (void *) cpp_fbo_move_xy},
+        {"native_fbo_on_scale",             "(FFFI)V",               (void *) cpp_fbo_on_scale},
 
         /*********************** GL 混合--排序********************/
         {"native_blending_sort_init_opengl",            "(II)Z",                 (void *) cpp_blending_sort_init_opengl},
@@ -384,18 +379,6 @@ static const JNINativeMethod methods[] = {
         {"native_depth_test_move_xy",              "(FFI)V",                (void *) cpp_depth_test_move_xy},
         {"native_depth_test_on_scale",             "(FFFI)V",               (void *) cpp_depth_test_on_scale},
 
-
-        /*********************** GL 聚光手电筒********************/
-        {"native_flash_light_init_opengl",         "(II)Z",                 (void *) cpp_flash_light_init_opengl},
-        {"native_flash_light_render_frame",        "()V",                   (void *) cpp_flash_light_render_frame},
-        {"native_flash_light_color_set_glsl_path", "(Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_color_frag_vertex_path},
-        {"native_flash_light_set_glsl_path",       "(Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_flash_light_frag_vertex_path},
-        {"native_flash_light_move_xy",             "(FFI)V",                (void *) cpp_flash_light_move_xy},
-        {"native_flash_light_on_scale",            "(FFFI)V",               (void *) cpp_flash_light_on_scale},
 
 };
 

@@ -21,6 +21,43 @@ public class GLSeniorCallJni {
 
     }
 
+
+
+    /**
+     * 帧缓冲FBO
+     */
+    public void setFBOGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
+        native_fbo_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    }
+
+    public boolean initFBOOpenGl(int w, int h) {
+        return native_fbo_init_opengl(w, h);
+    }
+
+    public void fBOOpenGLRenderFrame() {
+        native_fbo_render_frame();
+    }
+
+    public void fBOMoveXY(float dx, float dy, int action) {
+        native_fbo_move_xy(dx, dy, action);
+    }
+
+    public void fBOOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_fbo_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_fbo_set_glsl_path(String fragPath, String vertexPath
+            , String picSrc1, String picSrc2);
+
+
+    private native boolean native_fbo_init_opengl(int width, int height);
+
+    private native void native_fbo_render_frame();
+
+    private native void native_fbo_move_xy(float dx, float dy, int action);
+
+    private native void native_fbo_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
     /**
      * 混合--排序
      */
@@ -168,44 +205,6 @@ public class GLSeniorCallJni {
 
     private native void native_depth_test_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
-    /**
-     * 聚光手电筒
-     */
-    public void setFlashLightGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
-        native_flash_light_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
-    }
 
-    public void setFlashLightColorGLSLPath(String fragString, String vertexString) {
-        native_flash_light_color_set_glsl_path(fragString, vertexString);
-    }
-
-    public boolean initFlashLightOpenGl(int w, int h) {
-        return native_flash_light_init_opengl(w, h);
-    }
-
-    public void flashLightOpenGLRenderFrame() {
-        native_flash_light_render_frame();
-    }
-
-    public void flashLightMoveXY(float dx, float dy, int action) {
-        native_flash_light_move_xy(dx, dy, action);
-    }
-
-    public void flashLightOnScale(float scaleFactor, float focusX, float focusY, int action) {
-        native_flash_light_on_scale(scaleFactor, focusX, focusY, action);
-    }
-
-    private native void native_flash_light_set_glsl_path(String fragPath, String vertexPath
-            , String picSrc1, String picSrc2);
-
-    private native void native_flash_light_color_set_glsl_path(String fragPath, String vertexPath);
-
-    private native boolean native_flash_light_init_opengl(int width, int height);
-
-    private native void native_flash_light_render_frame();
-
-    private native void native_flash_light_move_xy(float dx, float dy, int action);
-
-    private native void native_flash_light_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
 }

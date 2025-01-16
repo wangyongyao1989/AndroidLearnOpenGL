@@ -7,19 +7,18 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
-
 import com.wangyongyao.GLSeniorCallJni;
 import com.wangyongyao.utils.GLSeniorUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
 
-public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSeniorFBOView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private GestureDetector gestureDetector;
     private ScaleGestureDetector scaleGestureDetector;
 
-    private static String TAG = GLSeniorFlashLightView.class.getSimpleName();
+    private static String TAG = GLSeniorFBOView.class.getSimpleName();
     private GLSeniorCallJni mGLSeniorCallJni;
     private Context mContext;
     private boolean isScaleGesture;
@@ -28,14 +27,14 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
     private float downY;
 
 
-    public GLSeniorFlashLightView(Context context, GLSeniorCallJni jniCall) {
+    public GLSeniorFBOView(Context context, GLSeniorCallJni jniCall) {
         super(context);
         mContext = context;
         mGLSeniorCallJni = jniCall;
         init();
     }
 
-    public GLSeniorFlashLightView(Context context, AttributeSet attrs) {
+    public GLSeniorFBOView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -45,16 +44,13 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "flash_light_cube_fragment.glsl");
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "flash_light_cube_vertex.glsl");
-        String colorFragPath = GLSeniorUtil.getModelFilePath(mContext, "flash_light_color_fragment.glsl");
-        String colorVertexPath = GLSeniorUtil.getModelFilePath(mContext, "flash_light_color_vertex.glsl");
+        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "depth_test_fragment.glsl");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "depth_test_vertex.glsl");
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
         String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "specular_container2.png");
 
         if (mGLSeniorCallJni != null) {
-            mGLSeniorCallJni.setFlashLightGLSLPath(colorFragPath, colorVertexPath, picSrc1, picSrc2);
-            mGLSeniorCallJni.setFlashLightColorGLSLPath(fragPath, vertexPath);
+            mGLSeniorCallJni.setFBOGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
         }
         setRenderer(this);
 
@@ -68,7 +64,7 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
 //                Log.e(TAG, "onScale scaleFactor: " + scaleFactor
 //                        + "==getFocusX:" + detector.getFocusX()
 //                        + "===getFocusY" + detector.getFocusY());
-                mGLSeniorCallJni.flashLightOnScale(scaleFactor, detector.getFocusX()
+                mGLSeniorCallJni.fBOOnScale(scaleFactor, detector.getFocusX()
                         , detector.getFocusY(), 2);
                 return true;
             }
@@ -77,7 +73,7 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
             public boolean onScaleBegin(ScaleGestureDetector detector) {
                 // 开始缩放事件
 //                Log.e(TAG, "onScaleBegin: " + detector);
-                mGLSeniorCallJni.flashLightOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mGLSeniorCallJni.fBOOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 1);
                 return true;
             }
@@ -86,7 +82,7 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
             public void onScaleEnd(ScaleGestureDetector detector) {
                 // 结束缩放事件
 //                Log.e(TAG, "onScaleEnd: " + detector);
-                mGLSeniorCallJni.flashLightOnScale(detector.getScaleFactor(), detector.getFocusX()
+                mGLSeniorCallJni.fBOOnScale(detector.getScaleFactor(), detector.getFocusX()
                         , detector.getFocusY(), 3);
                 isScaleGesture = false;
             }
@@ -96,12 +92,12 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
 
     public void onDrawFrame(GL10 gl) {
         if (mGLSeniorCallJni != null)
-            mGLSeniorCallJni.flashLightOpenGLRenderFrame();
+            mGLSeniorCallJni.fBOOpenGLRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         if (mGLSeniorCallJni != null)
-            mGLSeniorCallJni.initFlashLightOpenGl(width, height);
+            mGLSeniorCallJni.initFBOOpenGl(width, height);
     }
 
 
@@ -131,7 +127,7 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = event.getX();
                 downY = event.getY();
-                mGLSeniorCallJni.flashLightMoveXY(0, 0, 1);
+                mGLSeniorCallJni.fBOMoveXY(0, 0, 1);
             }
             break;
             case MotionEvent.ACTION_MOVE: {
@@ -140,14 +136,14 @@ public class GLSeniorFlashLightView extends GLSurfaceView implements GLSurfaceVi
                 float dy = event.getY() - downY;
 //                Log.e(TAG, "ACTION_MOVE:dx= "
 //                        + dx + "==dy:" + dy);
-                mGLSeniorCallJni.flashLightMoveXY(dx, dy, 2);
+                mGLSeniorCallJni.fBOMoveXY(dx, dy, 2);
             }
             break;
             case MotionEvent.ACTION_UP: {
 //                Log.e(TAG, "onTouchEvent: " + event.getAction());
                 downX = 0;
                 downY = 0;
-                mGLSeniorCallJni.flashLightMoveXY(0, 0, 3);
+                mGLSeniorCallJni.fBOMoveXY(0, 0, 3);
             }
             break;
         }

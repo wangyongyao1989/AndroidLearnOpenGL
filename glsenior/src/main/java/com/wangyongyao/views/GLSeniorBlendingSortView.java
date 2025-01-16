@@ -49,7 +49,7 @@ public class GLSeniorBlendingSortView extends GLSurfaceView implements GLSurface
 
 
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "specular_container2.png");
+        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "metal.png");
         String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "window.png");
 
         if (mGLSeniorCallJni != null) {

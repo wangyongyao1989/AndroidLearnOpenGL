@@ -49,7 +49,7 @@ public class GLSeniorBlendingDiscardView extends GLSurfaceView implements GLSurf
 
 
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "specular_container2.png");
+        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "metal.png");
         String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "grass.png");
 
         if (mGLSeniorCallJni != null) {
