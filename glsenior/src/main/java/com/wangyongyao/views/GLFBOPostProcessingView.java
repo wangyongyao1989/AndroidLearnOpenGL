@@ -55,13 +55,20 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
         String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_vertex.glsl");
 
 
-        String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "metal.png");
+        String picSrc1 = GLSeniorUtil.getModelFilePath(mContext
+                , "diffuse_map_container2.png");
+        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext
+                , "metal.png");
 
-        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_opposition_fragment.glsl");
-        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_screen_vertex.glsl");
+        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext
+                , "fbo_opposition_fragment.glsl");
+        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext
+                , "fbo_screen_vertex.glsl");
 
-        String fragGrayScalePath = GLSeniorUtil.getModelFilePath(mContext, "fbo_gray_scale_fragment.glsl");
+        String fragGrayScalePath = GLSeniorUtil.getModelFilePath(mContext
+                , "fbo_gray_scale_fragment.glsl");
+        String fragWeightedGrayPath = GLSeniorUtil.getModelFilePath(mContext
+                , "fbo_weighted_gray_scale_fragment.glsl");
 
 
         if (mJniCall != null) {
@@ -69,6 +76,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
                     , fragScreenPath, vertexScreenPath
                     , picSrc1, picSrc2
                     , fragGrayScalePath
+                    , fragWeightedGrayPath
             );
         }
 
@@ -109,7 +117,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
     }
 
     public void setFBOPostProcessingType(int type) {
-        int typeVaule = type % 2;
+        int typeVaule = type % 3;
         if (mJniCall != null) {
             mJniCall.glFBOPostProcessingSetParameters(typeVaule);
         }
@@ -147,7 +155,6 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
 
 
     }
-
 
 
     @Override
