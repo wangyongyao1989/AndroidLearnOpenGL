@@ -30,13 +30,14 @@ public class GLSeniorCallJni {
             , String picSrc1, String picSrc2
             , String fragGrayScalePath
             , String fragWeightedGrayPath
-
+            , String fragNuclearEffectPath
     ) {
         native_fbo_post_processing_set_glsl_path(fragString, vertexString
                 , fragScreenString, vertexScreenString
                 , picSrc1, picSrc2
                 , fragGrayScalePath
                 , fragWeightedGrayPath
+                ,fragNuclearEffectPath
         );
     }
 
@@ -69,6 +70,8 @@ public class GLSeniorCallJni {
             , String picSrc1, String picSrc2
             , String fragGrayScalePath
             , String fragWeightedGrayPath
+            , String fragNuclearEffectPath
+
     );
 
     private native boolean native_fbo_post_processing_init_opengl(int width, int height);

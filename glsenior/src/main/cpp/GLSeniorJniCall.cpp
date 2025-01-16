@@ -46,7 +46,7 @@ JNIEXPORT void JNICALL
 cpp_fbo_post_processing_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
                                          jstring fragScreen, jstring vertexScreen, jstring picsrc1,
                                          jstring picsrc2, jstring fragGrayScale,
-                                         jstring fragWeightedGray
+                                         jstring fragWeightedGray, jstring fragNuclearEffect
 ) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
@@ -57,6 +57,7 @@ cpp_fbo_post_processing_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag
 
     const char *fragGrayScalePath = env->GetStringUTFChars(fragGrayScale, nullptr);
     const char *fragWeightedGrayPath = env->GetStringUTFChars(fragWeightedGray, nullptr);
+    const char *fragNuclearEffectPath = env->GetStringUTFChars(fragNuclearEffect, nullptr);
 
     if (postProcessing == nullptr) {
         postProcessing = new GLFBOPostProcessing();
@@ -67,12 +68,14 @@ cpp_fbo_post_processing_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag
     string sFragScreenPath(fragScreenPath);
     string sFragGrayScalePath(fragGrayScalePath);
     string sFragWeightedGrayPath(fragWeightedGrayPath);
+    string sFragNuclearEffectPath(fragNuclearEffectPath);
 
     vector<string> sFragPathes;
 
     sFragPathes.push_back(sFragScreenPath);
     sFragPathes.push_back(sFragGrayScalePath);
     sFragPathes.push_back(sFragWeightedGrayPath);
+    sFragPathes.push_back(sFragNuclearEffectPath);
 
     postProcessing->setSharderScreenPathes(sVertexScreenPath, sFragPathes);
 
@@ -441,6 +444,7 @@ static const JNINativeMethod methods[] = {
         {"native_fbo_post_processing_init_opengl",    "(II)Z",                 (void *) cpp_fbo_post_processing_init_opengl},
         {"native_fbo_post_processing_render_frame",   "()V",                   (void *) cpp_fbo_post_processing_render_frame},
         {"native_fbo_post_processing_set_glsl_path",  "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"

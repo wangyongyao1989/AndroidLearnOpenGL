@@ -157,6 +157,10 @@ public class GLSeniorFragment extends BaseFragment {
                 mBtnSenior7.setText("灰度化加权");
             }
             break;
+            case 3: {
+                mBtnSenior7.setText("核效果");
+            }
+            break;
         }
     }
 

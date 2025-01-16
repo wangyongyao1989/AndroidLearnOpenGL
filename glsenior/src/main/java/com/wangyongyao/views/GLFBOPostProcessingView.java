@@ -61,15 +61,16 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
                 , "metal.png");
 
         String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext
-                , "fbo_opposition_fragment.glsl");
+                , "fbo_post_opposition_fragment.glsl");
         String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext
                 , "fbo_screen_vertex.glsl");
 
         String fragGrayScalePath = GLSeniorUtil.getModelFilePath(mContext
-                , "fbo_gray_scale_fragment.glsl");
+                , "fbo_post_gray_scale_fragment.glsl");
         String fragWeightedGrayPath = GLSeniorUtil.getModelFilePath(mContext
-                , "fbo_weighted_gray_scale_fragment.glsl");
-
+                , "fbo_post_weighted_gray_fragment.glsl");
+        String fragNuclearEffectPath = GLSeniorUtil.getModelFilePath(mContext
+                , "fbo_post_nuclear_effect_fragment.glsl");
 
         if (mJniCall != null) {
             mJniCall.setFBOPostProcessingGLSLPath(fragPath, vertexPath
@@ -77,6 +78,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
                     , picSrc1, picSrc2
                     , fragGrayScalePath
                     , fragWeightedGrayPath
+                    , fragNuclearEffectPath
             );
         }
 
@@ -117,7 +119,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
     }
 
     public void setFBOPostProcessingType(int type) {
-        int typeVaule = type % 3;
+        int typeVaule = type % 4;
         if (mJniCall != null) {
             mJniCall.glFBOPostProcessingSetParameters(typeVaule);
         }
