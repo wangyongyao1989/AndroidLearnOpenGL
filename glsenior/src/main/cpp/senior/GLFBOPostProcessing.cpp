@@ -17,11 +17,6 @@ bool GLFBOPostProcessing::setupGraphics(int w, int h) {
         return false;
     }
 
-    GLuint screenProgram = screenShader->createProgram();
-    if (!screenProgram) {
-        LOGE("Could not create screenProgram shaderId.");
-        return false;
-    }
 
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
@@ -99,13 +94,13 @@ bool GLFBOPostProcessing::setupGraphics(int w, int h) {
         floorTexture = loadTexture(data2, width2, height2, format);
     }
 
+
     // shader configuration
     // --------------------
     fBOShader->use();
     fBOShader->setInt("texture1", 0);
 
-    screenShader->use();
-    screenShader->setInt("screenTexture", 0);
+    createPostProcessingProgram();
 
     //1.首先要创建一个帧缓冲对象，并绑定它，这些都很直观
     glGenFramebuffers(1, &framebuffer);
@@ -139,6 +134,15 @@ bool GLFBOPostProcessing::setupGraphics(int w, int h) {
 }
 
 void GLFBOPostProcessing::renderFrame() {
+    if (m_filter != m_prevFilter) {
+        m_prevFilter = m_filter;
+        if (m_filter >= 0 && m_filter < m_fragmentStringPathes.size()) {
+            delete_program(screenProgram);
+            LOGI("render---m_filter：%d", m_filter);
+            screenShader->getSharderStringPath(m_vertexStringPath, m_fragmentStringPathes.at(m_prevFilter));
+            createPostProcessingProgram();
+        }
+    }
 
     //绑定到帧缓冲区，像往常一样绘制场景以着色纹理
     glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
@@ -198,15 +202,13 @@ bool GLFBOPostProcessing::setSharderPath(const char *vertexPath, const char *fra
     return 0;
 }
 
-bool
-GLFBOPostProcessing::setSharderScreenPath(const char *vertexScreenPath, const char *fragmentScreenPath) {
-    screenShader->getSharderPath(vertexScreenPath, fragmentScreenPath);
-    return 0;
-}
+
 
 bool
 GLFBOPostProcessing::setSharderScreenPathes(string vertexScreenPath, vector<string> fragmentScreenPathes) {
     screenShader->getSharderStringPath(vertexScreenPath, fragmentScreenPathes.front());
+    m_vertexStringPath = vertexScreenPath;
+    m_fragmentStringPathes = fragmentScreenPathes;
     return 0;
 }
 
@@ -269,6 +271,9 @@ GLFBOPostProcessing::~GLFBOPostProcessing() {
     fBOShader = nullptr;
     screenShader = nullptr;
 
+    screenProgram = 0;
+    m_filter = 0;
+
     if (data1) {
         stbi_image_free(data1);
         data1 = nullptr;
@@ -321,10 +326,30 @@ int GLFBOPostProcessing::loadTexture(unsigned char *data, int width, int height,
 }
 
 void GLFBOPostProcessing::setParameters(uint32_t i) {
+    m_filter = i;
+    LOGI("setParameters---m_filter：%d", m_filter);
 
 }
 
 jint GLFBOPostProcessing::getParameters() {
+    return m_filter;
+}
 
-    return 0;
+void GLFBOPostProcessing::createPostProcessingProgram() {
+
+    screenProgram = screenShader->createProgram();
+    if (!screenProgram) {
+        LOGE("Could not create screenProgram shaderId.");
+        return ;
+    }
+    screenShader->use();
+    screenShader->setInt("screenTexture", 0);
+}
+
+void GLFBOPostProcessing::delete_program(GLuint &program) {
+    if (program) {
+        glUseProgram(0);
+        glDeleteProgram(program);
+        program = 0;
+    }
 }

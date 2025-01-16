@@ -23,43 +23,6 @@ GLFBOPostProcessing *postProcessing;
 
 
 /*********************** GL 帧缓冲FBO——后期处理********************/
-//extern "C"
-//JNIEXPORT void JNICALL
-//cpp_fbo_post_processing_creat(JNIEnv *env, jobject thiz, jint typ, jstring vertex, jstring frag,
-//                              jstring picSrc1, jstring picSrc2, jstring vertexScreen,
-//                              jstring fragScreen
-//
-//) {
-//    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-//    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
-//    const char *picSrc1Path = env->GetStringUTFChars(picSrc1, nullptr);
-//    const char *picSrc2Path = env->GetStringUTFChars(picSrc2, nullptr);
-//    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
-//    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
-//
-//    if (postProcessing == nullptr)
-//        postProcessing = new GLFBOPostProcessing();
-//
-//    postProcessing->setSharderPath(vertexPath, fragPath);
-//    postProcessing->setPicPath(picSrc1Path, picSrc2Path);
-//
-//    string sVertexScreenPath(vertexScreenPath);
-//    string sFragScreenPath(fragScreenPath);
-//    vector<string> sFragPathes;
-//    sFragPathes.push_back(sFragScreenPath);
-//
-//
-//    postProcessing->setSharderPostStringPathes(sVertexScreenPath, sFragPathes);
-//
-//    env->ReleaseStringUTFChars(vertex, vertexPath);
-//    env->ReleaseStringUTFChars(frag, fragPath);
-//    env->ReleaseStringUTFChars(picSrc1, picSrc1Path);
-//    env->ReleaseStringUTFChars(picSrc2, picSrc2Path);
-//    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
-//    env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
-//
-//
-//}
 
 extern "C"
 JNIEXPORT jboolean JNICALL
@@ -81,14 +44,17 @@ cpp_fbo_post_processing_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_fbo_post_processing_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                         jstring fragScreen, jstring vertexScreen, jstring picsrc1,
-                                         jstring picsrc2) {
+                                         jstring fragScreen, jstring vertexScreen
+                                         , jstring picsrc1,jstring picsrc2
+                                         ,jstring fragGrayScale
+                                         ) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
     const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+    const char *fragGrayScalePath = env->GetStringUTFChars(fragGrayScale, nullptr);
 
     if (postProcessing == nullptr) {
         postProcessing = new GLFBOPostProcessing();
@@ -97,10 +63,12 @@ cpp_fbo_post_processing_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag
 
     string sVertexScreenPath(vertexScreenPath);
     string sFragScreenPath(fragScreenPath);
+    string sFragGrayScalePath(fragGrayScalePath);
 
     vector<string> sFragPathes;
 
     sFragPathes.push_back(sFragScreenPath);
+    sFragPathes.push_back(sFragGrayScalePath);
 
     postProcessing->setSharderScreenPathes(sVertexScreenPath, sFragPathes);
 
@@ -469,6 +437,7 @@ static const JNINativeMethod methods[] = {
         {"native_fbo_post_processing_init_opengl",    "(II)Z",                 (void *) cpp_fbo_post_processing_init_opengl},
         {"native_fbo_post_processing_render_frame",   "()V",                   (void *) cpp_fbo_post_processing_render_frame},
         {"native_fbo_post_processing_set_glsl_path",  "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"

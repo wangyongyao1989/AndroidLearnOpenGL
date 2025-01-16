@@ -61,10 +61,15 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
         String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_opposition_fragment.glsl");
         String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_screen_vertex.glsl");
 
+        String fragGrayScalePath = GLSeniorUtil.getModelFilePath(mContext, "fbo_gray_scale_fragment.glsl");
+
+
         if (mJniCall != null) {
             mJniCall.setFBOPostProcessingGLSLPath(fragPath, vertexPath
                     , fragScreenPath, vertexScreenPath
-                    , picSrc1, picSrc2);
+                    , picSrc1, picSrc2
+                    , fragGrayScalePath
+            );
         }
 
         setRenderer(this);
@@ -104,7 +109,7 @@ public class GLFBOPostProcessingView extends GLSurfaceView implements GLSurfaceV
     }
 
     public void setFBOPostProcessingType(int type) {
-        int typeVaule = type % 13;
+        int typeVaule = type % 2;
         if (mJniCall != null) {
             mJniCall.glFBOPostProcessingSetParameters(typeVaule);
         }

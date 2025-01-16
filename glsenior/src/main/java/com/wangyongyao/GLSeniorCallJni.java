@@ -1,6 +1,7 @@
 package com.wangyongyao;
 
 import android.util.Log;
+
 public class GLSeniorCallJni {
 
     private static final String TAG = GLSeniorCallJni.class.getSimpleName();
@@ -26,10 +27,14 @@ public class GLSeniorCallJni {
      */
     public void setFBOPostProcessingGLSLPath(String fragString, String vertexString
             , String fragScreenString, String vertexScreenString
-            , String picSrc1, String picSrc2) {
+            , String picSrc1, String picSrc2
+            , String fragGrayScalePath
+    ) {
         native_fbo_post_processing_set_glsl_path(fragString, vertexString
                 , fragScreenString, vertexScreenString
-                , picSrc1, picSrc2);
+                , picSrc1, picSrc2
+                , fragGrayScalePath
+        );
     }
 
     public boolean initFBOPostProcessing(int w, int h) {
@@ -58,7 +63,9 @@ public class GLSeniorCallJni {
 
     private native void native_fbo_post_processing_set_glsl_path(String fragPath, String vertexPath
             , String fragScreenString, String vertexScreenString
-            , String picSrc1, String picSrc2);
+            , String picSrc1, String picSrc2
+            , String fragGrayScalePath
+    );
 
     private native boolean native_fbo_post_processing_init_opengl(int width, int height);
 

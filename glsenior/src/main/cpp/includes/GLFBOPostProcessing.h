@@ -132,6 +132,12 @@ private:
     GLSeniorShader *fBOShader;
     GLSeniorShader *screenShader;
 
+    GLuint screenProgram;
+    string m_vertexStringPath;
+    vector<string> m_fragmentStringPathes;
+
+    void delete_program(GLuint &program);
+
 public:
 
     GLFBOPostProcessing();
@@ -143,8 +149,6 @@ public:
     void renderFrame();
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath);
-
-    bool setSharderScreenPath(const char *vertexPathScreen, const char *fragmentPathScreen);
 
     bool setSharderScreenPathes(string vertexScreenPath, vector<string> fragmentScreenPathes);
 
@@ -160,6 +164,7 @@ public:
 
     int loadTexture(unsigned char *data, int width, int height, GLenum format);
 
+    void createPostProcessingProgram();
 
     void setParameters(uint32_t i);
 
@@ -167,7 +172,6 @@ public:
 
     size_t m_filter = 0;
 
-    string m_vertexStringPath;
-    vector<string> m_fragmentStringPathes;
+    size_t m_prevFilter = 0;
 
 };

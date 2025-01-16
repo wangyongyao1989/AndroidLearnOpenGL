@@ -41,6 +41,10 @@ public class GLSeniorFragment extends BaseFragment {
     private Button mBtnSenior5;
     private Button mBtnSenior6;
     private Button mBtnSenior7;
+    private Button mBtnSenior8;
+
+    private GLFBOPostProcessingView mGlView;
+    private int switchType;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -61,6 +65,7 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior5 = mBinding.btnSenior5;
         mBtnSenior6 = mBinding.btnSenior6;
         mBtnSenior7 = mBinding.btnSenior7;
+        mBtnSenior8 = mBinding.btnSenior8;
 
     }
 
@@ -121,11 +126,34 @@ public class GLSeniorFragment extends BaseFragment {
 
         mBtnSenior7.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLFBOPostProcessingView glView = new GLFBOPostProcessingView(getActivity()
+            mGlView = new GLFBOPostProcessingView(getActivity()
                     , mGLSeniorCallJni);
-            mGlShow1.addView(glView);
+            mGlShow1.addView(mGlView);
         });
 
+        mBtnSenior8.setOnClickListener(view -> {
+            if (mGlView == null) {
+                return;
+            }
+            mGlView.setFBOPostProcessingType(switchType);
+            int type = mGlView.getFBOPostProcessingType();
+            switchBtnSenior7UI(type);
+            switchType++;
+        });
+
+    }
+
+    private void switchBtnSenior7UI(int type) {
+        switch (type) {
+            case 0: {
+                mBtnSenior7.setText("反相");
+            }
+            break;
+            case 1: {
+                mBtnSenior7.setText("图像灰度化");
+            }
+            break;
+        }
     }
 
 }
