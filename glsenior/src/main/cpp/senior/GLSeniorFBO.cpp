@@ -7,9 +7,15 @@ bool GLSeniorFBO::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint lightingProgram = fBOShader->createProgram();
-    if (!lightingProgram) {
-        LOGE("Could not create shaderId.");
+    GLuint fBOProgram = fBOShader->createProgram();
+    if (!fBOProgram) {
+        LOGE("Could not create fBOProgram shaderId.");
+        return false;
+    }
+
+    GLuint screenProgram = screenShader->createProgram();
+    if (!screenProgram) {
+        LOGE("Could not create screenProgram shaderId.");
         return false;
     }
 
@@ -23,9 +29,6 @@ bool GLSeniorFBO::setupGraphics(int w, int h) {
 
     //开启深度测试
     glEnable(GL_DEPTH_TEST);
-    glDepthFunc(GL_LESS);
-    //深度函数(Depth Function)
-//    glDepthFunc(GL_ALWAYS);
 
     // cube VAO
     glGenVertexArrays(1, &cubeVAO);
@@ -34,9 +37,10 @@ bool GLSeniorFBO::setupGraphics(int w, int h) {
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(FBOVertices), &FBOVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                          (void *) (3 * sizeof(float)));
     glBindVertexArray(0);
 
     // plane VAO
@@ -46,10 +50,23 @@ bool GLSeniorFBO::setupGraphics(int w, int h) {
     glBindBuffer(GL_ARRAY_BUFFER, planeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(fBOPlaneVertices), &fBOPlaneVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                          (void *) (3 * sizeof(float)));
     glBindVertexArray(0);
+
+    // screen quad VAO
+    glGenVertexArrays(1, &quadVAO);
+    glGenBuffers(1, &quadVBO);
+    glBindVertexArray(quadVAO);
+    glBindBuffer(GL_ARRAY_BUFFER, quadVBO);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
+    glEnableVertexAttribArray(0);
+    glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *) 0);
+    glEnableVertexAttribArray(1);
+    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float),
+                          (void *) (2 * sizeof(float)));
 
 
     // load and create a texture
@@ -83,24 +100,55 @@ bool GLSeniorFBO::setupGraphics(int w, int h) {
     fBOShader->use();
     fBOShader->setInt("texture1", 0);
 
+    screenShader->use();
+    screenShader->setInt("screenTexture", 0);
+
+    //1.首先要创建一个帧缓冲对象，并绑定它，这些都很直观
+    glGenFramebuffers(1, &framebuffer);
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+
+    //2.接下来我们需要创建一个纹理图像，我们将它作为一个颜色附件附加到帧缓冲上。
+    // 我们将纹理的维度设置为窗口的宽度和高度，并且不初始化它的数据
+    glGenTextures(1, &textureColorbuffer);
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, screenW, screenH, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer,
+                           0);
+
+    //3.创建渲染缓冲对象
+    glGenRenderbuffers(1, &rbo);
+    glBindRenderbuffer(GL_RENDERBUFFER, rbo);
+    glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, screenW,
+                          screenH);
+    //4.将渲染缓冲对象附加到帧缓冲的深度和模板附件上
+    glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER,
+                              rbo);
+    //5.最后，我们希望检查帧缓冲是否是完整的，如果不是，我们将打印错误信息
+    if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
+        cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << endl;
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
     return true;
 }
 
 void GLSeniorFBO::renderFrame() {
-    // render
-    // ------
+
+    //绑定到帧缓冲区，像往常一样绘制场景以着色纹理
+    glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+    //启用深度测试（禁用渲染屏幕空间四边形）
+    glEnable(GL_DEPTH_TEST);
+
+    // 确保清除帧缓冲区的内容
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // be sure to activate shader when setting uniforms/drawing objects
-    // view/projection transformations
+    fBOShader->use();
     glm::mat4 model = glm::mat4(1.0f);
+    glm::mat4 view = mCamera.GetViewMatrix();
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
-    vec3 cameraMove(0.0f, 0.0f, 3.0f);
-    mCamera.Position = cameraMove;
-    glm::mat4 view = mCamera.GetViewMatrix();
-
     fBOShader->setMat4("view", view);
     fBOShader->setMat4("projection", projection);
     // cubes
@@ -121,6 +169,22 @@ void GLSeniorFBO::renderFrame() {
     glDrawArrays(GL_TRIANGLES, 0, 6);
     glBindVertexArray(0);
 
+    //现在绑定回默认帧缓冲区，并使用附加的帧缓冲区颜色纹理绘制一个四边形平面
+    glBindFramebuffer(GL_FRAMEBUFFER, 0);
+    //禁用深度测试，这样屏幕空间四边形就不会因为深度测试而被丢弃。
+    glDisable(GL_DEPTH_TEST);
+
+    // 清除所有相关缓冲区
+    // 将透明颜色设置为白色（实际上并没有必要，因为我们无论如何都看不到四边形后面）
+    glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT);
+
+    screenShader->use();
+    glBindVertexArray(quadVAO);
+    //使用颜色附着纹理作为四边形平面的纹理
+    glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
+    glDrawArrays(GL_TRIANGLES, 0, 6);
+
     checkGlError("glDrawArrays");
 }
 
@@ -129,7 +193,11 @@ bool GLSeniorFBO::setSharderPath(const char *vertexPath, const char *fragmentPat
     return 0;
 }
 
-
+bool
+GLSeniorFBO::setSharderScreenPath(const char *vertexScreenPath, const char *fragmentScreenPath) {
+    screenShader->getSharderPath(vertexScreenPath, fragmentScreenPath);
+    return 0;
+}
 
 void GLSeniorFBO::setPicPath(const char *pic1, const char *pic2) {
     LOGI("setPicPath pic1==%s", pic1);
@@ -169,20 +237,29 @@ void GLSeniorFBO::setOnScale(float scaleFactor, float focusX, float focusY, int 
 
 GLSeniorFBO::GLSeniorFBO() {
     fBOShader = new GLSeniorShader();
+    screenShader = new GLSeniorShader;
 }
 
 GLSeniorFBO::~GLSeniorFBO() {
     cubeTexture = 0;
     floorTexture = 0;
+    textureColorbuffer = 0;
+
     //析构函数中释放资源
     glDeleteVertexArrays(1, &cubeVAO);
     glDeleteVertexArrays(1, &planeVAO);
+    glDeleteVertexArrays(1, &quadVAO);
+
     glDeleteBuffers(1, &cubeVBO);
     glDeleteBuffers(1, &planeVBO);
+    glDeleteBuffers(1, &quadVBO);
 
+    glDeleteRenderbuffers(1, &rbo);
+    glDeleteFramebuffers(1, &framebuffer);
 
 
     fBOShader = nullptr;
+    screenShader = nullptr;
 
     if (data1) {
         stbi_image_free(data1);

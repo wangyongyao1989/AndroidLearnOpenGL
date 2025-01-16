@@ -41,10 +41,13 @@ cpp_fbo_render_frame(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_fbo_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                jstring picsrc1, jstring picsrc2) {
+cpp_fbo_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex
+                         ,jstring fragScreen, jstring vertexScreen
+                         ,jstring picsrc1, jstring picsrc2) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
+    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
 
@@ -52,11 +55,14 @@ cpp_fbo_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex
         fbo = new GLSeniorFBO();
     }
     fbo->setSharderPath(vertexPath, fragPath);
+    fbo->setSharderScreenPath(vertexScreenPath, fragScreenPath);
 
     fbo->setPicPath(picsrc1Path, picsrc2Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
+    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
     env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
     env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
 
@@ -73,8 +79,8 @@ cpp_fbo_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode
 extern "C"
 JNIEXPORT void JNICALL
 cpp_fbo_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                        jfloat focusY,
-                        jint actionMode) {
+                 jfloat focusY,
+                 jint actionMode) {
     if (fbo == nullptr) return;
     fbo->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -101,7 +107,7 @@ cpp_blending_sort_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_blending_sort_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                      jstring picsrc1, jstring picsrc2, jstring picsrc3) {
+                                   jstring picsrc1, jstring picsrc2, jstring picsrc3) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
@@ -134,8 +140,8 @@ cpp_blending_sort_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint 
 extern "C"
 JNIEXPORT void JNICALL
 cpp_blending_sort_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                              jfloat focusY,
-                              jint actionMode) {
+                           jfloat focusY,
+                           jint actionMode) {
     if (blendingSort == nullptr) return;
     blendingSort->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -162,7 +168,7 @@ cpp_blending_discard_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_blending_discard_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                              jstring picsrc1, jstring picsrc2, jstring picsrc3) {
+                                      jstring picsrc1, jstring picsrc2, jstring picsrc3) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
@@ -195,8 +201,8 @@ cpp_blending_discard_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, ji
 extern "C"
 JNIEXPORT void JNICALL
 cpp_blending_discard_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                      jfloat focusY,
-                      jint actionMode) {
+                              jfloat focusY,
+                              jint actionMode) {
     if (blendingDiscard == nullptr) return;
     blendingDiscard->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -327,57 +333,59 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
 static const JNINativeMethod methods[] = {
 
         /*********************** GL 帧缓冲FBO********************/
-        {"native_fbo_init_opengl",          "(II)Z",                 (void *) cpp_fbo_init_opengl},
-        {"native_fbo_render_frame",         "()V",                   (void *) cpp_fbo_render_frame},
-        {"native_fbo_set_glsl_path",        "(Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_fbo_frag_vertex_path},
-        {"native_fbo_move_xy",              "(FFI)V",                (void *) cpp_fbo_move_xy},
-        {"native_fbo_on_scale",             "(FFFI)V",               (void *) cpp_fbo_on_scale},
+        {"native_fbo_init_opengl",                "(II)Z",                 (void *) cpp_fbo_init_opengl},
+        {"native_fbo_render_frame",               "()V",                   (void *) cpp_fbo_render_frame},
+        {"native_fbo_set_glsl_path",              "(Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String;)V", (void *) cpp_fbo_frag_vertex_path},
+        {"native_fbo_move_xy",                    "(FFI)V",                (void *) cpp_fbo_move_xy},
+        {"native_fbo_on_scale",                   "(FFFI)V",               (void *) cpp_fbo_on_scale},
 
         /*********************** GL 混合--排序********************/
-        {"native_blending_sort_init_opengl",            "(II)Z",                 (void *) cpp_blending_sort_init_opengl},
-        {"native_blending_sort_render_frame",           "()V",                   (void *) cpp_blending_sort_render_frame},
-        {"native_blending_sort_set_glsl_path",          "(Ljava/lang/String"
-                                                           ";Ljava/lang/String"
-                                                           ";Ljava/lang/String"
-                                                           ";Ljava/lang/String"
-                                                           ";Ljava/lang/String;)V", (void *) cpp_blending_sort_frag_vertex_path},
-        {"native_blending_sort_move_xy",                "(FFI)V",                (void *) cpp_blending_sort_move_xy},
-        {"native_blending_sort_on_scale",               "(FFFI)V",               (void *) cpp_blending_sort_on_scale},
+        {"native_blending_sort_init_opengl",      "(II)Z",                 (void *) cpp_blending_sort_init_opengl},
+        {"native_blending_sort_render_frame",     "()V",                   (void *) cpp_blending_sort_render_frame},
+        {"native_blending_sort_set_glsl_path",    "(Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String;)V", (void *) cpp_blending_sort_frag_vertex_path},
+        {"native_blending_sort_move_xy",          "(FFI)V",                (void *) cpp_blending_sort_move_xy},
+        {"native_blending_sort_on_scale",         "(FFFI)V",               (void *) cpp_blending_sort_on_scale},
 
         /*********************** GL 混合--丢弃********************/
-        {"native_blending_discard_init_opengl",            "(II)Z",                 (void *) cpp_blending_discard_init_opengl},
-        {"native_blending_discard_render_frame",           "()V",                   (void *) cpp_blending_discard_render_frame},
-        {"native_blending_discard_set_glsl_path",          "(Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_blending_discard_frag_vertex_path},
-        {"native_blending_discard_move_xy",                "(FFI)V",                (void *) cpp_blending_discard_move_xy},
-        {"native_blending_discard_on_scale",               "(FFFI)V",               (void *) cpp_blending_discard_on_scale},
+        {"native_blending_discard_init_opengl",   "(II)Z",                 (void *) cpp_blending_discard_init_opengl},
+        {"native_blending_discard_render_frame",  "()V",                   (void *) cpp_blending_discard_render_frame},
+        {"native_blending_discard_set_glsl_path", "(Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String;)V", (void *) cpp_blending_discard_frag_vertex_path},
+        {"native_blending_discard_move_xy",       "(FFI)V",                (void *) cpp_blending_discard_move_xy},
+        {"native_blending_discard_on_scale",      "(FFFI)V",               (void *) cpp_blending_discard_on_scale},
 
         /*********************** GL 模版测试********************/
-        {"native_stencil_test_init_opengl",        "(II)Z",                 (void *) cpp_stencil_test_init_opengl},
-        {"native_stencil_test_render_frame",       "()V",                   (void *) cpp_stencil_test_render_frame},
-        {"native_stencil_test_set_glsl_path",      "(Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_stencil_test_frag_vertex_path},
-        {"native_stencil_test_move_xy",            "(FFI)V",                (void *) cpp_stencil_test_move_xy},
-        {"native_stencil_test_on_scale",           "(FFFI)V",               (void *) cpp_stencil_test_on_scale},
+        {"native_stencil_test_init_opengl",       "(II)Z",                 (void *) cpp_stencil_test_init_opengl},
+        {"native_stencil_test_render_frame",      "()V",                   (void *) cpp_stencil_test_render_frame},
+        {"native_stencil_test_set_glsl_path",     "(Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String;)V", (void *) cpp_stencil_test_frag_vertex_path},
+        {"native_stencil_test_move_xy",           "(FFI)V",                (void *) cpp_stencil_test_move_xy},
+        {"native_stencil_test_on_scale",          "(FFFI)V",               (void *) cpp_stencil_test_on_scale},
 
         /*********************** GL 深度测试********************/
-        {"native_depth_test_init_opengl",          "(II)Z",                 (void *) cpp_depth_test_init_opengl},
-        {"native_depth_test_render_frame",         "()V",                   (void *) cpp_depth_test_render_frame},
-        {"native_depth_test_set_glsl_path",        "(Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_depth_test_frag_vertex_path},
-        {"native_depth_test_move_xy",              "(FFI)V",                (void *) cpp_depth_test_move_xy},
-        {"native_depth_test_on_scale",             "(FFFI)V",               (void *) cpp_depth_test_on_scale},
+        {"native_depth_test_init_opengl",         "(II)Z",                 (void *) cpp_depth_test_init_opengl},
+        {"native_depth_test_render_frame",        "()V",                   (void *) cpp_depth_test_render_frame},
+        {"native_depth_test_set_glsl_path",       "(Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String"
+                                                  ";Ljava/lang/String;)V", (void *) cpp_depth_test_frag_vertex_path},
+        {"native_depth_test_move_xy",             "(FFI)V",                (void *) cpp_depth_test_move_xy},
+        {"native_depth_test_on_scale",            "(FFFI)V",               (void *) cpp_depth_test_on_scale},
 
 
 };

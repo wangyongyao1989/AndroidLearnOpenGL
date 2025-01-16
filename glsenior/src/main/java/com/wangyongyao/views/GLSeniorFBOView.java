@@ -44,13 +44,17 @@ public class GLSeniorFBOView extends GLSurfaceView implements GLSurfaceView.Rend
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "depth_test_fragment.glsl");
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "depth_test_vertex.glsl");
+        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_fragment.glsl");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_vertex.glsl");
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "specular_container2.png");
+        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "metal.png");
+
+        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_screen_fragment.glsl");
+        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "fbo_screen_vertex.glsl");
 
         if (mGLSeniorCallJni != null) {
-            mGLSeniorCallJni.setFBOGLSLPath(fragPath, vertexPath, picSrc1, picSrc2);
+            mGLSeniorCallJni.setFBOGLSLPath(fragPath, vertexPath, fragScreenPath,
+                    vertexScreenPath, picSrc1, picSrc2);
         }
         setRenderer(this);
 

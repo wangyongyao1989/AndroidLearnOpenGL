@@ -22,12 +22,15 @@ public class GLSeniorCallJni {
     }
 
 
-
     /**
      * 帧缓冲FBO
      */
-    public void setFBOGLSLPath(String fragString, String vertexString, String picSrc1, String picSrc2) {
-        native_fbo_set_glsl_path(fragString, vertexString, picSrc1, picSrc2);
+    public void setFBOGLSLPath(String fragString, String vertexString
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2) {
+        native_fbo_set_glsl_path(fragString, vertexString
+                , fragScreenString, vertexScreenString
+                , picSrc1, picSrc2);
     }
 
     public boolean initFBOOpenGl(int w, int h) {
@@ -47,6 +50,7 @@ public class GLSeniorCallJni {
     }
 
     private native void native_fbo_set_glsl_path(String fragPath, String vertexPath
+            , String fragScreenString, String vertexScreenString
             , String picSrc1, String picSrc2);
 
 
@@ -204,7 +208,6 @@ public class GLSeniorCallJni {
     private native void native_depth_test_move_xy(float dx, float dy, int action);
 
     private native void native_depth_test_on_scale(float scaleFactor, float focusX, float focusY, int action);
-
 
 
 }
