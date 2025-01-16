@@ -116,6 +116,39 @@ bool GLSeniorShader::getSharderPath(const char *vertexPath, const char *fragment
     return true;
 }
 
+
+bool GLSeniorShader::getSharderStringPath(string vertexPath, string fragmentPath) {
+    ifstream vShaderFile;
+    ifstream fShaderFile;
+
+    // ensure ifstream objects can throw exceptions:
+    vShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    fShaderFile.exceptions(ifstream::failbit | ifstream::badbit);
+    try {
+        // open files
+        vShaderFile.open(vertexPath);
+        fShaderFile.open(fragmentPath);
+        stringstream vShaderStream, fShaderStream;
+        // read file's buffer contents into streams
+        vShaderStream << vShaderFile.rdbuf();
+        fShaderStream << fShaderFile.rdbuf();
+        // close file handlers
+        vShaderFile.close();
+        fShaderFile.close();
+        // convert stream into string
+        vertexCode = vShaderStream.str();
+        fragmentCode = fShaderStream.str();
+    }
+    catch (ifstream::failure &e) {
+        LOGE("Could not getSharderPath error :%s", e.what());
+        return false;
+    }
+    gVertexShaderCode = vertexCode.c_str();
+    gFragmentShaderCode = fragmentCode.c_str();
+
+    return true;
+}
+
 void GLSeniorShader::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);

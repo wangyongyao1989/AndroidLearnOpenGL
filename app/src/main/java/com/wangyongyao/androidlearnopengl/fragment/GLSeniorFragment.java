@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.GLSeniorCallJni;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlSeniorBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
+import com.wangyongyao.views.GLFBOPostProcessingView;
 import com.wangyongyao.views.GLSeniorBlendingDiscardView;
 import com.wangyongyao.views.GLSeniorBlendingSortView;
 import com.wangyongyao.views.GLSeniorDepthTestView;
@@ -39,6 +40,7 @@ public class GLSeniorFragment extends BaseFragment {
     private Button mBtnSenior4;
     private Button mBtnSenior5;
     private Button mBtnSenior6;
+    private Button mBtnSenior7;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -58,6 +60,7 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior4 = mBinding.btnSenior4;
         mBtnSenior5 = mBinding.btnSenior5;
         mBtnSenior6 = mBinding.btnSenior6;
+        mBtnSenior7 = mBinding.btnSenior7;
 
     }
 
@@ -112,6 +115,13 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior6.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLSeniorFBOView glView = new GLSeniorFBOView(getActivity()
+                    , mGLSeniorCallJni);
+            mGlShow1.addView(glView);
+        });
+
+        mBtnSenior7.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLFBOPostProcessingView glView = new GLFBOPostProcessingView(getActivity()
                     , mGLSeniorCallJni);
             mGlShow1.addView(glView);
         });

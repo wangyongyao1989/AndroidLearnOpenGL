@@ -18,7 +18,6 @@
 #include <glm/gtc/type_ptr.hpp>
 
 
-
 using namespace std;
 
 
@@ -37,8 +36,7 @@ private:
 
     string vertexCode;
     string fragmentCode;
-    GLuint vertexShader;  //顶点着色器
-    GLuint fraShader;     //片段着色器
+
 
     GLuint loadShader(GLenum shaderType, const char *pSource);
 
@@ -49,12 +47,15 @@ private:
 
 public:
     GLuint shaderId;
-
+    GLuint vertexShader;  //顶点着色器
+    GLuint fraShader;     //片段着色器
     GLSeniorShader();
 
     ~GLSeniorShader();
 
     bool getSharderPath(const char *vertexPath, const char *fragmentPath);
+
+    bool getSharderStringPath(string vertexPath, string fragmentPath);
 
     GLuint createProgram();
 
