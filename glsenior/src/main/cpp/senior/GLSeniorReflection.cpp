@@ -37,9 +37,9 @@ bool GLSeniorReflection::setupGraphics(int w, int h) {
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(ReflectionVertices), &ReflectionVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
                           (void *) (3 * sizeof(float)));
 
     // skybox VAO
@@ -47,7 +47,8 @@ bool GLSeniorReflection::setupGraphics(int w, int h) {
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxReflectionVertices), &skyboxReflectionVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxReflectionVertices), &skyboxReflectionVertices,
+                 GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
 
@@ -96,17 +97,18 @@ void GLSeniorReflection::renderFrame() {
     // draw scene as normal
     reflectionShader->use();
     glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+    model = glm::rotate(model, glm::radians(75.0f), glm::vec3(1.0f, 0.3f, 0.5f));
     glm::mat4 view = mCamera.GetViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
-                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom)
+            , (float)screenW / (float)screenH, 0.1f, 100.0f);
     reflectionShader->setMat4("model", model);
     reflectionShader->setMat4("view", view);
     reflectionShader->setMat4("projection", projection);
+    reflectionShader->setVec3("cameraPos", mCamera.Position);
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_2D, cubeTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionTexture);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
 
@@ -136,7 +138,7 @@ bool GLSeniorReflection::setSharderPath(const char *vertexPath, const char *frag
 
 bool
 GLSeniorReflection::setSharderScreenPath(const char *vertexScreenPath,
-                                      const char *fragmentScreenPath) {
+                                         const char *fragmentScreenPath) {
     skyboxShader->getSharderPath(vertexScreenPath, fragmentScreenPath);
     return 0;
 }
@@ -148,8 +150,8 @@ void GLSeniorReflection::setPicPath(const char *pic1) {
 
 void
 GLSeniorReflection::setSkyBoxPicPath(const char *rightPic, const char *letfPic, const char *topPic,
-                                  const char *bottomPic, const char *frontPic,
-                                  const char *backPic) {
+                                     const char *bottomPic, const char *frontPic,
+                                     const char *backPic) {
     faces.push_back(rightPic);
     faces.push_back(letfPic);
     faces.push_back(topPic);

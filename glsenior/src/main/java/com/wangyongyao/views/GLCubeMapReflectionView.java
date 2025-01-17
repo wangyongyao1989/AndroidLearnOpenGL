@@ -44,8 +44,8 @@ public class GLCubeMapReflectionView extends GLSurfaceView implements GLSurfaceV
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_fragment.glsl");
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_vertex.glsl");
+        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_fragment.glsl");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_vertex.glsl");
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
         String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "skybox_right.jpg");
         String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "skybox_left.jpg");
@@ -54,8 +54,8 @@ public class GLCubeMapReflectionView extends GLSurfaceView implements GLSurfaceV
         String picSrc6 = GLSeniorUtil.getModelFilePath(mContext, "skybox_front.jpg");
         String picSrc7 = GLSeniorUtil.getModelFilePath(mContext, "skybox_back.jpg");
 
-        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_skybox_fragment.glsl");
-        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_skybox_vertex.glsl");
+        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_skybox_fragment.glsl");
+        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_skybox_vertex.glsl");
 
         if (mGLSeniorCallJni != null) {
             mGLSeniorCallJni.setReflectionGLSLPath(fragPath, vertexPath, fragScreenPath,
