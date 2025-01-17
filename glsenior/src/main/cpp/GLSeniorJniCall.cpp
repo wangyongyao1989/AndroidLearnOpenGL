@@ -10,6 +10,7 @@
 #include "GLFBOPostProcessing.h"
 #include <android/native_window_jni.h>
 #include <android/asset_manager_jni.h>
+#include "GLSeniorCubeMap.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
@@ -20,6 +21,73 @@ GLSeniorBlendingDiscard *blendingDiscard;
 GLSeniorBlendingSort *blendingSort;
 GLSeniorFBO *fbo;
 GLFBOPostProcessing *postProcessing;
+GLSeniorCubeMap *cubeMap;
+
+
+/*********************** GL 立方体贴图********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_cube_map_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (cubeMap == nullptr)
+        cubeMap = new GLSeniorCubeMap();
+    cubeMap->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_cube_map_render_frame(JNIEnv *env, jobject thiz) {
+    if (cubeMap == nullptr) return;
+    cubeMap->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_cube_map_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                         jstring fragScreen, jstring vertexScreen, jstring picsrc1,
+                         jstring picsrc2) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
+    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+
+    if (cubeMap == nullptr) {
+        cubeMap = new GLSeniorCubeMap();
+    }
+    cubeMap->setSharderPath(vertexPath, fragPath);
+    cubeMap->setSharderScreenPath(vertexScreenPath, fragScreenPath);
+
+    cubeMap->setPicPath(picsrc1Path, picsrc2Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
+    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_cube_map_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (cubeMap == nullptr) return;
+    cubeMap->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_cube_map_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                 jfloat focusY,
+                 jint actionMode) {
+    if (cubeMap == nullptr) return;
+    cubeMap->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 
 /*********************** GL 帧缓冲FBO——后期处理********************/
@@ -438,6 +506,19 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
+
+
+        /*********************** GL 立方体贴图********************/
+        {"native_cube_map_init_opengl",                    "(II)Z",                 (void *) cpp_cube_map_init_opengl},
+        {"native_cube_map_render_frame",                   "()V",                   (void *) cpp_cube_map_render_frame},
+        {"native_cube_map_set_glsl_path",                  "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String;)V", (void *) cpp_cube_map_frag_vertex_path},
+        {"native_cube_map_move_xy",                        "(FFI)V",                (void *) cpp_cube_map_move_xy},
+        {"native_cube_map_on_scale",                       "(FFFI)V",               (void *) cpp_cube_map_on_scale},
 
 
         /*********************** GL 帧缓冲FBO——后期处理********************/

@@ -23,6 +23,47 @@ public class GLSeniorCallJni {
 
 
     /**
+     * 立方体贴图 CubeMap
+     */
+    public void setCubeMapGLSLPath(String fragString, String vertexString
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2) {
+        native_cube_map_set_glsl_path(fragString, vertexString
+                , fragScreenString, vertexScreenString
+                , picSrc1, picSrc2);
+    }
+
+    public boolean initCubeMapOpenGl(int w, int h) {
+        return native_cube_map_init_opengl(w, h);
+    }
+
+    public void cubeMapOpenGLRenderFrame() {
+        native_cube_map_render_frame();
+    }
+
+    public void cubeMapMoveXY(float dx, float dy, int action) {
+        native_cube_map_move_xy(dx, dy, action);
+    }
+
+    public void cubeMapOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_cube_map_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_cube_map_set_glsl_path(String fragPath, String vertexPath
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2);
+
+
+    private native boolean native_cube_map_init_opengl(int width, int height);
+
+    private native void native_cube_map_render_frame();
+
+    private native void native_cube_map_move_xy(float dx, float dy, int action);
+
+    private native void native_cube_map_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+
+    /**
      * 帧缓冲FBO——后期处理
      */
     public void setFBOPostProcessingGLSLPath(String fragString, String vertexString

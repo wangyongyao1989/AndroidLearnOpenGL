@@ -108,6 +108,17 @@
                 tools:ignore="HardcodedText,SmallSp" />
 
 
+            <Button
+                android:id="@+id/btn_senior9"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:text="立方体贴图"
+                android:textSize="8sp"
+                app:layout_constraintStart_toEndOf="@+id/btn_back"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:ignore="HardcodedText,SmallSp" />
+
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>

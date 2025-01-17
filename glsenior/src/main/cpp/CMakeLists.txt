@@ -33,6 +33,7 @@ add_library(
         senior/GLSeniorBlendingSort.cpp
         senior/GLSeniorFBO.cpp
         senior/GLFBOPostProcessing.cpp
+        senior/GLSeniorCubeMap.cpp
 
 
 )
