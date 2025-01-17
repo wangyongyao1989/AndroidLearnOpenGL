@@ -25,6 +25,58 @@ public class GLSeniorCallJni {
     /**
      * 立方体贴图——反射
      */
+    public void setSeniorUniformGLSLPath(String fragString, String vertexString
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2
+            , String picSrc3, String picSrc4
+            , String picSrc5, String picSrc6
+            , String picSrc7
+    ) {
+        native_uniform_set_glsl_path(fragString, vertexString
+                , fragScreenString, vertexScreenString
+                , picSrc1, picSrc2
+                , picSrc3, picSrc4
+                , picSrc5, picSrc6
+                , picSrc7
+        );
+    }
+
+    public boolean initSeniorUniformOpenGl(int w, int h) {
+        return native_uniform_init_opengl(w, h);
+    }
+
+    public void seniorUniformOpenGLRenderFrame() {
+        native_uniform_render_frame();
+    }
+
+    public void seniorUniformMoveXY(float dx, float dy, int action) {
+        native_uniform_move_xy(dx, dy, action);
+    }
+
+    public void seniorUniformOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_uniform_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_uniform_set_glsl_path(String fragPath, String vertexPath
+            , String fragScreenString, String vertexScreenString
+            , String picSrc1, String picSrc2
+            , String picSrc3, String picSrc4
+            , String picSrc5, String picSrc6
+            , String picSrc7
+    );
+
+
+    private native boolean native_uniform_init_opengl(int width, int height);
+
+    private native void native_uniform_render_frame();
+
+    private native void native_uniform_move_xy(float dx, float dy, int action);
+
+    private native void native_uniform_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+    /**
+     * 立方体贴图——反射
+     */
     public void setReflectionGLSLPath(String fragString, String vertexString
             , String fragScreenString, String vertexScreenString
             , String picSrc1, String picSrc2
