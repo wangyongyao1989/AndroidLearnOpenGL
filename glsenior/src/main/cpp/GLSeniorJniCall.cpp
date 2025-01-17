@@ -46,22 +46,33 @@ cpp_cube_map_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_cube_map_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                         jstring fragScreen, jstring vertexScreen, jstring picsrc1,
-                         jstring picsrc2) {
+                              jstring fragScreen, jstring vertexScreen, jstring picsrc1,
+                              jstring picsrc2, jstring picsrc3, jstring picsrc4,
+                              jstring picsrc5, jstring picsrc6, jstring picsrc7
+
+) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
     const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
     const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
     const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+    const char *picsrc3Path = env->GetStringUTFChars(picsrc3, nullptr);
+    const char *picsrc4Path = env->GetStringUTFChars(picsrc4, nullptr);
+    const char *picsrc5Path = env->GetStringUTFChars(picsrc5, nullptr);
+    const char *picsrc6Path = env->GetStringUTFChars(picsrc6, nullptr);
+    const char *picsrc7Path = env->GetStringUTFChars(picsrc7, nullptr);
 
     if (cubeMap == nullptr) {
         cubeMap = new GLSeniorCubeMap();
     }
     cubeMap->setSharderPath(vertexPath, fragPath);
     cubeMap->setSharderScreenPath(vertexScreenPath, fragScreenPath);
+    
+    cubeMap->setPicPath(picsrc1Path);
 
-    cubeMap->setPicPath(picsrc1Path, picsrc2Path);
+    cubeMap->setSkyBoxPicPath(picsrc2Path, picsrc3Path, picsrc4Path, picsrc5Path, picsrc6Path,
+                              picsrc7Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
@@ -69,6 +80,11 @@ cpp_cube_map_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring v
     env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
     env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
     env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+    env->ReleaseStringUTFChars(picsrc3, picsrc3Path);
+    env->ReleaseStringUTFChars(picsrc4, picsrc4Path);
+    env->ReleaseStringUTFChars(picsrc5, picsrc5Path);
+    env->ReleaseStringUTFChars(picsrc6, picsrc6Path);
+    env->ReleaseStringUTFChars(picsrc7, picsrc7Path);
 
 }
 
@@ -83,8 +99,8 @@ cpp_cube_map_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actio
 extern "C"
 JNIEXPORT void JNICALL
 cpp_cube_map_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                 jfloat focusY,
-                 jint actionMode) {
+                      jfloat focusY,
+                      jint actionMode) {
     if (cubeMap == nullptr) return;
     cubeMap->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -509,16 +525,21 @@ static const JNINativeMethod methods[] = {
 
 
         /*********************** GL 立方体贴图********************/
-        {"native_cube_map_init_opengl",                    "(II)Z",                 (void *) cpp_cube_map_init_opengl},
-        {"native_cube_map_render_frame",                   "()V",                   (void *) cpp_cube_map_render_frame},
-        {"native_cube_map_set_glsl_path",                  "(Ljava/lang/String"
+        {"native_cube_map_init_opengl",               "(II)Z",                 (void *) cpp_cube_map_init_opengl},
+        {"native_cube_map_render_frame",              "()V",                   (void *) cpp_cube_map_render_frame},
+        {"native_cube_map_set_glsl_path",             "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String;)V", (void *) cpp_cube_map_frag_vertex_path},
-        {"native_cube_map_move_xy",                        "(FFI)V",                (void *) cpp_cube_map_move_xy},
-        {"native_cube_map_on_scale",                       "(FFFI)V",               (void *) cpp_cube_map_on_scale},
+        {"native_cube_map_move_xy",                   "(FFI)V",                (void *) cpp_cube_map_move_xy},
+        {"native_cube_map_on_scale",                  "(FFFI)V",               (void *) cpp_cube_map_on_scale},
 
 
         /*********************** GL 帧缓冲FBO——后期处理********************/

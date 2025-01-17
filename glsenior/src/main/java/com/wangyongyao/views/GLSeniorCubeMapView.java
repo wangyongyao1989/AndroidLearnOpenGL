@@ -47,14 +47,23 @@ public class GLSeniorCubeMapView extends GLSurfaceView implements GLSurfaceView.
         String fragPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_fragment.glsl");
         String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_vertex.glsl");
         String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "metal.png");
+        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "skybox_right.jpg");
+        String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "skybox_left.jpg");
+        String picSrc4 = GLSeniorUtil.getModelFilePath(mContext, "skybox_top.jpg");
+        String picSrc5 = GLSeniorUtil.getModelFilePath(mContext, "skybox_bottom.jpg");
+        String picSrc6 = GLSeniorUtil.getModelFilePath(mContext, "skybox_front.jpg");
+        String picSrc7 = GLSeniorUtil.getModelFilePath(mContext, "skybox_back.jpg");
 
-        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_screen_fragment.glsl");
-        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_screen_vertex.glsl");
+        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_skybox_fragment.glsl");
+        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "cube_map_skybox_vertex.glsl");
 
         if (mGLSeniorCallJni != null) {
             mGLSeniorCallJni.setCubeMapGLSLPath(fragPath, vertexPath, fragScreenPath,
-                    vertexScreenPath, picSrc1, picSrc2);
+                    vertexScreenPath, picSrc1, picSrc2
+                    , picSrc3, picSrc4
+                    , picSrc5, picSrc6
+                    , picSrc7
+            );
         }
         setRenderer(this);
 

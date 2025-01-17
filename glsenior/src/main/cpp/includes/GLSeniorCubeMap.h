@@ -6,6 +6,7 @@
 #include <image/stb_image.h>
 #include "GLCameraSenior.h"
 #include "GLSeniorShader.h"
+#include <vector>
 
 using namespace std;
 using namespace glm;
@@ -56,37 +57,58 @@ const float CubeMapVertices[] = {
         -0.5f, 0.5f, -0.5f, 0.0f, 1.0f
 };
 
-const float CubeMapPlaneVertices[] = {
-        // positions          // texture Coords (note we set these higher than 1
-        // (together with GL_REPEAT as texture wrapping mode). this will cause the floor texture to repeat)
-        5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
-        -5.0f, -0.5f, 5.0f, 0.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
+const float skyboxVertices[] = {
+        // positions
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
 
-        5.0f, -0.5f, 5.0f, 2.0f, 0.0f,
-        -5.0f, -0.5f, -5.0f, 0.0f, 2.0f,
-        5.0f, -0.5f, -5.0f, 2.0f, 2.0f
-};
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, -1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
 
-// vertex attributes for a quad that fills the entire screen in Normalized Device Coordinates.
-const float CubeMapQuadVertices[] = {
-        // positions   // texCoords
-        -1.0f, 1.0f, 0.0f, 1.0f,
-        -1.0f, -1.0f, 0.0f, 0.0f,
-        1.0f, -1.0f, 1.0f, 0.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
 
-        -1.0f, 1.0f, 0.0f, 1.0f,
-        1.0f, -1.0f, 1.0f, 0.0f,
-        1.0f, 1.0f, 1.0f, 1.0f
+        -1.0f, -1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f,
+        -1.0f, -1.0f, 1.0f,
+
+        -1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, -1.0f,
+        1.0f, 1.0f, 1.0f,
+        1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, 1.0f,
+        -1.0f, 1.0f, -1.0f,
+
+        -1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, -1.0f,
+        1.0f, -1.0f, -1.0f,
+        -1.0f, -1.0f, 1.0f,
+        1.0f, -1.0f, 1.0f
 };
 
 class GLSeniorCubeMap {
 
 private:
     unsigned int cubeTexture;
-    unsigned int floorTexture;
+    unsigned int cubemapTexture;
     unsigned char *data1 = nullptr;
-    unsigned char *data2 = nullptr;
+
     int screenW, screenH;
     int width1, height1, nrChannels1;
     int width2, height2, nrChannels2;
@@ -98,17 +120,9 @@ private:
     unsigned int cubeVAO;
     unsigned int cubeVBO;
 
-    unsigned int planeVAO;
-    unsigned int planeVBO;
+    unsigned int skyboxVAO, skyboxVBO;
 
-    unsigned int quadVAO;
-    unsigned int quadVBO;
-
-    unsigned int framebuffer;
-    unsigned int rbo;
-    unsigned int textureColorbuffer;
-
-
+    vector<std::string> faces;
 
     string colorVertexCode;
     string colorFragmentCode;
@@ -116,7 +130,10 @@ private:
     // camera
     GLCameraSenior mCamera;
     GLSeniorShader *cubeMapShader;
-    GLSeniorShader *screenShader;
+    GLSeniorShader *skyboxShader;
+
+
+
 
 public:
 
@@ -132,7 +149,10 @@ public:
 
     bool setSharderScreenPath(const char *vertexPathScreen, const char *fragmentPathScreen);
 
-    void setPicPath(const char *pic1, const char *pic2);
+    void setPicPath(const char *pic1);
+
+    void setSkyBoxPicPath(const char *rightPic, const char *letfPic, const char *topPic,
+                          const char *bottomPic, const char *frontPic, const char *backPic);
 
     void setMoveXY(float dx, float dy, int actionMode);
 
@@ -143,5 +163,8 @@ public:
     void checkGlError(const char *op);
 
     int loadTexture(unsigned char *data, int width, int height, GLenum format);
+
+    int loadCubemap(vector<std::string> faces);
+
 };
 

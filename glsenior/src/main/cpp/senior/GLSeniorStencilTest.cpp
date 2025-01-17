@@ -106,13 +106,15 @@ void GLSeniorStencilTest::renderFrame() {
     // render
     // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT | GL_STENCIL_BUFFER_BIT); // don't forget to clear the stencil buffer!
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT |
+            GL_STENCIL_BUFFER_BIT); // don't forget to clear the stencil buffer!
 
     // set uniforms
     shaderSingleColor->use();
     glm::mat4 model = glm::mat4(1.0f);
     glm::mat4 view = mCamera.GetViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom), (float)screenW / (float)screenH, 0.1f, 100.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
+                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
     shaderSingleColor->setMat4("view", view);
     shaderSingleColor->setMat4("projection", projection);
 
@@ -120,7 +122,8 @@ void GLSeniorStencilTest::renderFrame() {
     stencilTestShader->setMat4("view", view);
     stencilTestShader->setMat4("projection", projection);
 
-    // draw floor as normal, but don't write the floor to the stencil buffer, we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
+    // draw floor as normal, but don't write the floor to the stencil buffer,
+    // we only care about the containers. We set its mask to 0x00 to not write to the stencil buffer.
     glStencilMask(0x00);
     // floor
     glBindVertexArray(planeVAO);

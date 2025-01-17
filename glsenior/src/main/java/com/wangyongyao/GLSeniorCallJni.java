@@ -27,10 +27,18 @@ public class GLSeniorCallJni {
      */
     public void setCubeMapGLSLPath(String fragString, String vertexString
             , String fragScreenString, String vertexScreenString
-            , String picSrc1, String picSrc2) {
+            , String picSrc1, String picSrc2
+            , String picSrc3, String picSrc4
+            , String picSrc5, String picSrc6
+            , String picSrc7
+    ) {
         native_cube_map_set_glsl_path(fragString, vertexString
                 , fragScreenString, vertexScreenString
-                , picSrc1, picSrc2);
+                , picSrc1, picSrc2
+                , picSrc3, picSrc4
+                , picSrc5, picSrc6
+                , picSrc7
+        );
     }
 
     public boolean initCubeMapOpenGl(int w, int h) {
@@ -51,7 +59,11 @@ public class GLSeniorCallJni {
 
     private native void native_cube_map_set_glsl_path(String fragPath, String vertexPath
             , String fragScreenString, String vertexScreenString
-            , String picSrc1, String picSrc2);
+            , String picSrc1, String picSrc2
+            , String picSrc3, String picSrc4
+            , String picSrc5, String picSrc6
+            , String picSrc7
+    );
 
 
     private native boolean native_cube_map_init_opengl(int width, int height);
