@@ -1,13 +1,13 @@
 
 
 #include <iostream>
-#include "../includes/GLSeniorCubeMap.h"
+#include "../includes/GLSeniorReflection.h"
 
-bool GLSeniorCubeMap::setupGraphics(int w, int h) {
+bool GLSeniorReflection::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint CubeMapProgram = cubeMapShader->createProgram();
+    GLuint CubeMapProgram = reflectionShader->createProgram();
     if (!CubeMapProgram) {
         LOGE("Could not create CubeMapProgram shaderId.");
         return false;
@@ -35,7 +35,7 @@ bool GLSeniorCubeMap::setupGraphics(int w, int h) {
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(CubeMapVertices), &CubeMapVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(ReflectionVertices), &ReflectionVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(1);
@@ -47,7 +47,7 @@ bool GLSeniorCubeMap::setupGraphics(int w, int h) {
     glGenBuffers(1, &skyboxVBO);
     glBindVertexArray(skyboxVAO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxReflectionVertices), &skyboxReflectionVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
 
@@ -66,7 +66,7 @@ bool GLSeniorCubeMap::setupGraphics(int w, int h) {
         cubeTexture = loadTexture(data1, width1, height1, format);
     }
 
-    cubemapTexture = loadCubemap(faces);
+    reflectionTexture = loadCubemap(faces);
 
     if (nrChannels2 == 1) {
         format = GL_RED;
@@ -78,8 +78,8 @@ bool GLSeniorCubeMap::setupGraphics(int w, int h) {
 
     // shader configuration
     // --------------------
-    cubeMapShader->use();
-    cubeMapShader->setInt("texture1", 0);
+    reflectionShader->use();
+    reflectionShader->setInt("texture1", 0);
 
     skyboxShader->use();
     skyboxShader->setInt("screenTexture", 0);
@@ -88,21 +88,21 @@ bool GLSeniorCubeMap::setupGraphics(int w, int h) {
     return true;
 }
 
-void GLSeniorCubeMap::renderFrame() {
+void GLSeniorReflection::renderFrame() {
 
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     // draw scene as normal
-    cubeMapShader->use();
+    reflectionShader->use();
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, glm::radians(45.0f), glm::vec3(1.0f, 0.3f, 0.5f));
     glm::mat4 view = mCamera.GetViewMatrix();
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
                                             (float) screenW / (float) screenH, 0.1f, 100.0f);
-    cubeMapShader->setMat4("model", model);
-    cubeMapShader->setMat4("view", view);
-    cubeMapShader->setMat4("projection", projection);
+    reflectionShader->setMat4("model", model);
+    reflectionShader->setMat4("view", view);
+    reflectionShader->setMat4("projection", projection);
     // cubes
     glBindVertexArray(cubeVAO);
     glActiveTexture(GL_TEXTURE0);
@@ -121,7 +121,7 @@ void GLSeniorCubeMap::renderFrame() {
     // skybox cube
     glBindVertexArray(skyboxVAO);
     glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
+    glBindTexture(GL_TEXTURE_CUBE_MAP, reflectionTexture);
     glDrawArrays(GL_TRIANGLES, 0, 36);
     glBindVertexArray(0);
     glDepthFunc(GL_LESS); // set depth function back to default
@@ -129,25 +129,25 @@ void GLSeniorCubeMap::renderFrame() {
     checkGlError("glDrawArrays");
 }
 
-bool GLSeniorCubeMap::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    cubeMapShader->getSharderPath(vertexPath, fragmentPath);
+bool GLSeniorReflection::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+    reflectionShader->getSharderPath(vertexPath, fragmentPath);
     return 0;
 }
 
 bool
-GLSeniorCubeMap::setSharderScreenPath(const char *vertexScreenPath,
+GLSeniorReflection::setSharderScreenPath(const char *vertexScreenPath,
                                       const char *fragmentScreenPath) {
     skyboxShader->getSharderPath(vertexScreenPath, fragmentScreenPath);
     return 0;
 }
 
-void GLSeniorCubeMap::setPicPath(const char *pic1) {
+void GLSeniorReflection::setPicPath(const char *pic1) {
     LOGI("setPicPath pic1==%s", pic1);
     data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
 }
 
 void
-GLSeniorCubeMap::setSkyBoxPicPath(const char *rightPic, const char *letfPic, const char *topPic,
+GLSeniorReflection::setSkyBoxPicPath(const char *rightPic, const char *letfPic, const char *topPic,
                                   const char *bottomPic, const char *frontPic,
                                   const char *backPic) {
     faces.push_back(rightPic);
@@ -158,7 +158,7 @@ GLSeniorCubeMap::setSkyBoxPicPath(const char *rightPic, const char *letfPic, con
     faces.push_back(backPic);
 }
 
-void GLSeniorCubeMap::setMoveXY(float dx, float dy, int actionMode) {
+void GLSeniorReflection::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
     float xoffset = dx - lastX;
     float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
@@ -168,7 +168,7 @@ void GLSeniorCubeMap::setMoveXY(float dx, float dy, int actionMode) {
     mCamera.ProcessXYMovement(xoffset, yoffset);
 }
 
-void GLSeniorCubeMap::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
+void GLSeniorReflection::setOnScale(float scaleFactor, float focusX, float focusY, int actionMode) {
     float scale;
     if (actionMode == 1 || actionMode == 3) {
         scale = 45.0f;
@@ -184,14 +184,14 @@ void GLSeniorCubeMap::setOnScale(float scaleFactor, float focusX, float focusY, 
 }
 
 
-GLSeniorCubeMap::GLSeniorCubeMap() {
-    cubeMapShader = new GLSeniorShader();
+GLSeniorReflection::GLSeniorReflection() {
+    reflectionShader = new GLSeniorShader();
     skyboxShader = new GLSeniorShader;
 }
 
-GLSeniorCubeMap::~GLSeniorCubeMap() {
+GLSeniorReflection::~GLSeniorReflection() {
     cubeTexture = 0;
-    cubemapTexture = 0;
+    reflectionTexture = 0;
 
     //析构函数中释放资源
     glDeleteVertexArrays(1, &cubeVAO);
@@ -201,7 +201,7 @@ GLSeniorCubeMap::~GLSeniorCubeMap() {
     glDeleteBuffers(1, &skyboxVBO);
 
 
-    cubeMapShader = nullptr;
+    reflectionShader = nullptr;
     skyboxShader = nullptr;
 
     if (data1) {
@@ -214,12 +214,12 @@ GLSeniorCubeMap::~GLSeniorCubeMap() {
     colorFragmentCode.clear();
 }
 
-void GLSeniorCubeMap::printGLString(const char *name, GLenum s) {
+void GLSeniorReflection::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void GLSeniorCubeMap::checkGlError(const char *op) {
+void GLSeniorReflection::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
@@ -230,7 +230,7 @@ void GLSeniorCubeMap::checkGlError(const char *op) {
  * @param path
  * @return
  */
-int GLSeniorCubeMap::loadTexture(unsigned char *data, int width, int height, GLenum format) {
+int GLSeniorReflection::loadTexture(unsigned char *data, int width, int height, GLenum format) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
 //    LOGI("loadTexture format =%d", format);
@@ -261,7 +261,7 @@ int GLSeniorCubeMap::loadTexture(unsigned char *data, int width, int height, GLe
 // +Z (front)
 // -Z (back)
 // -------------------------------------------------------
-int GLSeniorCubeMap::loadCubemap(vector<std::string> faces) {
+int GLSeniorReflection::loadCubemap(vector<std::string> faces) {
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);

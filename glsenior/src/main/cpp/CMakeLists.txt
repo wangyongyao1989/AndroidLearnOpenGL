@@ -34,6 +34,7 @@ add_library(
         senior/GLSeniorFBO.cpp
         senior/GLFBOPostProcessing.cpp
         senior/GLSeniorCubeMap.cpp
+        senior/GLSeniorReflection.cpp
 
 
 )

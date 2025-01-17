@@ -11,6 +11,7 @@
 #include <android/native_window_jni.h>
 #include <android/asset_manager_jni.h>
 #include "GLSeniorCubeMap.h"
+#include "GLSeniorReflection.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
@@ -22,6 +23,89 @@ GLSeniorBlendingSort *blendingSort;
 GLSeniorFBO *fbo;
 GLFBOPostProcessing *postProcessing;
 GLSeniorCubeMap *cubeMap;
+GLSeniorReflection *reflection;
+
+
+/*********************** GL 立方体贴图——反射********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_reflection_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (reflection == nullptr)
+        reflection = new GLSeniorReflection();
+    reflection->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_reflection_render_frame(JNIEnv *env, jobject thiz) {
+    if (reflection == nullptr) return;
+    reflection->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_reflection_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
+                              jstring fragScreen, jstring vertexScreen, jstring picsrc1,
+                              jstring picsrc2, jstring picsrc3, jstring picsrc4,
+                              jstring picsrc5, jstring picsrc6, jstring picsrc7
+
+) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
+    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
+    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
+    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
+    const char *picsrc3Path = env->GetStringUTFChars(picsrc3, nullptr);
+    const char *picsrc4Path = env->GetStringUTFChars(picsrc4, nullptr);
+    const char *picsrc5Path = env->GetStringUTFChars(picsrc5, nullptr);
+    const char *picsrc6Path = env->GetStringUTFChars(picsrc6, nullptr);
+    const char *picsrc7Path = env->GetStringUTFChars(picsrc7, nullptr);
+
+    if (reflection == nullptr) {
+        reflection = new GLSeniorReflection();
+    }
+    reflection->setSharderPath(vertexPath, fragPath);
+    reflection->setSharderScreenPath(vertexScreenPath, fragScreenPath);
+
+    reflection->setPicPath(picsrc1Path);
+
+    reflection->setSkyBoxPicPath(picsrc2Path, picsrc3Path, picsrc4Path, picsrc5Path, picsrc6Path,
+                              picsrc7Path);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
+    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
+    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
+    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
+    env->ReleaseStringUTFChars(picsrc3, picsrc3Path);
+    env->ReleaseStringUTFChars(picsrc4, picsrc4Path);
+    env->ReleaseStringUTFChars(picsrc5, picsrc5Path);
+    env->ReleaseStringUTFChars(picsrc6, picsrc6Path);
+    env->ReleaseStringUTFChars(picsrc7, picsrc7Path);
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_reflection_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (reflection == nullptr) return;
+    reflection->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_reflection_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                      jfloat focusY,
+                      jint actionMode) {
+    if (reflection == nullptr) return;
+    reflection->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 
 /*********************** GL 立方体贴图********************/
@@ -68,7 +152,7 @@ cpp_cube_map_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring v
     }
     cubeMap->setSharderPath(vertexPath, fragPath);
     cubeMap->setSharderScreenPath(vertexScreenPath, fragScreenPath);
-    
+
     cubeMap->setPicPath(picsrc1Path);
 
     cubeMap->setSkyBoxPicPath(picsrc2Path, picsrc3Path, picsrc4Path, picsrc5Path, picsrc6Path,
@@ -523,6 +607,23 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
+
+        /*********************** GL 立方体贴图——反射********************/
+        {"native_reflection_init_opengl",             "(II)Z",                 (void *) cpp_reflection_init_opengl},
+        {"native_reflection_render_frame",            "()V",                   (void *) cpp_reflection_render_frame},
+        {"native_reflection_set_glsl_path",           "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String;)V", (void *) cpp_reflection_frag_vertex_path},
+        {"native_reflection_move_xy",                 "(FFI)V",                (void *) cpp_reflection_move_xy},
+        {"native_reflection_on_scale",                "(FFFI)V",               (void *) cpp_reflection_on_scale},
 
         /*********************** GL 立方体贴图********************/
         {"native_cube_map_init_opengl",               "(II)Z",                 (void *) cpp_cube_map_init_opengl},

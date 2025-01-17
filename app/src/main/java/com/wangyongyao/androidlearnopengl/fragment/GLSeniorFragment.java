@@ -14,6 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.GLSeniorCallJni;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlSeniorBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
+import com.wangyongyao.views.GLCubeMapReflectionView;
 import com.wangyongyao.views.GLFBOPostProcessingView;
 import com.wangyongyao.views.GLSeniorBlendingDiscardView;
 import com.wangyongyao.views.GLSeniorBlendingSortView;
@@ -47,6 +48,7 @@ public class GLSeniorFragment extends BaseFragment {
     private GLFBOPostProcessingView mGlView;
     private int switchType;
     private Button mBtnSenior9;
+    private Button mBtnSenior10;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -70,6 +72,7 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior8 = mBinding.btnSenior8;
 
         mBtnSenior9 = mBinding.btnSenior9;
+        mBtnSenior10 = mBinding.btnSenior10;
 
 
     }
@@ -149,6 +152,13 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior9.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLSeniorCubeMapView glView = new GLSeniorCubeMapView(getActivity()
+                    , mGLSeniorCallJni);
+            mGlShow1.addView(glView);
+        });
+
+        mBtnSenior10.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLCubeMapReflectionView glView = new GLCubeMapReflectionView(getActivity()
                     , mGLSeniorCallJni);
             mGlShow1.addView(glView);
         });
