@@ -48,46 +48,28 @@ cpp_uniform_render_frame(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_uniform_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                                jstring fragScreen, jstring vertexScreen, jstring picsrc1,
-                                jstring picsrc2, jstring picsrc3, jstring picsrc4,
-                                jstring picsrc5, jstring picsrc6, jstring picsrc7
+cpp_uniform_frag_vertex_path(JNIEnv *env, jobject thiz, jstring vertex, jstring fragRed,
+                             jstring fragBlue, jstring fragGreen, jstring fragYellow
 
 ) {
-    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-    const char *fragScreenPath = env->GetStringUTFChars(fragScreen, nullptr);
-    const char *vertexScreenPath = env->GetStringUTFChars(vertexScreen, nullptr);
-    const char *picsrc1Path = env->GetStringUTFChars(picsrc1, nullptr);
-    const char *picsrc2Path = env->GetStringUTFChars(picsrc2, nullptr);
-    const char *picsrc3Path = env->GetStringUTFChars(picsrc3, nullptr);
-    const char *picsrc4Path = env->GetStringUTFChars(picsrc4, nullptr);
-    const char *picsrc5Path = env->GetStringUTFChars(picsrc5, nullptr);
-    const char *picsrc6Path = env->GetStringUTFChars(picsrc6, nullptr);
-    const char *picsrc7Path = env->GetStringUTFChars(picsrc7, nullptr);
+    const char *fragRedPath = env->GetStringUTFChars(fragRed, nullptr);
+    const char *fragBluePath = env->GetStringUTFChars(fragBlue, nullptr);
+    const char *fragGreenPath = env->GetStringUTFChars(fragGreen, nullptr);
+    const char *fragYellowPath = env->GetStringUTFChars(fragYellow, nullptr);
+
 
     if (uniform == nullptr) {
         uniform = new GLSeniorUniform();
     }
-    uniform->setSharderPath(vertexPath, fragPath);
-    uniform->setSharderScreenPath(vertexScreenPath, fragScreenPath);
 
-    uniform->setPicPath(picsrc1Path);
+    uniform->setSharderPath(vertexPath, fragRedPath, fragBluePath, fragGreenPath, fragYellowPath);
 
-    uniform->setSkyBoxPicPath(picsrc2Path, picsrc3Path, picsrc4Path, picsrc5Path, picsrc6Path,
-                                 picsrc7Path);
-
-    env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
-    env->ReleaseStringUTFChars(fragScreen, fragScreenPath);
-    env->ReleaseStringUTFChars(vertexScreen, vertexScreenPath);
-    env->ReleaseStringUTFChars(picsrc1, picsrc1Path);
-    env->ReleaseStringUTFChars(picsrc2, picsrc2Path);
-    env->ReleaseStringUTFChars(picsrc3, picsrc3Path);
-    env->ReleaseStringUTFChars(picsrc4, picsrc4Path);
-    env->ReleaseStringUTFChars(picsrc5, picsrc5Path);
-    env->ReleaseStringUTFChars(picsrc6, picsrc6Path);
-    env->ReleaseStringUTFChars(picsrc7, picsrc7Path);
+    env->ReleaseStringUTFChars(fragRed, fragRedPath);
+    env->ReleaseStringUTFChars(fragBlue, fragBluePath);
+    env->ReleaseStringUTFChars(fragGreen, fragGreenPath);
+    env->ReleaseStringUTFChars(fragYellow, fragYellowPath);
 
 }
 
@@ -102,8 +84,8 @@ cpp_uniform_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint action
 extern "C"
 JNIEXPORT void JNICALL
 cpp_uniform_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                        jfloat focusY,
-                        jint actionMode) {
+                     jfloat focusY,
+                     jint actionMode) {
     if (uniform == nullptr) return;
     uniform->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -132,9 +114,9 @@ cpp_reflection_render_frame(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_reflection_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex,
-                              jstring fragScreen, jstring vertexScreen, jstring picsrc1,
-                              jstring picsrc2, jstring picsrc3, jstring picsrc4,
-                              jstring picsrc5, jstring picsrc6, jstring picsrc7
+                                jstring fragScreen, jstring vertexScreen, jstring picsrc1,
+                                jstring picsrc2, jstring picsrc3, jstring picsrc4,
+                                jstring picsrc5, jstring picsrc6, jstring picsrc7
 
 ) {
     const char *fragPath = env->GetStringUTFChars(frag, nullptr);
@@ -158,7 +140,7 @@ cpp_reflection_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring
     reflection->setPicPath(picsrc1Path);
 
     reflection->setSkyBoxPicPath(picsrc2Path, picsrc3Path, picsrc4Path, picsrc5Path, picsrc6Path,
-                              picsrc7Path);
+                                 picsrc7Path);
 
     env->ReleaseStringUTFChars(frag, fragPath);
     env->ReleaseStringUTFChars(vertex, vertexPath);
@@ -185,8 +167,8 @@ cpp_reflection_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint act
 extern "C"
 JNIEXPORT void JNICALL
 cpp_reflection_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                      jfloat focusY,
-                      jint actionMode) {
+                        jfloat focusY,
+                        jint actionMode) {
     if (reflection == nullptr) return;
     reflection->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -693,21 +675,15 @@ static const JNINativeMethod methods[] = {
 
 
         /*********************** GL 高级Uniform********************/
-        {"native_uniform_init_opengl",             "(II)Z",                 (void *) cpp_uniform_init_opengl},
-        {"native_uniform_render_frame",            "()V",                   (void *) cpp_uniform_render_frame},
-        {"native_uniform_set_glsl_path",           "(Ljava/lang/String"
-                                                      ";Ljava/lang/String"
-                                                      ";Ljava/lang/String"
-                                                      ";Ljava/lang/String"
-                                                      ";Ljava/lang/String"
-                                                      ";Ljava/lang/String"
-                                                      ";Ljava/lang/String"
+        {"native_uniform_init_opengl",                "(II)Z",                 (void *) cpp_uniform_init_opengl},
+        {"native_uniform_render_frame",               "()V",                   (void *) cpp_uniform_render_frame},
+        {"native_uniform_set_glsl_path",              "(Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String;)V", (void *) cpp_uniform_frag_vertex_path},
-        {"native_uniform_move_xy",                 "(FFI)V",                (void *) cpp_uniform_move_xy},
-        {"native_uniform_on_scale",                "(FFFI)V",               (void *) cpp_uniform_on_scale},
+        {"native_uniform_move_xy",                    "(FFI)V",                (void *) cpp_uniform_move_xy},
+        {"native_uniform_on_scale",                   "(FFFI)V",               (void *) cpp_uniform_on_scale},
 
         /*********************** GL 立方体贴图——反射********************/
         {"native_reflection_init_opengl",             "(II)Z",                 (void *) cpp_reflection_init_opengl},

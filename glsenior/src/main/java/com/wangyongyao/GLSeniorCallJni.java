@@ -25,19 +25,13 @@ public class GLSeniorCallJni {
     /**
      * 立方体贴图——反射
      */
-    public void setSeniorUniformGLSLPath(String fragString, String vertexString
-            , String fragScreenString, String vertexScreenString
-            , String picSrc1, String picSrc2
-            , String picSrc3, String picSrc4
-            , String picSrc5, String picSrc6
-            , String picSrc7
+    public void setSeniorUniformGLSLPath(String vertexString
+            , String fragRedPath, String fragBluePath
+            , String fragGreenPath, String fragYellowPath
     ) {
-        native_uniform_set_glsl_path(fragString, vertexString
-                , fragScreenString, vertexScreenString
-                , picSrc1, picSrc2
-                , picSrc3, picSrc4
-                , picSrc5, picSrc6
-                , picSrc7
+        native_uniform_set_glsl_path(vertexString
+                , fragRedPath, fragBluePath
+                , fragGreenPath, fragYellowPath
         );
     }
 
@@ -57,12 +51,9 @@ public class GLSeniorCallJni {
         native_uniform_on_scale(scaleFactor, focusX, focusY, action);
     }
 
-    private native void native_uniform_set_glsl_path(String fragPath, String vertexPath
-            , String fragScreenString, String vertexScreenString
-            , String picSrc1, String picSrc2
-            , String picSrc3, String picSrc4
-            , String picSrc5, String picSrc6
-            , String picSrc7
+    private native void native_uniform_set_glsl_path(String vertexString
+            , String fragRedPath, String fragBluePath
+            , String fragGreenPath, String fragYellowPath
     );
 
 

@@ -44,25 +44,17 @@ public class GLSeniorUniformView extends GLSurfaceView implements GLSurfaceView.
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_fragment.glsl");
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_vertex.glsl");
-        String picSrc1 = GLSeniorUtil.getModelFilePath(mContext, "diffuse_map_container2.png");
-        String picSrc2 = GLSeniorUtil.getModelFilePath(mContext, "skybox_right.jpg");
-        String picSrc3 = GLSeniorUtil.getModelFilePath(mContext, "skybox_left.jpg");
-        String picSrc4 = GLSeniorUtil.getModelFilePath(mContext, "skybox_top.jpg");
-        String picSrc5 = GLSeniorUtil.getModelFilePath(mContext, "skybox_bottom.jpg");
-        String picSrc6 = GLSeniorUtil.getModelFilePath(mContext, "skybox_front.jpg");
-        String picSrc7 = GLSeniorUtil.getModelFilePath(mContext, "skybox_back.jpg");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_vertex.glsl");
+        String fragRedPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_rad_fragment.glsl");
+        String fragBluePath = GLSeniorUtil.getModelFilePath(mContext, "uniform_blue_fragment.glsl");
+        String fragGreenPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_green_fragment.glsl");
+        String fragYellowPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_yellow_fragment.glsl");
 
-        String fragScreenPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_skybox_fragment.glsl");
-        String vertexScreenPath = GLSeniorUtil.getModelFilePath(mContext, "reflection_skybox_vertex.glsl");
 
         if (mGLSeniorCallJni != null) {
-            mGLSeniorCallJni.setSeniorUniformGLSLPath(fragPath, vertexPath, fragScreenPath,
-                    vertexScreenPath, picSrc1, picSrc2
-                    , picSrc3, picSrc4
-                    , picSrc5, picSrc6
-                    , picSrc7
+            mGLSeniorCallJni.setSeniorUniformGLSLPath(vertexPath
+                    , fragRedPath, fragBluePath
+                    , fragGreenPath, fragYellowPath
             );
         }
         setRenderer(this);

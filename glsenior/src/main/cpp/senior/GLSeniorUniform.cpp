@@ -7,83 +7,65 @@ bool GLSeniorUniform::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     LOGI("setupGraphics(%d, %d)", w, h);
-    GLuint CubeMapProgram = uniformShader->createProgram();
-    if (!CubeMapProgram) {
-        LOGE("Could not create CubeMapProgram shaderId.");
+    GLuint redShaderProgram = redShader->createProgram();
+    if (!redShaderProgram) {
+        LOGE("Could not create redShaderProgram shaderId.");
         return false;
     }
 
-    GLuint skyboxProgram = skyboxShader->createProgram();
-    if (!skyboxProgram) {
-        LOGE("Could not create skyboxProgram shaderId.");
+    GLuint blueShaderProgram = blueShader->createProgram();
+    if (!blueShaderProgram) {
+        LOGE("Could not create blueShaderProgram shaderId.");
         return false;
     }
 
-    glViewport(0, 0, w, h);
-    checkGlError("glViewport");
-    LOGI("glViewport successed!");
+    GLuint greenShaderProgram = greenShader->createProgram();
+    if (!greenShaderProgram) {
+        LOGE("Could not create greenShaderProgram shaderId.");
+        return false;
+    }
 
-    //清屏
-    glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    checkGlError("glClear");
+    GLuint yellowShaderProgram = yellowShader->createProgram();
+    if (!yellowShaderProgram) {
+        LOGE("Could not create yellowShaderProgram shaderId.");
+        return false;
+    }
 
-    //开启深度测试
-    glEnable(GL_DEPTH_TEST);
-
-    // cube VAO
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(UniformVertices), &UniformVertices, GL_STATIC_DRAW);
     glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *) 0);
-    glEnableVertexAttribArray(1);
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
-                          (void *) (3 * sizeof(float)));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 
-    // skybox VAO
-    glGenVertexArrays(1, &skyboxVAO);
-    glGenBuffers(1, &skyboxVBO);
-    glBindVertexArray(skyboxVAO);
-    glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxUniformVertices), &skyboxUniformVertices,
-                 GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
+    // configure a uniform buffer object
+    // ---------------------------------
+    // first. We get the relevant block indices
+    unsigned int uniformBlockIndexRed = glGetUniformBlockIndex(redShader->shaderId, "Matrices");
+    unsigned int uniformBlockIndexGreen = glGetUniformBlockIndex(greenShader->shaderId, "Matrices");
+    unsigned int uniformBlockIndexBlue = glGetUniformBlockIndex(blueShader->shaderId, "Matrices");
+    unsigned int uniformBlockIndexYellow = glGetUniformBlockIndex(yellowShader->shaderId, "Matrices");
+    // then we link each shader's uniform block to this uniform binding point
+    glUniformBlockBinding(redShader->shaderId, uniformBlockIndexRed, 0);
+    glUniformBlockBinding(greenShader->shaderId, uniformBlockIndexGreen, 0);
+    glUniformBlockBinding(blueShader->shaderId, uniformBlockIndexBlue, 0);
+    glUniformBlockBinding(yellowShader->shaderId, uniformBlockIndexYellow, 0);
 
-    // load and create a texture
-    LOGI("load and create a texture!");
-    GLenum format;
-    if (nrChannels1 == 1) {
-        format = GL_RED;
-    } else if (nrChannels1 == 3) {
-        format = GL_RGB;
-    } else if (nrChannels1 == 4) {
-        format = GL_RGBA;
-    }
-//    LOGI("texture1 format==%d", format);
-    if (data1) {
-        cubeTexture = loadTexture(data1, width1, height1, format);
-    }
+    // Now actually create the buffer
+    glGenBuffers(1, &uboMatrices);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferData(GL_UNIFORM_BUFFER, 2 * sizeof(glm::mat4), NULL, GL_STATIC_DRAW);
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
+    // define the range of the buffer that links to a uniform binding point
+    glBindBufferRange(GL_UNIFORM_BUFFER, 0, uboMatrices, 0, 2 * sizeof(glm::mat4));
 
-    uniformTexture = loadCubemap(faces);
+    // store the projection matrix (we only do this once now) (note: we're not using zoom anymore by changing the FoV)
+    glm::mat4 projection = glm::perspective(45.0f, (float)screenW / (float)screenH, 0.1f, 100.0f);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4), glm::value_ptr(projection));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    if (nrChannels2 == 1) {
-        format = GL_RED;
-    } else if (nrChannels2 == 3) {
-        format = GL_RGB;
-    } else if (nrChannels2 == 4) {
-        format = GL_RGBA;
-    }
-
-    // shader configuration
-    // --------------------
-    uniformShader->use();
-    uniformShader->setInt("texture1", 0);
-
-    skyboxShader->use();
-    skyboxShader->setInt("screenTexture", 0);
 
 
     return true;
@@ -91,74 +73,58 @@ bool GLSeniorUniform::setupGraphics(int w, int h) {
 
 void GLSeniorUniform::renderFrame() {
 
+    // render
+    // ------
     glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // draw scene as normal
-    uniformShader->use();
-    glm::mat4 model = glm::mat4(1.0f);
-    model = glm::rotate(model, glm::radians(75.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+    // set the view and projection matrix in the uniform block - we only have to do this once per loop iteration.
     glm::mat4 view = mCamera.GetViewMatrix();
-    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom)
-            , (float)screenW / (float)screenH, 0.1f, 100.0f);
-    uniformShader->setMat4("model", model);
-    uniformShader->setMat4("view", view);
-    uniformShader->setMat4("projection", projection);
-    uniformShader->setVec3("cameraPos", mCamera.Position);
-    // cubes
-    glBindVertexArray(cubeVAO);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, uniformTexture);
-    glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
+    glBindBuffer(GL_UNIFORM_BUFFER, uboMatrices);
+    glBufferSubData(GL_UNIFORM_BUFFER, sizeof(glm::mat4), sizeof(glm::mat4), glm::value_ptr(view));
+    glBindBuffer(GL_UNIFORM_BUFFER, 0);
 
-    // draw skybox as last
-    // change depth function so depth test passes when values are equal to depth buffer's content
-    glDepthFunc(GL_LEQUAL);
-    skyboxShader->use();
-    // remove translation from the view matrix
-    view = glm::mat4(glm::mat3(mCamera.GetViewMatrix()));
-    skyboxShader->setMat4("view", view);
-    skyboxShader->setMat4("projection", projection);
-    // skybox cube
-    glBindVertexArray(skyboxVAO);
-    glActiveTexture(GL_TEXTURE0);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, uniformTexture);
+    // draw 4 cubes
+    // RED
+    glBindVertexArray(cubeVAO);
+    redShader->use();
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-0.75f, 0.75f, 0.0f)); // move top-left
+    redShader->setMat4("model", model);
     glDrawArrays(GL_TRIANGLES, 0, 36);
-    glBindVertexArray(0);
-    glDepthFunc(GL_LESS); // set depth function back to default
+    // GREEN
+    greenShader->use();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.75f, 0.75f, 0.0f)); // move top-right
+    greenShader->setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // YELLOW
+    yellowShader->use();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(-0.75f, -0.75f, 0.0f)); // move bottom-left
+    yellowShader->setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
+    // BLUE
+    blueShader->use();
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.75f, -0.75f, 0.0f)); // move bottom-right
+    blueShader->setMat4("model", model);
+    glDrawArrays(GL_TRIANGLES, 0, 36);
 
     checkGlError("glDrawArrays");
 }
 
-bool GLSeniorUniform::setSharderPath(const char *vertexPath, const char *fragmentPath) {
-    uniformShader->getSharderPath(vertexPath, fragmentPath);
+bool GLSeniorUniform::setSharderPath(const char *vertexPath, const char *fragRedPath,
+                                     const char *fragBluePath, const char *fragGreenPath,
+                                     const char *fragYellowPath) {
+    redShader->getSharderPath(vertexPath, fragRedPath);
+    blueShader->getSharderPath(vertexPath, fragBluePath);
+    greenShader->getSharderPath(vertexPath, fragGreenPath);
+    yellowShader->getSharderPath(vertexPath, fragYellowPath);
+
     return 0;
 }
 
-bool
-GLSeniorUniform::setSharderScreenPath(const char *vertexScreenPath,
-                                         const char *fragmentScreenPath) {
-    skyboxShader->getSharderPath(vertexScreenPath, fragmentScreenPath);
-    return 0;
-}
-
-void GLSeniorUniform::setPicPath(const char *pic1) {
-    LOGI("setPicPath pic1==%s", pic1);
-    data1 = stbi_load(pic1, &width1, &height1, &nrChannels1, 0);
-}
-
-void
-GLSeniorUniform::setSkyBoxPicPath(const char *rightPic, const char *letfPic, const char *topPic,
-                                     const char *bottomPic, const char *frontPic,
-                                     const char *backPic) {
-    faces.push_back(rightPic);
-    faces.push_back(letfPic);
-    faces.push_back(topPic);
-    faces.push_back(bottomPic);
-    faces.push_back(frontPic);
-    faces.push_back(backPic);
-}
 
 void GLSeniorUniform::setMoveXY(float dx, float dy, int actionMode) {
     LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", dy, dy, actionMode);
@@ -187,13 +153,14 @@ void GLSeniorUniform::setOnScale(float scaleFactor, float focusX, float focusY, 
 
 
 GLSeniorUniform::GLSeniorUniform() {
-    uniformShader = new GLSeniorShader();
-    skyboxShader = new GLSeniorShader;
+    redShader = new GLSeniorShader();
+    blueShader = new GLSeniorShader();
+    greenShader = new GLSeniorShader();
+    yellowShader = new GLSeniorShader();
+
 }
 
 GLSeniorUniform::~GLSeniorUniform() {
-    cubeTexture = 0;
-    uniformTexture = 0;
 
     //析构函数中释放资源
     glDeleteVertexArrays(1, &cubeVAO);
@@ -203,17 +170,11 @@ GLSeniorUniform::~GLSeniorUniform() {
     glDeleteBuffers(1, &skyboxVBO);
 
 
-    uniformShader = nullptr;
-    skyboxShader = nullptr;
+    redShader = nullptr;
+    blueShader = nullptr;
+    greenShader = nullptr;
+    yellowShader = nullptr;
 
-    if (data1) {
-        stbi_image_free(data1);
-        data1 = nullptr;
-    }
-
-    faces.clear();
-    colorVertexCode.clear();
-    colorFragmentCode.clear();
 }
 
 void GLSeniorUniform::printGLString(const char *name, GLenum s) {
@@ -227,65 +188,5 @@ void GLSeniorUniform::checkGlError(const char *op) {
     }
 }
 
-/**
- * 加载纹理
- * @param path
- * @return
- */
-int GLSeniorUniform::loadTexture(unsigned char *data, int width, int height, GLenum format) {
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-//    LOGI("loadTexture format =%d", format);
-    if (data) {
-        glBindTexture(GL_TEXTURE_2D, textureID);
-        glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
-        glGenerateMipmap(GL_TEXTURE_2D);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-        stbi_image_free(data);
-    } else {
-        checkGlError("Texture failed to load at path: ");
-        stbi_image_free(data);
-    }
 
-    return textureID;
-}
-
-
-// loads a cubemap texture from 6 individual texture faces
-// order:
-// +X (right)
-// -X (left)
-// +Y (top)
-// -Y (bottom)
-// +Z (front)
-// -Z (back)
-// -------------------------------------------------------
-int GLSeniorUniform::loadCubemap(vector<std::string> faces) {
-    unsigned int textureID;
-    glGenTextures(1, &textureID);
-    glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
-
-    int width, height, nrChannels;
-    for (unsigned int i = 0; i < faces.size(); i++) {
-        unsigned char *data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
-        if (data) {
-            glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, GL_RGB, width, height, 0, GL_RGB,
-                         GL_UNSIGNED_BYTE, data);
-            stbi_image_free(data);
-        } else {
-            LOGE("Cubemap texture failed to load at path: %s ", faces[i].c_str());
-            stbi_image_free(data);
-        }
-    }
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
-
-    return textureID;
-}
 
