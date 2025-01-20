@@ -2,6 +2,8 @@ package com.wangyongyao;
 
 import android.util.Log;
 
+import com.wangyongyao.utils.GLSeniorUtil;
+
 public class GLSeniorCallJni {
 
     private static final String TAG = GLSeniorCallJni.class.getSimpleName();
@@ -20,6 +22,43 @@ public class GLSeniorCallJni {
         Log.e(TAG, "status:" + status);
 
     }
+
+    /*********************** GL 3D模型显示********************/
+    public void setGLAsteroidSLPath(String fragPath, String vertexPath) {
+        native_asteroid_set_glsl_path(fragPath, vertexPath);
+    }
+
+    public void setGLAsteroidModelPath(String modelPath) {
+        native_asteroid_set_model_path(modelPath);
+    }
+
+    public void glAsteroidRenderFrame() {
+        native_asteroid_render_frame();
+    }
+
+    public void initAsteroid(int width, int height) {
+        native_asteroid_init_opengl(width, height);
+    }
+
+    public void glAsteroidShowMoveXY(float dx, float dy, int action) {
+        native_asteroid_move_xy(dx, dy, action);
+    }
+
+    public void glAsteroidShowOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_asteroid_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_asteroid_set_glsl_path(String fragPath, String vertexPath);
+
+    private native void native_asteroid_set_model_path(String modelPath);
+
+    private native boolean native_asteroid_init_opengl(int width, int height);
+
+    private native void native_asteroid_render_frame();
+
+    private native void native_asteroid_move_xy(float dx, float dy, int action);
+
+    private native void native_asteroid_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
     /**
      * 实例化

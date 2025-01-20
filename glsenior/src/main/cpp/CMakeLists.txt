@@ -11,7 +11,7 @@ message(${CMAKE_PROJECT_NAME})
 set(jnilibs ${CMAKE_SOURCE_DIR}/jniLibs)
 
 set(third-party-libs
-
+        ${jnilibs}/${ANDROID_ABI}/libassimp.so
 )
 
 include_directories(
@@ -38,6 +38,10 @@ add_library(
         senior/GLSeniorUniform.cpp
         senior/GLSeniorGeometry.cpp
         senior/GLSeniorInstance.cpp
+
+        3d/GLSenior3DMesh.cpp
+        3d/GLSenior3DModel.cpp
+        3d/GLSenior3DShow.cpp
 
 
 )

@@ -15,6 +15,7 @@
 #include "GLSeniorUniform.h"
 #include "GLSeniorGeometry.h"
 #include "GLSeniorInstance.h"
+#include "GLSenior3DShow.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
@@ -30,6 +31,74 @@ GLSeniorReflection *reflection;
 GLSeniorUniform *uniform;
 GLSeniorGeometry *geometry;
 GLSeniorInstance *instance;
+GLSenior3DShow *gl3DShow;
+
+
+/*********************** GL 3d模型显示********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_asteroid_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (gl3DShow == nullptr)
+        gl3DShow = new GLSenior3DShow();
+    gl3DShow->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_asteroid_render_frame(JNIEnv *env, jobject thiz) {
+    if (gl3DShow == nullptr) return;
+    gl3DShow->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_asteroid_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring vertex) {
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    if (gl3DShow == nullptr) {
+        gl3DShow = new GLSenior3DShow();
+    }
+
+    gl3DShow->setSharderPath(vertexPath, fragPath);
+
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_asteroid_model_path(JNIEnv *env, jobject thiz, jstring model) {
+    const char *modelPath = env->GetStringUTFChars(model, nullptr);
+    if (gl3DShow == nullptr) {
+        gl3DShow = new GLSenior3DShow();
+    }
+
+    gl3DShow->setModelPath(modelPath);
+
+    env->ReleaseStringUTFChars(model, modelPath);
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_asteroid_show_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (gl3DShow == nullptr) return;
+    gl3DShow->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_asteroid_show_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                     jfloat focusY,
+                     jint actionMode) {
+    if (gl3DShow == nullptr) return;
+    gl3DShow->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 /*********************** GL 高级实例化********************/
 
@@ -792,6 +861,18 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
+
+        /*********************** GL 3d模型显示********************/
+        {"native_asteroid_init_opengl",                  "(II)Z",                   (void *) cpp_asteroid_init_opengl},
+        {"native_asteroid_render_frame",                 "()V",                     (void *) cpp_asteroid_render_frame},
+        {"native_asteroid_set_glsl_path",                "(Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   ")V",
+                                                                              (void *) cpp_asteroid_frag_vertex_path},
+        {"native_asteroid_set_model_path",               "(Ljava/lang/String;)V",
+                                                                              (void *) cpp_asteroid_model_path},
+        {"native_asteroid_move_xy",                      "(FFI)V",                  (void *) cpp_asteroid_show_move_xy},
+        {"native_asteroid_on_scale",                     "(FFFI)V",                 (void *) cpp_asteroid_show_on_scale},
 
         /*********************** GL 实例化*******************/
         {"native_instance_init_opengl",               "(II)Z",                 (void *) cpp_instance_init_opengl},
