@@ -28,8 +28,8 @@ public class GLSeniorCallJni {
         native_asteroid_set_glsl_path(fragPath, vertexPath);
     }
 
-    public void setGLAsteroidModelPath(String modelPath) {
-        native_asteroid_set_model_path(modelPath);
+    public void setGLAsteroidModelPath(String modelPath1, String modelPath2) {
+        native_asteroid_set_model_path(modelPath1, modelPath2);
     }
 
     public void glAsteroidRenderFrame() {
@@ -50,7 +50,7 @@ public class GLSeniorCallJni {
 
     private native void native_asteroid_set_glsl_path(String fragPath, String vertexPath);
 
-    private native void native_asteroid_set_model_path(String modelPath);
+    private native void native_asteroid_set_model_path(String modelPath, String modelPath2);
 
     private native boolean native_asteroid_init_opengl(int width, int height);
 

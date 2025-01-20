@@ -4,6 +4,7 @@
 
 #ifndef ANDROIDLEARNOPENGL_GLSenior3DShow_H
 #define ANDROIDLEARNOPENGL_GLSenior3DShow_H
+
 #include <assimp/Importer.hpp>
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
@@ -22,7 +23,12 @@ private:
 
     int screenW, screenH;
     GLSeniorShader *modelShader = nullptr;
-    GLSenior3DModel *gl3DModel = nullptr;
+    GLSenior3DModel *rock3DModel = nullptr;
+    GLSenior3DModel *planet3DModel = nullptr;
+
+    glm::mat4 *modelMatrices;
+    unsigned int amount = 1000;
+
 
 
 public:
@@ -37,7 +43,7 @@ public:
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath);
 
-    bool setModelPath(const char *modelPath);
+    bool setModelPath(const char *modelPath, const char *modelPath2);
 
     void setMoveXY(float dx, float dy, int actionMode);
 

@@ -71,15 +71,18 @@ cpp_asteroid_frag_vertex_path(JNIEnv *env, jobject thiz, jstring frag, jstring v
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_asteroid_model_path(JNIEnv *env, jobject thiz, jstring model) {
-    const char *modelPath = env->GetStringUTFChars(model, nullptr);
+cpp_asteroid_model_path(JNIEnv *env, jobject thiz, jstring model1, jstring model2) {
+    const char *modelPath1 = env->GetStringUTFChars(model1, nullptr);
+    const char *modelPath2 = env->GetStringUTFChars(model2, nullptr);
+
     if (gl3DShow == nullptr) {
         gl3DShow = new GLSenior3DShow();
     }
 
-    gl3DShow->setModelPath(modelPath);
+    gl3DShow->setModelPath(modelPath1, modelPath2);
 
-    env->ReleaseStringUTFChars(model, modelPath);
+    env->ReleaseStringUTFChars(model1, modelPath1);
+    env->ReleaseStringUTFChars(model2, modelPath2);
 
 }
 
@@ -94,8 +97,8 @@ cpp_asteroid_show_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint 
 extern "C"
 JNIEXPORT void JNICALL
 cpp_asteroid_show_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                     jfloat focusY,
-                     jint actionMode) {
+                           jfloat focusY,
+                           jint actionMode) {
     if (gl3DShow == nullptr) return;
     gl3DShow->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -863,16 +866,18 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
 static const JNINativeMethod methods[] = {
 
         /*********************** GL 3d模型显示********************/
-        {"native_asteroid_init_opengl",                  "(II)Z",                   (void *) cpp_asteroid_init_opengl},
-        {"native_asteroid_render_frame",                 "()V",                     (void *) cpp_asteroid_render_frame},
-        {"native_asteroid_set_glsl_path",                "(Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   ")V",
-                                                                              (void *) cpp_asteroid_frag_vertex_path},
-        {"native_asteroid_set_model_path",               "(Ljava/lang/String;)V",
-                                                                              (void *) cpp_asteroid_model_path},
-        {"native_asteroid_move_xy",                      "(FFI)V",                  (void *) cpp_asteroid_show_move_xy},
-        {"native_asteroid_on_scale",                     "(FFFI)V",                 (void *) cpp_asteroid_show_on_scale},
+        {"native_asteroid_init_opengl",               "(II)Z",                 (void *) cpp_asteroid_init_opengl},
+        {"native_asteroid_render_frame",              "()V",                   (void *) cpp_asteroid_render_frame},
+        {"native_asteroid_set_glsl_path",             "(Ljava/lang/String;"
+                                                      "Ljava/lang/String;"
+                                                      ")V",
+                                                                               (void *) cpp_asteroid_frag_vertex_path},
+        {"native_asteroid_set_model_path",            "(Ljava/lang/String;"
+                                                      "Ljava/lang/String;"
+                                                      ")V",
+                                                                               (void *) cpp_asteroid_model_path},
+        {"native_asteroid_move_xy",                   "(FFI)V",                (void *) cpp_asteroid_show_move_xy},
+        {"native_asteroid_on_scale",                  "(FFFI)V",               (void *) cpp_asteroid_show_on_scale},
 
         /*********************** GL 实例化*******************/
         {"native_instance_init_opengl",               "(II)Z",                 (void *) cpp_instance_init_opengl},

@@ -43,9 +43,9 @@ public class GLSeniorAsteroidView extends GLSurfaceView implements GLSurfaceView
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String fragPath = GLSeniorUtil.getModelFilePath(mContext
-                , "gl_3d_show_fragment.glsl");
+                , "asteriod_fragment.glsl");
         String vertexPath = GLSeniorUtil.getModelFilePath(mContext
-                , "gl_3d_show_vertex.glsl");
+                , "asteroid_vertex.glsl");
 
         if (mJniCall != null) {
             mJniCall.setGLAsteroidSLPath(fragPath, vertexPath);
@@ -104,10 +104,12 @@ public class GLSeniorAsteroidView extends GLSurfaceView implements GLSurfaceView
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-        String modelPath = GLSeniorUtil.getModelFilePath(mContext
-                , "nanosuit.blend");
+        String modelPath1 = GLSeniorUtil.getModelFilePath(mContext
+                , "rock.obj");
+        String modelPath2 = GLSeniorUtil.getModelFilePath(mContext
+                , "planet.obj");
         if (mJniCall != null)
-            mJniCall.setGLAsteroidModelPath(modelPath);
+            mJniCall.setGLAsteroidModelPath(modelPath1, modelPath2);
 
     }
 

@@ -13,42 +13,73 @@ bool GLSenior3DShow::setupGraphics(int w, int h) {
         LOGE("Could not create shaderId.");
         return false;
     }
+    LOGE("modelProgram========.");
 
+    // configure global opengl state
+    // -----------------------------
+    glEnable(GL_DEPTH_TEST);
 
+    modelMatrices = new glm::mat4[amount];
+    double timeValue = clock() * 10 / CLOCKS_PER_SEC;
+    srand(static_cast<unsigned int>(timeValue)); // initialize random seed
+    float radius = 30.0;
+    float offset = 2.5f;
+    for (unsigned int i = 0; i < amount; i++) {
+        glm::mat4 model = glm::mat4(1.0f);
+        // 1. translation: displace along circle with 'radius' in range [-offset, offset]
+        float angle = (float) i / (float) amount * 360.0f;
+        float displacement = (rand() % (int) (2 * offset * 100)) / 100.0f - offset;
+        float x = sin(angle) * radius + displacement;
+        displacement = (rand() % (int) (2 * offset * 100)) / 100.0f - offset;
+        float y = displacement *
+                  0.4f; // keep height of asteroid field smaller compared to width of x and z
+        displacement = (rand() % (int) (2 * offset * 100)) / 100.0f - offset;
+        float z = cos(angle) * radius + displacement;
+        model = glm::translate(model, glm::vec3(x, y, z));
+
+        // 2. scale: Scale between 0.05 and 0.25f
+        float scale = static_cast<float>((rand() % 20) / 100.0 + 0.05);
+        model = glm::scale(model, glm::vec3(scale));
+
+        // 3. rotation: add random rotation around a (semi)randomly picked rotation axis vector
+        float rotAngle = static_cast<float>((rand() % 360));
+        model = glm::rotate(model, rotAngle, glm::vec3(0.4f, 0.6f, 0.8f));
+
+        // 4. now add to list of matrices
+        modelMatrices[i] = model;
+    }
 
     return false;
 }
 
 void GLSenior3DShow::renderFrame() {
-    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
+    // render
+    // ------
+    glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    //开启深度测试
-    glEnable(GL_DEPTH_TEST);
-    // be sure to activate shader when setting uniforms/drawing objects
+    // configure transformation matrices
+    glm::mat4 projection = glm::perspective(glm::radians(45.0f),
+                                            (float) screenW / (float) screenH,
+                                            0.1f, 1000.0f);
+    glm::mat4 view = mCamera.GetViewMatrix();;
     modelShader->use();
-
-    // view/projection transformations
-    glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
-                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
-
-    vec3 cameraMove(0.0f, 0.0f, 6.0f);
-    mCamera.Position = cameraMove;
-    glm::mat4 view = mCamera.GetViewMatrix();
     modelShader->setMat4("projection", projection);
     modelShader->setMat4("view", view);
 
-    // render the loaded model
-    glm::mat4 model = glm::mat4(0.4f);
-    // translate it down so it's at the center of the scene
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    float angle = 60;
-    model = glm::rotate(model,glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
-    // it's a bit too big for our scene, so scale it down
-    model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+    // draw planet
+    glm::mat4 model = glm::mat4(1.0f);
+    model = glm::translate(model, glm::vec3(0.5f, -1.0f, 0.0f));
+    model = glm::scale(model, glm::vec3(1.0f, 1.0f, 1.0f));
     modelShader->setMat4("model", model);
-    gl3DModel->Draw(*modelShader);
+    planet3DModel->Draw(*modelShader);
+
+    // draw meteorites
+    for (unsigned int i = 0; i < amount; i++) {
+        modelShader->setMat4("model", modelMatrices[i]);
+        rock3DModel->Draw(*modelShader);
+    }
 }
 
 bool GLSenior3DShow::setSharderPath(const char *vertexPath, const char *fragmentPath) {
@@ -57,10 +88,15 @@ bool GLSenior3DShow::setSharderPath(const char *vertexPath, const char *fragment
 }
 
 
-bool GLSenior3DShow::setModelPath(const char *modelPath) {
-    LOGI("setMosetModelPath :%s", modelPath);
-    string model(modelPath);
-    gl3DModel = new GLSenior3DModel(model, false);
+bool GLSenior3DShow::setModelPath(const char *modelPath1, const char *modelPath2) {
+    LOGI("setMosetModelPath :%s", modelPath1);
+    LOGI("setMosetModelPath :%s", modelPath2);
+
+    string rockModel(modelPath1);
+    string planetModel(modelPath1);
+
+    rock3DModel = new GLSenior3DModel(rockModel, false);
+    planet3DModel = new GLSenior3DModel(planetModel, false);
     return false;
 }
 
@@ -111,9 +147,19 @@ GLSenior3DShow::~GLSenior3DShow() {
         modelShader = nullptr;
     }
 
-    if (gl3DModel) {
-        delete gl3DModel;
-        gl3DModel = nullptr;
+    if (rock3DModel) {
+        delete rock3DModel;
+        rock3DModel = nullptr;
+    }
+
+    if (planet3DModel) {
+        delete planet3DModel;
+        planet3DModel = nullptr;
+    }
+
+    if (modelMatrices) {
+        delete modelMatrices;
+        modelMatrices = nullptr;
     }
 
     lastX = 0;
