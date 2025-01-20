@@ -44,17 +44,14 @@ public class GLSeniorGeometryView extends GLSurfaceView implements GLSurfaceView
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_vertex.glsl");
-        String fragRedPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_rad_fragment.glsl");
-        String fragBluePath = GLSeniorUtil.getModelFilePath(mContext, "uniform_blue_fragment.glsl");
-        String fragGreenPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_green_fragment.glsl");
-        String fragYellowPath = GLSeniorUtil.getModelFilePath(mContext, "uniform_yellow_fragment.glsl");
+        String vertexPath = GLSeniorUtil.getModelFilePath(mContext, "geometry_vertex.glsl");
+        String fragPath = GLSeniorUtil.getModelFilePath(mContext, "geometry_fragment.glsl");
+        String geometryPath = GLSeniorUtil.getModelFilePath(mContext, "geometry_shader.glsl");
 
 
         if (mGLSeniorCallJni != null) {
             mGLSeniorCallJni.setSeniorGeometryGLSLPath(vertexPath
-                    , fragRedPath, fragBluePath
-                    , fragGreenPath, fragYellowPath
+                    , fragPath, geometryPath
             );
         }
         setRenderer(this);

@@ -74,6 +74,7 @@ GLSeniorShader::createVFGProgram() {
         return 0;
     }
 
+//    geometryShader = loadShader(GL_GEOMETRY_SHADER, gGeometryShaderCode);
     geometryShader = loadShader(GL_FRAGMENT_SHADER, gGeometryShaderCode);
 
     if (!geometryShader) {

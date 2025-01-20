@@ -25,12 +25,10 @@ public class GLSeniorCallJni {
      * 几何着色器
      */
     public void setSeniorGeometryGLSLPath(String vertexString
-            , String fragRedPath, String fragBluePath
-            , String fragGreenPath, String fragYellowPath
+            , String fragPath, String geometryPath
     ) {
         native_geometry_set_glsl_path(vertexString
-                , fragRedPath, fragBluePath
-                , fragGreenPath, fragYellowPath
+                , fragPath, geometryPath
         );
     }
 
@@ -51,8 +49,7 @@ public class GLSeniorCallJni {
     }
 
     private native void native_geometry_set_glsl_path(String vertexString
-            , String fragRedPath, String fragBluePath
-            , String fragGreenPath, String fragYellowPath
+            , String fragPath, String geometryPath
     );
 
 

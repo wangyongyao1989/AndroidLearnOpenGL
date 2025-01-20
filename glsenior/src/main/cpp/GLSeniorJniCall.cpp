@@ -51,28 +51,24 @@ cpp_geometry_render_frame(JNIEnv *env, jobject thiz) {
 
 extern "C"
 JNIEXPORT void JNICALL
-cpp_geometry_frag_vertex_path(JNIEnv *env, jobject thiz, jstring vertex, jstring fragRed,
-                             jstring fragBlue, jstring fragGreen, jstring fragYellow
+cpp_geometry_frag_vertex_path(JNIEnv *env, jobject thiz, jstring vertex,
+                              jstring frag, jstring geometryS
 
 ) {
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-    const char *fragRedPath = env->GetStringUTFChars(fragRed, nullptr);
-    const char *fragBluePath = env->GetStringUTFChars(fragBlue, nullptr);
-    const char *fragGreenPath = env->GetStringUTFChars(fragGreen, nullptr);
-    const char *fragYellowPath = env->GetStringUTFChars(fragYellow, nullptr);
+    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *geometryPath = env->GetStringUTFChars(geometryS, nullptr);
 
 
     if (geometry == nullptr) {
         geometry = new GLSeniorGeometry();
     }
 
-    geometry->setSharderPath(vertexPath, fragRedPath, fragBluePath, fragGreenPath, fragYellowPath);
+    geometry->setSharderPath(vertexPath, fragPath, geometryPath);
 
     env->ReleaseStringUTFChars(vertex, vertexPath);
-    env->ReleaseStringUTFChars(fragRed, fragRedPath);
-    env->ReleaseStringUTFChars(fragBlue, fragBluePath);
-    env->ReleaseStringUTFChars(fragGreen, fragGreenPath);
-    env->ReleaseStringUTFChars(fragYellow, fragYellowPath);
+    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(geometryS, geometryPath);
 
 }
 
@@ -87,8 +83,8 @@ cpp_geometry_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actio
 extern "C"
 JNIEXPORT void JNICALL
 cpp_geometry_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
-                     jfloat focusY,
-                     jint actionMode) {
+                      jfloat focusY,
+                      jint actionMode) {
     if (geometry == nullptr) return;
     geometry->setOnScale(scaleFactor, focusX, focusY, actionMode);
 }
@@ -743,8 +739,6 @@ static const JNINativeMethod methods[] = {
         {"native_geometry_init_opengl",               "(II)Z",                 (void *) cpp_geometry_init_opengl},
         {"native_geometry_render_frame",              "()V",                   (void *) cpp_geometry_render_frame},
         {"native_geometry_set_glsl_path",             "(Ljava/lang/String"
-                                                      ";Ljava/lang/String"
-                                                      ";Ljava/lang/String"
                                                       ";Ljava/lang/String"
                                                       ";Ljava/lang/String;)V", (void *) cpp_geometry_frag_vertex_path},
         {"native_geometry_move_xy",                   "(FFI)V",                (void *) cpp_geometry_move_xy},
