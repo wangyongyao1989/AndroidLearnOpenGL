@@ -22,20 +22,25 @@ using namespace std;
 
 
 class GLSeniorShader {
-private:
-    //顶点着色器代码
-    const char *gVertexShaderCode = nullptr;
+
 public:
     void setGVertexShaderCode(const char *gVertexShaderCode);
 
     void setGFragmentShaderCode(const char *gFragmentShaderCode);
 
+    void setGGeometryShaderCode(const char *gFragmentShaderCode);
+
 private:
+    //顶点着色器代码
+    const char *gVertexShaderCode = nullptr;
     //片段着色器代码
     const char *gFragmentShaderCode = nullptr;
+    //几何着色器代码
+    const char *gGeometryShaderCode = nullptr;
 
     string vertexCode;
     string fragmentCode;
+    string geometryCode;    //几何着色器
 
 
     GLuint loadShader(GLenum shaderType, const char *pSource);
@@ -49,15 +54,22 @@ public:
     GLuint shaderId;
     GLuint vertexShader;  //顶点着色器
     GLuint fraShader;     //片段着色器
+    GLuint geometryShader;     //几何着色器
+
     GLSeniorShader();
 
     ~GLSeniorShader();
 
     bool getSharderPath(const char *vertexPath, const char *fragmentPath);
 
+    bool getVFGSharderPath(const char *vertexPath, const char *fragmentPath
+                            , const char *geometryPath);
+
     bool getSharderStringPath(string vertexPath, string fragmentPath);
 
     GLuint createProgram();
+
+    GLuint createVFGProgram();
 
     void use() const {
         glUseProgram(shaderId);
