@@ -36,6 +36,7 @@ add_library(
         senior/GLSeniorCubeMap.cpp
         senior/GLSeniorReflection.cpp
         senior/GLSeniorUniform.cpp
+        senior/GLSeniorGeometry.cpp
 
 
 )

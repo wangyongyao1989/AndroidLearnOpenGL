@@ -60,6 +60,8 @@ GLSeniorShader::createVFGProgram() {
     vertexShader = loadShader(GL_VERTEX_SHADER, gVertexShaderCode);
     LOGI("=====gVertexShaderCode :%s", gVertexShaderCode);
     LOGI("======gFragmentShaderCode :%s", gFragmentShaderCode);
+    LOGI("======gGeometryShaderCode :%s", gGeometryShaderCode);
+
     if (!vertexShader) {
         checkGlError("loadShader GL_VERTEX_SHADER");
         return 0;

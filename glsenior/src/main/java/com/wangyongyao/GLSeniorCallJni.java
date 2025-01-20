@@ -21,6 +21,49 @@ public class GLSeniorCallJni {
 
     }
 
+    /**
+     * 几何着色器
+     */
+    public void setSeniorGeometryGLSLPath(String vertexString
+            , String fragRedPath, String fragBluePath
+            , String fragGreenPath, String fragYellowPath
+    ) {
+        native_geometry_set_glsl_path(vertexString
+                , fragRedPath, fragBluePath
+                , fragGreenPath, fragYellowPath
+        );
+    }
+
+    public boolean initSeniorGeometryOpenGl(int w, int h) {
+        return native_geometry_init_opengl(w, h);
+    }
+
+    public void seniorGeometryOpenGLRenderFrame() {
+        native_geometry_render_frame();
+    }
+
+    public void seniorGeometryMoveXY(float dx, float dy, int action) {
+        native_geometry_move_xy(dx, dy, action);
+    }
+
+    public void seniorGeometryOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_geometry_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_geometry_set_glsl_path(String vertexString
+            , String fragRedPath, String fragBluePath
+            , String fragGreenPath, String fragYellowPath
+    );
+
+
+    private native boolean native_geometry_init_opengl(int width, int height);
+
+    private native void native_geometry_render_frame();
+
+    private native void native_geometry_move_xy(float dx, float dy, int action);
+
+    private native void native_geometry_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
 
     /**
      * 立方体贴图——反射

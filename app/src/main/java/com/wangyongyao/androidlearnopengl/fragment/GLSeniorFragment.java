@@ -21,6 +21,7 @@ import com.wangyongyao.views.GLSeniorBlendingSortView;
 import com.wangyongyao.views.GLSeniorCubeMapView;
 import com.wangyongyao.views.GLSeniorDepthTestView;
 import com.wangyongyao.views.GLSeniorFBOView;
+import com.wangyongyao.views.GLSeniorGeometryView;
 import com.wangyongyao.views.GLSeniorStencilTestView;
 import com.wangyongyao.views.GLSeniorUniformView;
 
@@ -51,6 +52,7 @@ public class GLSeniorFragment extends BaseFragment {
     private Button mBtnSenior9;
     private Button mBtnSenior10;
     private Button mBtnSenior11;
+    private Button mBtnSenior12;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -76,6 +78,7 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior9 = mBinding.btnSenior9;
         mBtnSenior10 = mBinding.btnSenior10;
         mBtnSenior11 = mBinding.btnSenior11;
+        mBtnSenior12 = mBinding.btnSenior12;
 
 
     }
@@ -169,6 +172,13 @@ public class GLSeniorFragment extends BaseFragment {
         mBtnSenior11.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
             GLSeniorUniformView glView = new GLSeniorUniformView(getActivity()
+                    , mGLSeniorCallJni);
+            mGlShow1.addView(glView);
+        });
+
+        mBtnSenior12.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            GLSeniorGeometryView glView = new GLSeniorGeometryView(getActivity()
                     , mGLSeniorCallJni);
             mGlShow1.addView(glView);
         });

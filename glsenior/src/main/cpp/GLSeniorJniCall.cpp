@@ -13,6 +13,7 @@
 #include "GLSeniorCubeMap.h"
 #include "GLSeniorReflection.h"
 #include "GLSeniorUniform.h"
+#include "GLSeniorGeometry.h"
 
 //包名+类名字符串定义：
 const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
@@ -26,6 +27,71 @@ GLFBOPostProcessing *postProcessing;
 GLSeniorCubeMap *cubeMap;
 GLSeniorReflection *reflection;
 GLSeniorUniform *uniform;
+GLSeniorGeometry *geometry;
+
+
+/*********************** GL 高级Uniform********************/
+
+extern "C"
+JNIEXPORT jboolean JNICALL
+cpp_geometry_init_opengl(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (geometry == nullptr)
+        geometry = new GLSeniorGeometry();
+    geometry->setupGraphics(width, height);
+    return 0;
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_geometry_render_frame(JNIEnv *env, jobject thiz) {
+    if (geometry == nullptr) return;
+    geometry->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_geometry_frag_vertex_path(JNIEnv *env, jobject thiz, jstring vertex, jstring fragRed,
+                             jstring fragBlue, jstring fragGreen, jstring fragYellow
+
+) {
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *fragRedPath = env->GetStringUTFChars(fragRed, nullptr);
+    const char *fragBluePath = env->GetStringUTFChars(fragBlue, nullptr);
+    const char *fragGreenPath = env->GetStringUTFChars(fragGreen, nullptr);
+    const char *fragYellowPath = env->GetStringUTFChars(fragYellow, nullptr);
+
+
+    if (geometry == nullptr) {
+        geometry = new GLSeniorGeometry();
+    }
+
+    geometry->setSharderPath(vertexPath, fragRedPath, fragBluePath, fragGreenPath, fragYellowPath);
+
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(fragRed, fragRedPath);
+    env->ReleaseStringUTFChars(fragBlue, fragBluePath);
+    env->ReleaseStringUTFChars(fragGreen, fragGreenPath);
+    env->ReleaseStringUTFChars(fragYellow, fragYellowPath);
+
+}
+
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_geometry_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (geometry == nullptr) return;
+    geometry->setMoveXY(dx, dy, actionMode);
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_geometry_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat focusX,
+                     jfloat focusY,
+                     jint actionMode) {
+    if (geometry == nullptr) return;
+    geometry->setOnScale(scaleFactor, focusX, focusY, actionMode);
+}
 
 /*********************** GL 高级Uniform********************/
 
@@ -673,6 +739,16 @@ cpp_depth_test_on_scale(JNIEnv *env, jobject thiz, jfloat scaleFactor, jfloat fo
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
+        /*********************** GL 几何着色器********************/
+        {"native_geometry_init_opengl",               "(II)Z",                 (void *) cpp_geometry_init_opengl},
+        {"native_geometry_render_frame",              "()V",                   (void *) cpp_geometry_render_frame},
+        {"native_geometry_set_glsl_path",             "(Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String"
+                                                      ";Ljava/lang/String;)V", (void *) cpp_geometry_frag_vertex_path},
+        {"native_geometry_move_xy",                   "(FFI)V",                (void *) cpp_geometry_move_xy},
+        {"native_geometry_on_scale",                  "(FFFI)V",               (void *) cpp_geometry_on_scale},
 
         /*********************** GL 高级Uniform********************/
         {"native_uniform_init_opengl",                "(II)Z",                 (void *) cpp_uniform_init_opengl},
