@@ -22,6 +22,44 @@ public class GLSeniorCallJni {
     }
 
     /**
+     * 实例化
+     */
+    public void setSeniorInstanceGLSLPath(String vertexString
+            , String fragPath) {
+        native_instance_set_glsl_path(vertexString
+                , fragPath
+        );
+    }
+
+    public boolean initSeniorInstanceOpenGl(int w, int h) {
+        return native_instance_init_opengl(w, h);
+    }
+
+    public void seniorInstanceOpenGLRenderFrame() {
+        native_instance_render_frame();
+    }
+
+    public void seniorInstanceMoveXY(float dx, float dy, int action) {
+        native_instance_move_xy(dx, dy, action);
+    }
+
+    public void seniorInstanceOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_instance_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_instance_set_glsl_path(String vertexString
+            , String fragPath);
+
+
+    private native boolean native_instance_init_opengl(int width, int height);
+
+    private native void native_instance_render_frame();
+
+    private native void native_instance_move_xy(float dx, float dy, int action);
+
+    private native void native_instance_on_scale(float scaleFactor, float focusX, float focusY, int action);
+
+    /**
      * 几何着色器
      */
     public void setSeniorGeometryGLSLPath(String vertexString
@@ -158,7 +196,6 @@ public class GLSeniorCallJni {
     private native void native_reflection_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
 
-
     /**
      * 立方体贴图 CubeMap
      */
@@ -227,7 +264,7 @@ public class GLSeniorCallJni {
                 , picSrc1, picSrc2
                 , fragGrayScalePath
                 , fragWeightedGrayPath
-                ,fragNuclearEffectPath
+                , fragNuclearEffectPath
         );
     }
 

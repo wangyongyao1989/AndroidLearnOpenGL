@@ -37,6 +37,7 @@ add_library(
         senior/GLSeniorReflection.cpp
         senior/GLSeniorUniform.cpp
         senior/GLSeniorGeometry.cpp
+        senior/GLSeniorInstance.cpp
 
 
 )
