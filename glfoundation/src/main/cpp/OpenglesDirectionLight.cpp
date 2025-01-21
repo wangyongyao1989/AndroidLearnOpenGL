@@ -94,7 +94,7 @@ void OpenglesDirectionLight::renderFrame() {
     // be sure to activate shader when setting uniforms/drawing objects
     lightColorShader->use();
 
-//    lightColorShader->setVec3("light.position", DirectionLightLightPos);
+//    depthTestShader->setVec3("light.position", DirectionLightLightPos);
 
     lightColorShader->setVec3("light.direction", -0.2f, -1.0f, -0.3f);
     lightColorShader->setVec3("viewPos", mCamera.Position);

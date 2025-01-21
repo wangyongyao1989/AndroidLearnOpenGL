@@ -13,6 +13,7 @@ public class GLViewModel extends ViewModel {
         MAIN,
         GL_FOUNDATION,
         GL_3D,
+        GL_SENIOR,
     }
 
 

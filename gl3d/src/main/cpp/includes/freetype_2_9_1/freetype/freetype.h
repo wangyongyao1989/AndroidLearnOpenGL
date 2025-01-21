@@ -3189,7 +3189,7 @@ FT_BEGIN_HEADER
   /*    returned bitmap.                                                   */
   /*                                                                       */
   /*    All modes except @FT_RENDER_MODE_MONO use 256 levels of opacity,   */
-  /*    indicating pixel coverage.  Use linear alpha blending and gamma    */
+  /*    indicating pixel coverage.  Use linear alpha blendingDiscard and gamma    */
   /*    correction to correctly render non-monochrome glyph bitmaps onto a */
   /*    surface; see @FT_Render_Glyph.                                     */
   /*                                                                       */
@@ -3317,7 +3317,7 @@ FT_BEGIN_HEADER
   /*    linear and non-linear space, just all the shades in-between        */
   /*    aren't.                                                            */
   /*                                                                       */
-  /*    The blending function for placing text over a background is        */
+  /*    The blendingDiscard function for placing text over a background is        */
   /*                                                                       */
   /*    {                                                                  */
   /*      dst = alpha * src + (1 - alpha) * dst    ,                       */
@@ -3347,13 +3347,13 @@ FT_BEGIN_HEADER
   /*    https://bel.fi/alankila/lcd/ and                                   */
   /*    https://bel.fi/alankila/lcd/alpcor.html for details.               */
   /*                                                                       */
-  /*    *ATTENTION*: Linear blending is even more important when dealing   */
+  /*    *ATTENTION*: Linear blendingDiscard is even more important when dealing   */
   /*    with subpixel-rendered glyphs to prevent color-fringing!  A        */
   /*    subpixel-rendered glyph must first be filtered with a filter that  */
   /*    gives equal weight to the three color primaries and does not       */
   /*    exceed a sum of 0x100, see section @lcd_filtering.  Then the       */
-  /*    only difference to gray linear blending is that subpixel-rendered  */
-  /*    linear blending is done 3~times per pixel: red foreground subpixel */
+  /*    only difference to gray linear blendingDiscard is that subpixel-rendered  */
+  /*    linear blendingDiscard is done 3~times per pixel: red foreground subpixel */
   /*    to red background subpixel and so on for green and blue.           */
   /*                                                                       */
   FT_EXPORT( FT_Error )

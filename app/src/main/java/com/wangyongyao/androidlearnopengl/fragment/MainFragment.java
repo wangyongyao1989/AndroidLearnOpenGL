@@ -30,6 +30,7 @@ public class MainFragment extends BaseFragment {
     private Button mBtnGlFoundation;
     private GLViewModel mGlViewModel;
     private Button mBtnGl3d;
+    private Button mBtnGlSenior;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -43,6 +44,7 @@ public class MainFragment extends BaseFragment {
     public void initView() {
         mBtnGlFoundation = mBinding.btnGlFoundation;
         mBtnGl3d = mBinding.btnGl3d;
+        mBtnGlSenior = mBinding.btnGlSenior;
 
     }
 
@@ -67,5 +69,8 @@ public class MainFragment extends BaseFragment {
             mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.GL_3D);
         });
 
+        mBtnGlSenior.setOnClickListener(View -> {
+            mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.GL_SENIOR);
+        });
     }
 }
