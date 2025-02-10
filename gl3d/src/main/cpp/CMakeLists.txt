@@ -34,6 +34,7 @@ add_library(
         gl3dshow/GL3DMesh.cpp
         gl3dshow/GL3DModel.cpp
         gl3dshow/GLDrawText.cpp
+        gl3dshow/GL3DAnimationShow.cpp
 
 
 )
