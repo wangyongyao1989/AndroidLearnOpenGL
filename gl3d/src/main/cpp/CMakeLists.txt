@@ -36,6 +36,12 @@ add_library(
         gl3dshow/GLDrawText.cpp
         gl3dshow/GL3DAnimationShow.cpp
 
+        animator/Animation.cpp
+        animator/Animator.cpp
+        animator/Bone.cpp
+        animator/AssimpGLMHelpers.cpp
+        animator/ModelAnimation.cpp
+
 
 )
 
