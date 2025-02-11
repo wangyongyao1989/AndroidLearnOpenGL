@@ -40,13 +40,13 @@ public:
 
     Bone *FindBone(const std::string &name);
 
-    inline float GetTicksPerSecond();
+    float GetTicksPerSecond();
 
-    inline float GetDuration();
+    float GetDuration();
 
-    inline const AssimpNodeData &GetRootNode();
+    const AssimpNodeData &GetRootNode();
 
-    inline const std::map<std::string, BoneInfo> &GetBoneIDMap();
+    const std::map<std::string, BoneInfo> &GetBoneIDMap();
 
 private:
     void ReadMissingBones(const aiAnimation *animation, ModelAnimation &model);

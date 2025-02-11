@@ -15,40 +15,44 @@ bool GL3DAnimationShow::setupGraphics(int w, int h) {
     }
 
 
-
     return false;
 }
 
 void GL3DAnimationShow::renderFrame() {
+
+    // input
+    // -----
+    double timeValue = clock() * 20 / CLOCKS_PER_SEC;
+    animator->UpdateAnimation(timeValue);
+    // render
+    // ------
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // also clear the depth buffer now!
-
-    //开启深度测试
-    glEnable(GL_DEPTH_TEST);
-    // be sure to activate shader when setting uniforms/drawing objects
+    // don't forget to enable shader before setting uniforms
     modelShader->use();
 
     // view/projection transformations
     glm::mat4 projection = glm::perspective(glm::radians(mCamera.Zoom),
-                                            (float) screenW / (float) screenH, 0.1f, 100.0f);
-
-    vec3 cameraMove(0.0f, 0.0f, 6.0f);
-    mCamera.Position = cameraMove;
+                                            (float) screenW / (float) screenH, 0.5f, 100.0f);
     glm::mat4 view = mCamera.GetViewMatrix();
     modelShader->setMat4("projection", projection);
     modelShader->setMat4("view", view);
 
+    auto transforms = animator->GetFinalBoneMatrices();
+    for (int i = 0; i < transforms.size(); ++i)
+        modelShader->setMat4("finalBonesMatrices[" + std::to_string(i) + "]", transforms[i]);
+
+
     // render the loaded model
-    glm::mat4 model = glm::mat4(0.4f);
+    glm::mat4 model = glm::mat4(1.0f);
     // translate it down so it's at the center of the scene
-    model = glm::translate(model, glm::vec3(0.0f, 0.0f, 0.0f));
-    float angle = 60;
-    model = glm::rotate(model,glm::radians(angle), glm::vec3(1.0f, 0.3f, 0.5f));
+    model = glm::translate(model, glm::vec3(0.0f, -0.4f, 0.0f));
     // it's a bit too big for our scene, so scale it down
-    model = glm::scale(model, glm::vec3(0.1f, 0.1f, 0.1f));
+    model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
     modelShader->setMat4("model", model);
     gl3DModel->Draw(*modelShader);
+
 }
 
 bool GL3DAnimationShow::setSharderPath(const char *vertexPath, const char *fragmentPath) {
@@ -60,7 +64,9 @@ bool GL3DAnimationShow::setSharderPath(const char *vertexPath, const char *fragm
 bool GL3DAnimationShow::setModelPath(const char *modelPath) {
     LOGI("setMosetModelPath :%s", modelPath);
     string model(modelPath);
-    gl3DModel = new GL3DModel(model, false);
+    gl3DModel = new ModelAnimation(model);
+    animation = new Animation(model, gl3DModel);
+    animator = new Animator(animation);
     return false;
 }
 
@@ -114,6 +120,16 @@ GL3DAnimationShow::~GL3DAnimationShow() {
     if (gl3DModel) {
         delete gl3DModel;
         gl3DModel = nullptr;
+    }
+
+    if (animation) {
+        delete animation;
+        animation = nullptr;
+    }
+
+    if (animator) {
+        delete animator;
+        animator = nullptr;
     }
 
     lastX = 0;

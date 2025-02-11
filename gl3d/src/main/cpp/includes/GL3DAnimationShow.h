@@ -10,8 +10,9 @@
 
 #include "GLCamera3D.h"
 #include "GL3DShader.h"
-
-#include "GL3DModel.h"
+#include "../animator/ModelAnimation.h"
+#include "animator/Animation.h"
+#include "animator/Animator.h"
 
 class GL3DAnimationShow {
 private:
@@ -21,8 +22,9 @@ private:
 
     int screenW, screenH;
     GL3DShader *modelShader = nullptr;
-    GL3DModel *gl3DModel = nullptr;
-
+    ModelAnimation *gl3DModel = nullptr;
+    Animation *animation = nullptr;
+    Animator *animator = nullptr;
 
 public:
 

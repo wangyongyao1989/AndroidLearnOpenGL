@@ -48,9 +48,9 @@ public class GL3DAnimationView extends GLSurfaceView implements GLSurfaceView.Re
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String fragPath = GL3DShowUtil.getModelFilePath(mContext
-                , "gl_3d_show_fragment.glsl");
+                , "gl_3d_animation_fragment.glsl");
         String vertexPath = GL3DShowUtil.getModelFilePath(mContext
-                , "gl_3d_show_vertex.glsl");
+                , "gl_3d_animation_vertex.glsl");
 
         if (mJniCall != null) {
             mJniCall.setGL3DAnimationSLPath(fragPath, vertexPath);
@@ -109,12 +109,8 @@ public class GL3DAnimationView extends GLSurfaceView implements GLSurfaceView.Re
 
     @Override
     public void onSurfaceCreated(GL10 gl10, EGLConfig eglConfig) {
-//        String modelPath = GL3DShowUtil.getModelFilePath(mContext
-//                , "nanosuit.obj");
-//        String modelPath = GL3DShowUtil.getModelFilePath(mContext
-//                , "nanosuit.mtl");
         String modelPath = GL3DShowUtil.getModelFilePath(mContext
-                , "nanosuit.blend");
+                , "dancing_vampire.dae");
         if (mJniCall != null)
             mJniCall.setGL3DAnimationModelPath(modelPath);
 
@@ -161,8 +157,6 @@ public class GL3DAnimationView extends GLSurfaceView implements GLSurfaceView.Re
             }
             break;
         }
-
-
         return true;
     }
 
