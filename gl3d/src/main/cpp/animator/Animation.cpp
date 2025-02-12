@@ -10,7 +10,11 @@ Animation::Animation(const string &animationPath, ModelAnimation *model) {
     assert(scene && scene->mRootNode);
     auto animation = scene->mAnimations[0];
     m_Duration = animation->mDuration;
+    LOGI("m_Duration ======:%f", m_Duration);
+
     m_TicksPerSecond = animation->mTicksPerSecond;
+    LOGI("m_TicksPerSecond ======:%f", m_TicksPerSecond);
+
     aiMatrix4x4 globalTransformation = scene->mRootNode->mTransformation;
     globalTransformation = globalTransformation.Inverse();
     ReadHierarchyData(m_RootNode, scene->mRootNode);
@@ -29,6 +33,19 @@ Bone *Animation::FindBone(const string &name) {
     );
     if (iter == m_Bones.end()) return nullptr;
     else return &(*iter);
+
+//    LOGE("FindBone name: %s", name.c_str());
+//    for (int i = 0; i < m_Bones.size(); ++i) {
+//        Bone &bone = m_Bones[i];
+//        const string &basicString = bone.GetBoneName();
+//        LOGE("m_Bones[%d] name: %s", i, basicString.c_str());
+//        if (basicString == name) {
+//            return &bone;
+//        }
+//
+//    }
+//    return nullptr;
+
 }
 
 float Animation::GetTicksPerSecond() { return m_TicksPerSecond; }
@@ -43,9 +60,10 @@ const std::map<std::string, BoneInfo> &Animation::GetBoneIDMap() {
 
 void Animation::ReadMissingBones(const aiAnimation *animation, ModelAnimation &model) {
     int size = animation->mNumChannels;
-
-    auto &boneInfoMap = model.GetBoneInfoMap();//getting m_BoneInfoMap from Model class
-    int &boneCount = model.GetBoneCount(); //getting the m_BoneCounter from Model class
+    //getting m_BoneInfoMap from Model class
+    auto &boneInfoMap = model.GetBoneInfoMap();
+    //getting the m_BoneCounter from Model class
+    int &boneCount = model.GetBoneCount();
 
     //reading channels(bones engaged in an animation and their keyframes)
     for (int i = 0; i < size; i++) {

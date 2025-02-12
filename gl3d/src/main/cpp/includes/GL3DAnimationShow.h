@@ -26,6 +26,10 @@ private:
     Animation *animation = nullptr;
     Animator *animator = nullptr;
 
+    // timing
+    float deltaTime = 0.0f;
+    float lastFrame = 0.0f;
+
 public:
 
     GL3DAnimationShow();

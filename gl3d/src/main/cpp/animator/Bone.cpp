@@ -3,10 +3,13 @@
 //
 
 #include "../includes/animator/Bone.h"
+#include "GL3DLogUtils.h"
 
 Bone::Bone(const std::string &name, int ID, const aiNodeAnim *channel) {
     m_NumPositions = channel->mNumPositionKeys;
-
+    m_Name = name;
+    m_ID = ID;
+    m_LocalTransform = glm::mat4(1.0f);
     for (int positionIndex = 0; positionIndex < m_NumPositions; ++positionIndex) {
         aiVector3D aiPosition = channel->mPositionKeys[positionIndex].mValue;
         float timeStamp = channel->mPositionKeys[positionIndex].mTime;

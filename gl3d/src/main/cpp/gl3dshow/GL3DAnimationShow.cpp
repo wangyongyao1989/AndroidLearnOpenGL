@@ -22,8 +22,10 @@ void GL3DAnimationShow::renderFrame() {
 
     // input
     // -----
-    double timeValue = clock() * 20 / CLOCKS_PER_SEC;
-    animator->UpdateAnimation(timeValue);
+    float currentFrame = clock() * 5 / CLOCKS_PER_SEC;
+    deltaTime = currentFrame - lastFrame;
+    lastFrame = currentFrame;
+    animator->UpdateAnimation(deltaTime);
     // render
     // ------
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
@@ -49,7 +51,7 @@ void GL3DAnimationShow::renderFrame() {
     // translate it down so it's at the center of the scene
     model = glm::translate(model, glm::vec3(0.0f, -0.4f, 0.0f));
     // it's a bit too big for our scene, so scale it down
-    model = glm::scale(model, glm::vec3(1.5f, 1.5f, 1.5f));
+    model = glm::scale(model, glm::vec3(2.0f, 2.0f, 2.0f));
     modelShader->setMat4("model", model);
     gl3DModel->Draw(*modelShader);
 
