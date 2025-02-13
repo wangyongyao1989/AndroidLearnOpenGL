@@ -10,6 +10,42 @@ public class GL3DCallJni {
         System.loadLibrary("gl3dshow");
     }
 
+    /*********************** GL 3D动画显示********************/
+    public void setGL3DAnimationSLPath(String fragPath, String vertexPath) {
+        native_3d_animation_set_glsl_path(fragPath, vertexPath);
+    }
+
+    public void setGL3DAnimationModelPath(String modelPath) {
+        native_3d_animation_set_model_path(modelPath);
+    }
+
+    public void gl3DAnimationRenderFrame() {
+        native_3d_animation_render_frame();
+    }
+
+    public void init3DAnimation(int width, int height) {
+        native_3d_animation_init_opengl(width, height);
+    }
+
+    public void gl3DAnimationShowMoveXY(float dx, float dy, int action) {
+        native_3d_animation_move_xy(dx, dy, action);
+    }
+
+    public void gl3DAnimationShowOnScale(float scaleFactor, float focusX, float focusY, int action) {
+        native_3d_animation_on_scale(scaleFactor, focusX, focusY, action);
+    }
+
+    private native void native_3d_animation_set_glsl_path(String fragPath, String vertexPath);
+
+    private native void native_3d_animation_set_model_path(String modelPath);
+
+    private native boolean native_3d_animation_init_opengl(int width, int height);
+
+    private native void native_3d_animation_render_frame();
+
+    private native void native_3d_animation_move_xy(float dx, float dy, int action);
+
+    private native void native_3d_animation_on_scale(float scaleFactor, float focusX, float focusY, int action);
 
     /*********************** GL 3D模型显示********************/
     public void setGL3DSLPath(String fragPath, String vertexPath) {
