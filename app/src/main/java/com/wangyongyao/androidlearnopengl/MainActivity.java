@@ -16,6 +16,7 @@ import com.wangyongyao.androidlearnopengl.databinding.ActivityMainBinding;
 import com.wangyongyao.androidlearnopengl.fragment.GL3DShowFragment;
 import com.wangyongyao.androidlearnopengl.fragment.GLFoundationFragment;
 import com.wangyongyao.androidlearnopengl.fragment.GLSeniorFragment;
+import com.wangyongyao.androidlearnopengl.fragment.GLShaderShowFragment;
 import com.wangyongyao.androidlearnopengl.fragment.MainFragment;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     private FrameLayout mFlGl3d;
     private GL3DShowFragment mGl3DShowFragment;
     private GLSeniorFragment mGLSeniorFragment;
+    private GLShaderShowFragment mShaderShowFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +106,16 @@ public class MainActivity extends AppCompatActivity {
                 fragmentTransaction.commit();
             }
             break;
+            case GL_SHADER: {
+                if (mShaderShowFragment == null) {
+                    mShaderShowFragment = new GLShaderShowFragment();
+                    fragmentTransaction
+                            .add(mFlGl3d.getId(), mShaderShowFragment);
+                }
+                fragmentTransaction.show(mShaderShowFragment);
+                fragmentTransaction.commit();
+            }
+            break;
         }
     }
 
@@ -121,6 +133,10 @@ public class MainActivity extends AppCompatActivity {
 
         if (mGLSeniorFragment != null) {
             frt.hide(mGLSeniorFragment);
+        }
+
+        if (mShaderShowFragment != null) {
+            frt.hide(mShaderShowFragment);
         }
 
     }

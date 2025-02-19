@@ -52,6 +52,7 @@ dependencies {
     implementation project(':glfoundation')
     implementation project(':gl3d')
     implementation project(':glsenior')
+    implementation project(':glshader')
 
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
