@@ -19,7 +19,13 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     if (shapingFunction == nullptr) {
         shapingFunction = new GLShapingFunction();
     }
-    shapingFunction->setSharderPath(vertexPath, fragPath);
+    string sFragPath(fragPath);
+
+    vector<string> sFragPathes;
+    sFragPathes.push_back(sFragPath);
+
+
+    shapingFunction->setSharderStringPathes(vertexPath, sFragPathes);
 
     env->ReleaseStringUTFChars(vertex, vertexPath);
     env->ReleaseStringUTFChars(frag, fragPath);
@@ -47,7 +53,26 @@ cpp_shaping_funceions_init(JNIEnv *env, jobject thiz, jint width, jint height) {
     shapingFunction->setupGraphics(width, height);
 
 }
+extern "C"
+JNIEXPORT void JNICALL
+cpp_shaping_funceions_set_type(JNIEnv *env, jobject thiz, jint type) {
+    if (shapingFunction == nullptr) {
+        LOGE("GLShapingFunction is nullptr");
+        return;
+    }
+    shapingFunction->setParameters(type);
 
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+cpp_shaping_funceions_get_type(JNIEnv *env, jobject thiz) {
+    if (shapingFunction == nullptr) {
+        LOGE("GLShapingFunction is nullptr");
+        return 0;
+    }
+    shapingFunction->getParameters();
+}
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
@@ -57,8 +82,8 @@ static const JNINativeMethod methods[] = {
                                                    ";Ljava/lang/String;)V", (void *) cpp_shaping_funceions_glsl_path},
         {"native_shaping_funceions_init",          "(II)V",                 (void *) cpp_shaping_funceions_init},
         {"native_shaping_funceions_render_frame",  "()V",                   (void *) cpp_shaping_funceions_render_frame},
-
-
+        {"native_shaping_funceions_set_type",      "(I)V",                  (void *) cpp_shaping_funceions_set_type},
+        {"native_shaping_funceions_get_type",      "()I",                  (void *) cpp_shaping_funceions_get_type},
 
 };
 

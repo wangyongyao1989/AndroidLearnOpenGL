@@ -4,6 +4,7 @@
 
 #ifndef ANDROIDLEARNOPENGL_GLSHAPINGFUNCTION_H
 #define ANDROIDLEARNOPENGL_GLSHAPINGFUNCTION_H
+#include <vector>
 #include "GLSLShader.h"
 
 static float SFVertices[] = {
@@ -21,6 +22,15 @@ static unsigned int SFIndices[] = {
         1, 2, 3  // 第二个三角形
 };
 
+// Vertices for a full screen quad.
+static const float kSFVerticek[8] = {
+        -1.f, 1.f,
+        -1.f, -1.f,
+        1.f, 1.f,
+        1.f, -1.f
+};
+
+
 class GLShapingFunction {
 
 public:
@@ -34,7 +44,21 @@ public:
 
     bool setSharderPath(const char *vertexPath, const char *fragmentPath);
 
+    bool setSharderStringPath(string vertexPath, string fragmentPath);
+
+    bool setSharderStringPathes(string vertexPath, vector<string> fragmentPathes);
+
+    void setParameters(uint32_t params);
+
+    uint32_t getParameters();
+
 private:
+
+    int createProgram();
+
+    int bindVertexAttribPointer();
+
+    void deleteProgram(GLuint &program);
 
     void printGLString(const char *name, GLenum s);
 
@@ -46,8 +70,20 @@ private:
     unsigned int VBO, VAO;
     unsigned int EBO;
     GLSLShader *glslShader = nullptr;
+    GLint gvPositionHandle = 0;
+    GLuint m_vertexPos = 0;
+    GLuint m_resolutionLoc = 0;
 
-    GLint gvPositionHandle;
+    GLuint m_program = 0;
+
+    bool isProgramChanged = true;
+
+
+    size_t m_filter = 0;
+    size_t m_prevFilter = 0;
+    string m_vertexStringPath;
+    vector<string> m_fragmentStringPathes;
+
 };
 
 

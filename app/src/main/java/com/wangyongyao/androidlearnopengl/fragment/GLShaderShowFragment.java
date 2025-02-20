@@ -28,6 +28,8 @@ public class GLShaderShowFragment extends BaseFragment {
     private Button mBtnBack;
     private GLViewModel mGlViewModel;
     private Button mBtn1;
+    private GLSLShapingFunctionsView mShapingFunctionsView;
+    private int typeSF;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -64,8 +66,14 @@ public class GLShaderShowFragment extends BaseFragment {
 
         mBtn1.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLSLShapingFunctionsView glView = new GLSLShapingFunctionsView(getActivity(), mGL3DCallJni);
-            mGlShow1.addView(glView);
+            if (mShapingFunctionsView == null) {
+                mShapingFunctionsView = new GLSLShapingFunctionsView(getActivity(), mGL3DCallJni);
+                typeSF = 0;
+            } else {
+                typeSF ++;
+                mShapingFunctionsView.setType(typeSF);
+            }
+            mGlShow1.addView(mShapingFunctionsView);
         });
 
 

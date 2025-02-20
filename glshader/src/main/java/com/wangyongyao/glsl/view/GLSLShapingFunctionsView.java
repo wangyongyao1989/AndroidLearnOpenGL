@@ -22,6 +22,7 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
     private static String TAG = GLSLShapingFunctionsView.class.getSimpleName();
     private GLSLCallJni mJniCall;
     private Context mContext;
+    private int TYPE_MODE = 2;
 
     public GLSLShapingFunctionsView(Context context, GLSLCallJni jniCall) {
         super(context);
@@ -40,8 +41,8 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "rectangle_uniform_vertex.glsl");
-        String fragPath = GLSLShowUtil.getModelFilePath(mContext, "rectangle_uniform_fragment.glsl");
+        String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_vert.glsl");
+        String fragPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment.glsl");
         if (mJniCall != null)
             mJniCall.setShapingFunctionsPath(vertexPath, fragPath);
         setRenderer(this);
@@ -49,7 +50,7 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
 
 
     public void onDrawFrame(GL10 gl) {
-        Log.e(TAG, "onDrawFrame: ");
+//        Log.e(TAG, "onDrawFrame: ");
         if (mJniCall != null)
             mJniCall.onShapingFunctionsRenderFrame();
     }
@@ -66,5 +67,18 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
 
     }
 
+    public void setType(int typeSF) {
+        int typeVaule = typeSF % TYPE_MODE;
+        if (mJniCall != null) {
+            mJniCall.setTypeShapingFunctions(typeVaule);
+        }
+    }
 
+    public int getType(){
+       if (mJniCall != null) {
+          return mJniCall.getTypeShapingFunctions();
+       } else {
+           return 0;
+       }
+    }
 }

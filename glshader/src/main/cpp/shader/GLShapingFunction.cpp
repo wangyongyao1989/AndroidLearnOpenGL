@@ -47,30 +47,38 @@ bool GLShapingFunction::setupGraphics(int w, int h) {
 }
 
 void GLShapingFunction::renderFrame() {
+    if (m_filter != m_prevFilter) {
+        m_prevFilter = m_filter;
+        if (m_filter >= 0 && m_filter < m_fragmentStringPathes.size()) {
+            isProgramChanged = true;
+            deleteProgram(m_program);
+            LOGI("render---m_filter：%d", m_filter);
+            setSharderStringPath(m_vertexStringPath, m_fragmentStringPathes.at(m_filter));
+            createProgram();
+        }
+    }
     glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_COLOR_BUFFER_BIT);
 
-    //2、使用程序
-    glslShader->use();
-    checkGlError("glUseProgram");
-    glBindVertexArray(VAO);
-//    glUseProgram(shaderProgram);
-    glslShader->use();
-
-    // update shader uniform
-    double timeValue = clock() * 10 / CLOCKS_PER_SEC;
-    float greenValue = static_cast<float>(sin(timeValue) / 3.0 + 0.5);
-    int vertexColorLocation = glGetUniformLocation(glslShader->shaderId, "ourColor");
-
-    glUniform4f(vertexColorLocation, 0.0f, greenValue, 0.0f, 1.0f);
-
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    checkGlError("glDrawArrays");
+    if (!bindVertexAttribPointer()) return;
+    glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
 bool GLShapingFunction::setSharderPath(const char *vertexPath, const char *fragmentPath) {
     glslShader->getSharderPath(vertexPath, fragmentPath);
     return false;
+}
+
+bool GLShapingFunction::setSharderStringPath(string vertexPath, string fragmentPath) {
+    glslShader->getSharderStringPath(vertexPath, fragmentPath);
+    return false;
+}
+
+bool GLShapingFunction::setSharderStringPathes(string vertexPath,
+                                               vector<string> fragmentPathes) {
+    m_fragmentStringPathes = fragmentPathes;
+    m_vertexStringPath = vertexPath;
+    return glslShader->getSharderStringPath(vertexPath, m_fragmentStringPathes.front());
 }
 
 GLShapingFunction::GLShapingFunction() {
@@ -86,6 +94,58 @@ GLShapingFunction::~GLShapingFunction() {
     glslShader = nullptr;
 
 }
+
+
+void GLShapingFunction::setParameters(uint32_t params) {
+    m_filter = params;
+}
+
+uint32_t GLShapingFunction::getParameters() {
+    return m_filter;
+}
+
+int GLShapingFunction::createProgram() {
+    m_program = glslShader->createProgram();
+    if (!m_program) {
+        LOGE("Could not create program.");
+        return 0;
+    }
+
+    m_vertexPos = (GLuint) glGetAttribLocation(m_program, "position");
+    m_resolutionLoc = (GLuint) glGetAttribLocation(m_program, "u_resolution");
+
+    return m_program;
+}
+
+int GLShapingFunction::bindVertexAttribPointer() {
+    if (!m_program && !createProgram()) {
+        LOGE("Could not use program.");
+        return 0;
+    }
+
+    if (isProgramChanged) {
+        glUseProgram(m_program);
+        //绑定顶点程序中的position数据
+        glVertexAttribPointer(m_vertexPos, 2, GL_FLOAT, GL_FALSE, 0, kSFVerticek);
+        glEnableVertexAttribArray(m_vertexPos);
+
+        glslShader->setVec2("u_resolution", screenW, screenH);
+
+
+        isProgramChanged = false;
+    }
+
+    return m_program;
+}
+
+void GLShapingFunction::deleteProgram(GLuint &program) {
+    if (m_program) {
+        glUseProgram(0);
+        glDeleteProgram(program);
+        m_program = 0;
+    }
+}
+
 
 void GLShapingFunction::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
