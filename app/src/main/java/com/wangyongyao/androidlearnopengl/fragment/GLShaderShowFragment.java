@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlShaderBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.glsl.GLSLCallJni;
-import com.wangyongyao.glsl.view.GLSLFlashLightView;
+import com.wangyongyao.glsl.view.GLSLShapingFunctionsView;
 
 /**
  * author : wangyongyao https://github.com/wangyongyao1989
@@ -27,7 +27,7 @@ public class GLShaderShowFragment extends BaseFragment {
     private GLSLCallJni mGL3DCallJni;
     private Button mBtnBack;
     private GLViewModel mGlViewModel;
-    private Button mBtn3D1;
+    private Button mBtn1;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -41,7 +41,7 @@ public class GLShaderShowFragment extends BaseFragment {
     public void initView() {
         mGlShow1 = mBinding.glShow;
         mBtnBack = mBinding.btnBack;
-        mBtn3D1 = mBinding.btn3d1;
+        mBtn1 = mBinding.btn1;
 
     }
 
@@ -62,10 +62,10 @@ public class GLShaderShowFragment extends BaseFragment {
             mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.MAIN);
         });
 
-        mBtn3D1.setOnClickListener(view -> {
+        mBtn1.setOnClickListener(view -> {
             mGlShow1.removeAllViews();
-            GLSLFlashLightView gl3DFlashLightView = new GLSLFlashLightView(getActivity(), mGL3DCallJni);
-            mGlShow1.addView(gl3DFlashLightView);
+            GLSLShapingFunctionsView glView = new GLSLShapingFunctionsView(getActivity(), mGL3DCallJni);
+            mGlShow1.addView(glView);
         });
 
 

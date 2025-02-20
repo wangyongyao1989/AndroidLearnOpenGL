@@ -22,9 +22,10 @@ add_library(
         # List C/C++ source files with relative paths to this CMakeLists.txt.
         GLSLJniCall.cpp
         shader/GLSLStdImage.cpp
-        shader/GLSLFlashLight.cpp
         shader/GLSLCamera.cpp
         shader/GLSLShader.cpp
+
+        shader/GLShapingFunction.cpp
 
 
 )
