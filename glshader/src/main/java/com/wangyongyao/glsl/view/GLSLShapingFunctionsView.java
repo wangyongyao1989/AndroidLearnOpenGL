@@ -42,9 +42,15 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_vert.glsl");
-        String fragPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment.glsl");
+        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment1.glsl");
+        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment2.glsl");
+
         if (mJniCall != null)
-            mJniCall.setShapingFunctionsPath(vertexPath, fragPath);
+            mJniCall.setShapingFunctionsPath(vertexPath
+                    , fragPath1
+                    ,fragPath2
+            );
+
         setRenderer(this);
     }
 
@@ -74,11 +80,11 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
         }
     }
 
-    public int getType(){
-       if (mJniCall != null) {
-          return mJniCall.getTypeShapingFunctions();
-       } else {
-           return 0;
-       }
+    public int getType() {
+        if (mJniCall != null) {
+            return mJniCall.getTypeShapingFunctions();
+        } else {
+            return 0;
+        }
     }
 }

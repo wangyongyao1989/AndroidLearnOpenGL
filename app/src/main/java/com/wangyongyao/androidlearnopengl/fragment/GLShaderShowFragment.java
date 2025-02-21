@@ -70,13 +70,27 @@ public class GLShaderShowFragment extends BaseFragment {
                 mShapingFunctionsView = new GLSLShapingFunctionsView(getActivity(), mGL3DCallJni);
                 typeSF = 0;
             } else {
-                typeSF ++;
+                typeSF++;
                 mShapingFunctionsView.setType(typeSF);
             }
+            switchTypeText(mShapingFunctionsView.getType());
             mGlShow1.addView(mShapingFunctionsView);
         });
 
 
+    }
+
+    private void switchTypeText(int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                mBtn1.setText("造型函数——直线及颜色渐变");
+            }
+            break;
+            case 1: {
+                mBtn1.setText("造型函数——曲线及颜色渐变");
+            }
+            break;
+        }
     }
 
 }

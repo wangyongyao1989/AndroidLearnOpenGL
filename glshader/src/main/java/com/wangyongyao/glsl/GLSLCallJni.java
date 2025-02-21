@@ -9,8 +9,16 @@ public class GLSLCallJni {
     }
 
 
-    public void setShapingFunctionsPath(String vertexPath, String fragPath) {
-        native_shaping_funceions_set_glsl_path(vertexPath, fragPath);
+    public void setShapingFunctionsPath(String vertexPath
+            , String fragPath1
+            , String fragPath2
+
+    ) {
+        native_shaping_funceions_set_glsl_path(vertexPath
+                , fragPath1
+                , fragPath2
+
+        );
     }
 
     public void onShapingFunctionsRenderFrame() {
@@ -29,7 +37,11 @@ public class GLSLCallJni {
         return native_shaping_funceions_get_type();
     }
 
-    private native void native_shaping_funceions_set_glsl_path(String vertexPath, String fragPath);
+    private native void native_shaping_funceions_set_glsl_path(String vertexPath
+            , String fragPath1
+            , String fragPath2
+
+    );
 
     private native void native_shaping_funceions_render_frame();
 

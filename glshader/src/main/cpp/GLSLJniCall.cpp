@@ -13,22 +13,30 @@ GLShapingFunction *shapingFunction;
 /*********************** GL Shader 造型函数（Shaping Function）********************/
 extern "C"
 JNIEXPORT void JNICALL
-cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag) {
+cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
+                                jstring frag2
+
+) {
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
-    const char *fragPath = env->GetStringUTFChars(frag, nullptr);
+    const char *fragPath1 = env->GetStringUTFChars(frag1, nullptr);
+    const char *fragPath2 = env->GetStringUTFChars(frag2, nullptr);
+
+
     if (shapingFunction == nullptr) {
         shapingFunction = new GLShapingFunction();
     }
-    string sFragPath(fragPath);
+    string sFragPath1(fragPath1);
+    string sFragPath2(fragPath2);
 
     vector<string> sFragPathes;
-    sFragPathes.push_back(sFragPath);
+    sFragPathes.push_back(sFragPath1);
+    sFragPathes.push_back(sFragPath2);
 
 
     shapingFunction->setSharderStringPathes(vertexPath, sFragPathes);
 
     env->ReleaseStringUTFChars(vertex, vertexPath);
-    env->ReleaseStringUTFChars(frag, fragPath);
+    env->ReleaseStringUTFChars(frag1, fragPath1);
 
 }
 
@@ -71,18 +79,19 @@ cpp_shaping_funceions_get_type(JNIEnv *env, jobject thiz) {
         LOGE("GLShapingFunction is nullptr");
         return 0;
     }
-    shapingFunction->getParameters();
+    return shapingFunction->getParameters();
 }
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
         /*********************** GL Shader 造型函数（Shaping Function）********************/
-        {"native_shaping_funceions_set_glsl_path", "(Ljava/lang/String"
-                                                   ";Ljava/lang/String;)V", (void *) cpp_shaping_funceions_glsl_path},
-        {"native_shaping_funceions_init",          "(II)V",                 (void *) cpp_shaping_funceions_init},
-        {"native_shaping_funceions_render_frame",  "()V",                   (void *) cpp_shaping_funceions_render_frame},
-        {"native_shaping_funceions_set_type",      "(I)V",                  (void *) cpp_shaping_funceions_set_type},
+        {"native_shaping_funceions_set_glsl_path", "(Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   "Ljava/lang/String;)V", (void *) cpp_shaping_funceions_glsl_path},
+        {"native_shaping_funceions_init",          "(II)V",                (void *) cpp_shaping_funceions_init},
+        {"native_shaping_funceions_render_frame",  "()V",                  (void *) cpp_shaping_funceions_render_frame},
+        {"native_shaping_funceions_set_type",      "(I)V",                 (void *) cpp_shaping_funceions_set_type},
         {"native_shaping_funceions_get_type",      "()I",                  (void *) cpp_shaping_funceions_get_type},
 
 };
