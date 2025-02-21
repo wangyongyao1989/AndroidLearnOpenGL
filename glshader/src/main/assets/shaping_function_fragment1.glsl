@@ -4,6 +4,7 @@ precision mediump float;
 out vec4 FragColor;
 
 uniform vec2 u_resolution;
+uniform float u_time;
 
 // Plot a line on Y using a value between 0.0-1.0
 float plot(vec2 st) {
@@ -15,7 +16,7 @@ void main() {
 
     float y = st.x;
 
-    vec3 color = vec3(y);
+    vec3 color = vec3(st.x,st.x,abs(sin(u_time)));
 
     // Plot a line
     float pct = plot(st);

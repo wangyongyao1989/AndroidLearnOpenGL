@@ -93,6 +93,8 @@ GLShapingFunction::~GLShapingFunction() {
 
     glslShader = nullptr;
 
+    m_resolutionLoc = 0;
+    m_timeLoc = 0;
 }
 
 
@@ -113,7 +115,7 @@ int GLShapingFunction::createProgram() {
 
     m_vertexPos = (GLuint) glGetAttribLocation(m_program, "position");
     m_resolutionLoc = (GLuint) glGetAttribLocation(m_program, "u_resolution");
-
+    m_timeLoc = (GLuint) glGetAttribLocation(m_program, "u_time");
     return m_program;
 }
 
@@ -129,11 +131,18 @@ int GLShapingFunction::bindVertexAttribPointer() {
         glVertexAttribPointer(m_vertexPos, 2, GL_FLOAT, GL_FALSE, 0, kSFVerticek);
         glEnableVertexAttribArray(m_vertexPos);
 
-        glslShader->setVec2("u_resolution", screenW, screenH);
-
+        if (m_resolutionLoc) {
+            glslShader->setVec2("u_resolution", screenW, screenH);
+        }
 
         isProgramChanged = false;
     }
+
+    if (m_timeLoc) {
+        double timeValue = clock() * 15 / CLOCKS_PER_SEC;
+        glslShader->setFloat("u_time", timeValue);
+    }
+
 
     return m_program;
 }

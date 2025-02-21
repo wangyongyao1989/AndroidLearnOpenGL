@@ -73,6 +73,7 @@ private:
     GLint gvPositionHandle = 0;
     GLuint m_vertexPos = 0;
     GLuint m_resolutionLoc = 0;
+    GLuint m_timeLoc = 0;
 
     GLuint m_program = 0;
 
