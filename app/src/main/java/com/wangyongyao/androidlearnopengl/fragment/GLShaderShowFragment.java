@@ -87,6 +87,10 @@ public class GLShaderShowFragment extends BaseFragment {
             }
             break;
             case 1: {
+                mBtn1.setText("造型函数——step()函数");
+            }
+            break;
+            case 3: {
                 mBtn1.setText("造型函数——曲线及颜色渐变");
             }
             break;
