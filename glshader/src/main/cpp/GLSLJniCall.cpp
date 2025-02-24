@@ -15,13 +15,15 @@ extern "C"
 JNIEXPORT void JNICALL
 cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
                                 jstring frag2,
-                                jstring frag3
+                                jstring frag3,
+                                jstring frag4
 
 ) {
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
     const char *fragPath1 = env->GetStringUTFChars(frag1, nullptr);
     const char *fragPath2 = env->GetStringUTFChars(frag2, nullptr);
     const char *fragPath3 = env->GetStringUTFChars(frag3, nullptr);
+    const char *fragPath4 = env->GetStringUTFChars(frag4, nullptr);
 
 
     if (shapingFunction == nullptr) {
@@ -30,11 +32,13 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     string sFragPath1(fragPath1);
     string sFragPath2(fragPath2);
     string sFragPath3(fragPath3);
+    string sFragPath4(fragPath4);
 
     vector<string> sFragPathes;
     sFragPathes.push_back(sFragPath1);
     sFragPathes.push_back(sFragPath2);
     sFragPathes.push_back(sFragPath3);
+    sFragPathes.push_back(sFragPath4);
 
 
     shapingFunction->setSharderStringPathes(vertexPath, sFragPathes);
@@ -43,6 +47,7 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     env->ReleaseStringUTFChars(frag1, fragPath1);
     env->ReleaseStringUTFChars(frag2, fragPath2);
     env->ReleaseStringUTFChars(frag3, fragPath3);
+    env->ReleaseStringUTFChars(frag4, fragPath4);
 
 }
 
@@ -93,6 +98,7 @@ static const JNINativeMethod methods[] = {
 
         /*********************** GL Shader 造型函数（Shaping Function）********************/
         {"native_shaping_funceions_set_glsl_path", "(Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
                                                    "Ljava/lang/String;"
                                                    "Ljava/lang/String;"
                                                    "Ljava/lang/String;)V", (void *) cpp_shaping_funceions_glsl_path},
