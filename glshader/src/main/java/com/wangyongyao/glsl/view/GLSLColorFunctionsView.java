@@ -39,8 +39,9 @@ public class GLSLColorFunctionsView extends GLSurfaceView implements GLSurfaceVi
         getHolder().addCallback(this);
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
-        String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_vert.glsl");
-        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment1.glsl");
+        String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "color_function_vert.glsl");
+        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "color_function_fragment1.glsl");
+
         String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment2.glsl");
         String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment3.glsl");
         String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment4.glsl");
