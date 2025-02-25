@@ -110,7 +110,7 @@ public class GLShaderShowFragment extends BaseFragment {
             }
             break;
             case 2: {
-                view.setText("造型函数——曲线及颜色渐变");
+                view.setText("颜色渐变");
             }
             break;
             case 3: {
