@@ -20,7 +20,13 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
                                 jstring frag5,
                                 jstring frag6,
                                 jstring frag7,
-                                jstring frag8
+                                jstring frag8,
+                                jstring frag9,
+                                jstring frag10,
+                                jstring frag11,
+                                jstring frag12,
+                                jstring frag13
+
 
 ) {
     const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
@@ -32,6 +38,11 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     const char *fragPath6 = env->GetStringUTFChars(frag6, nullptr);
     const char *fragPath7 = env->GetStringUTFChars(frag7, nullptr);
     const char *fragPath8 = env->GetStringUTFChars(frag8, nullptr);
+    const char *fragPath9 = env->GetStringUTFChars(frag9, nullptr);
+    const char *fragPath10 = env->GetStringUTFChars(frag10, nullptr);
+    const char *fragPath11 = env->GetStringUTFChars(frag11, nullptr);
+    const char *fragPath12 = env->GetStringUTFChars(frag12, nullptr);
+    const char *fragPath13 = env->GetStringUTFChars(frag13, nullptr);
 
 
     if (shapingFunction == nullptr) {
@@ -45,6 +56,11 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     string sFragPath6(fragPath6);
     string sFragPath7(fragPath7);
     string sFragPath8(fragPath8);
+    string sFragPath9(fragPath9);
+    string sFragPath10(fragPath10);
+    string sFragPath11(fragPath11);
+    string sFragPath12(fragPath12);
+    string sFragPath13(fragPath13);
 
     vector<string> sFragPathes;
     sFragPathes.push_back(sFragPath1);
@@ -55,6 +71,11 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     sFragPathes.push_back(sFragPath6);
     sFragPathes.push_back(sFragPath7);
     sFragPathes.push_back(sFragPath8);
+    sFragPathes.push_back(sFragPath9);
+    sFragPathes.push_back(sFragPath10);
+    sFragPathes.push_back(sFragPath11);
+    sFragPathes.push_back(sFragPath12);
+    sFragPathes.push_back(sFragPath13);
 
 
     shapingFunction->setSharderStringPathes(vertexPath, sFragPathes);
@@ -68,6 +89,11 @@ cpp_shaping_funceions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstri
     env->ReleaseStringUTFChars(frag6, fragPath6);
     env->ReleaseStringUTFChars(frag7, fragPath7);
     env->ReleaseStringUTFChars(frag8, fragPath8);
+    env->ReleaseStringUTFChars(frag9, fragPath9);
+    env->ReleaseStringUTFChars(frag10, fragPath10);
+    env->ReleaseStringUTFChars(frag11, fragPath11);
+    env->ReleaseStringUTFChars(frag12, fragPath12);
+    env->ReleaseStringUTFChars(frag13, fragPath13);
 
 }
 
@@ -118,6 +144,11 @@ static const JNINativeMethod methods[] = {
 
         /*********************** GL Shader 造型函数（Shaping Function）********************/
         {"native_shaping_funceions_set_glsl_path", "(Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
+                                                   "Ljava/lang/String;"
                                                    "Ljava/lang/String;"
                                                    "Ljava/lang/String;"
                                                    "Ljava/lang/String;"

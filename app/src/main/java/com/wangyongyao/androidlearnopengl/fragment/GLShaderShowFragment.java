@@ -114,6 +114,26 @@ public class GLShaderShowFragment extends BaseFragment {
                 mBtn1.setText("赛贝尔造型函数");
             }
             break;
+            case 8: {
+                mBtn1.setText("Impulse 函数");
+            }
+            break;
+            case 9: {
+                mBtn1.setText("CubicPulse 函数");
+            }
+            break;
+            case 10: {
+                mBtn1.setText("ExpStep 函数");
+            }
+            break;
+            case 11: {
+                mBtn1.setText("Parabola 函数");
+            }
+            break;
+            case 12: {
+                mBtn1.setText("Pcurve 函数");
+            }
+            break;
 
         }
     }

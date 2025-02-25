@@ -22,7 +22,7 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
     private static String TAG = GLSLShapingFunctionsView.class.getSimpleName();
     private GLSLCallJni mJniCall;
     private Context mContext;
-    private int TYPE_MODE = 8;
+    private int TYPE_MODE = 13;
 
     public GLSLShapingFunctionsView(Context context, GLSLCallJni jniCall) {
         super(context);
@@ -50,6 +50,11 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
         String fragPath6 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment6.glsl");
         String fragPath7 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment7.glsl");
         String fragPath8 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment8.glsl");
+        String fragPath9 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment9.glsl");
+        String fragPath10 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment10.glsl");
+        String fragPath11 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment11.glsl");
+        String fragPath12 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment12.glsl");
+        String fragPath13 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment13.glsl");
 
         if (mJniCall != null)
             mJniCall.setShapingFunctionsPath(vertexPath
@@ -61,6 +66,11 @@ public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurface
                     , fragPath6
                     , fragPath7
                     , fragPath8
+                    , fragPath9
+                    , fragPath10
+                    , fragPath11
+                    , fragPath12
+                    , fragPath13
 
             );
 
