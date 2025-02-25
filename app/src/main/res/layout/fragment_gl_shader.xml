@@ -37,6 +37,15 @@
                 app:layout_constraintTop_toBottomOf="@+id/btn_back"
                 tools:ignore="HardcodedText,SmallSp" />
 
+            <Button
+                android:id="@+id/btn_2"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:text="GL着色器——Color"
+                android:textSize="8sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_1"
+                tools:ignore="HardcodedText,SmallSp" />
 
 
 
