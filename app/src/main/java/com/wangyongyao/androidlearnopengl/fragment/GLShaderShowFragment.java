@@ -106,7 +106,7 @@ public class GLShaderShowFragment extends BaseFragment {
             }
             break;
             case 1: {
-                view.setText("造型函数——step()函数");
+                view.setText("缓动函数");
             }
             break;
             case 2: {
