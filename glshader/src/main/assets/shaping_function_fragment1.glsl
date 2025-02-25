@@ -1,10 +1,10 @@
 #version 320 es
 precision mediump float;
 
-out vec4 FragColor;         //out代表输出至下一个着色器
+out vec4 FragColor;//out代表输出至下一个着色器
 
-uniform vec2 u_resolution;  //视窗的分辨率
-uniform float u_time;       //传入的时间变量
+uniform vec2 u_resolution;//视窗的分辨率
+uniform float u_time;//传入的时间变量
 uniform float uu;
 
 // Plot a line on Y using a value between 0.0-1.0
@@ -19,11 +19,11 @@ void main() {
     vec2 st = gl_FragCoord.xy / u_resolution;
     //2.获取st的x分量，加载uniform中的u_time，
     //得到跟随时间的变换的渐变色
-    vec3 color = vec3(st.x,st.x,abs(sin(u_time)));
+    vec3 color = vec3(st.x, st.x, abs(sin(u_time)));
     // Plot a line
     float pct = plot(st);
     //3.【(1.0f - pct) * color】表示除直线外的渐变颜色，
     //【pct * vec3(1.0f,0.0f,0.0f)】表示附着直线的颜色。
-    color = (1.0f - pct) * color + pct * vec3(1.0f,0.0f,0.0f);
-    FragColor = vec4(color , 1.0f);
+    color = (1.0f - pct) * color + pct * vec3(1.0f, 0.0f, 0.0f);
+    FragColor = vec4(color, 1.0f);
 }

@@ -14,6 +14,10 @@ public class GLSLCallJni {
             , String fragPath2
             , String fragPath3
             , String fragPath4
+            , String fragPath5
+            , String fragPath6
+            , String fragPath7
+            , String fragPath8
 
     ) {
         native_shaping_funceions_set_glsl_path(vertexPath
@@ -21,6 +25,10 @@ public class GLSLCallJni {
                 , fragPath2
                 , fragPath3
                 , fragPath4
+                , fragPath5
+                , fragPath6
+                , fragPath7
+                , fragPath8
 
         );
     }
@@ -46,6 +54,10 @@ public class GLSLCallJni {
             , String fragPath2
             , String fragPath3
             , String fragPath4
+            , String fragPath5
+            , String fragPath6
+            , String fragPath7
+            , String fragPath8
 
     );
 
