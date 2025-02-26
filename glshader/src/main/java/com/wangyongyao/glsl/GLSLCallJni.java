@@ -16,14 +16,7 @@ public class GLSLCallJni {
             , String fragPath3
             , String fragPath4
             , String fragPath5
-            , String fragPath6
-            , String fragPath7
-            , String fragPath8
-            , String fragPath9
-            , String fragPath10
-            , String fragPath11
-            , String fragPath12
-            , String fragPath13
+
 
     ) {
         native_color_functions_set_glsl_path(vertexPath
@@ -32,14 +25,6 @@ public class GLSLCallJni {
                 , fragPath3
                 , fragPath4
                 , fragPath5
-                , fragPath6
-                , fragPath7
-                , fragPath8
-                , fragPath9
-                , fragPath10
-                , fragPath11
-                , fragPath12
-                , fragPath13
 
         );
     }
@@ -66,14 +51,6 @@ public class GLSLCallJni {
             , String fragPath3
             , String fragPath4
             , String fragPath5
-            , String fragPath6
-            , String fragPath7
-            , String fragPath8
-            , String fragPath9
-            , String fragPath10
-            , String fragPath11
-            , String fragPath12
-            , String fragPath13
 
     );
 

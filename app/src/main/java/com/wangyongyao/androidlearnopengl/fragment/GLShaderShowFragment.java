@@ -1,5 +1,6 @@
 package com.wangyongyao.androidlearnopengl.fragment;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -99,6 +100,7 @@ public class GLShaderShowFragment extends BaseFragment {
         });
     }
 
+    @SuppressLint("SetTextI18n")
     private void switchCFTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
@@ -114,46 +116,13 @@ public class GLShaderShowFragment extends BaseFragment {
             }
             break;
             case 3: {
-                view.setText("造型函数——其他有用函数");
+                view.setText("色相、饱和度、亮度(HSB)");
             }
             break;
             case 4: {
-                view.setText("多项式造型函数");
+                view.setText("极坐标下的HSB");
             }
             break;
-            case 5: {
-                view.setText("指数造型函数");
-            }
-            break;
-            case 6: {
-                view.setText("椭圆造型函数");
-            }
-            break;
-            case 7: {
-                view.setText("赛贝尔造型函数");
-            }
-            break;
-            case 8: {
-                view.setText("Impulse 函数");
-            }
-            break;
-            case 9: {
-                view.setText("CubicPulse 函数");
-            }
-            break;
-            case 10: {
-                view.setText("ExpStep 函数");
-            }
-            break;
-            case 11: {
-                view.setText("Parabola 函数");
-            }
-            break;
-            case 12: {
-                view.setText("Pcurve 函数");
-            }
-            break;
-
         }
     }
 
