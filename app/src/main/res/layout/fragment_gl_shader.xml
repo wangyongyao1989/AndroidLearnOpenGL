@@ -47,6 +47,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/btn_1"
                 tools:ignore="HardcodedText,SmallSp" />
 
+            <Button
+                android:id="@+id/btn_3"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:text="GL着色器——形状"
+                android:textSize="8sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_2"
+                tools:ignore="HardcodedText,SmallSp" />
+
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,7 @@
 #include "GLSenior3DShow.h"
 
 //包名+类名字符串定义：
-const char *gl3d_class_name = "com/wangyongyao/GLSeniorCallJni";
+const char *glshader_class_name = "com/wangyongyao/GLSeniorCallJni";
 
 GLSeniorDepthTest *depthTest;
 GLSeniorStencilTest *stencilTest;
@@ -1035,7 +1035,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
         return JNI_ERR;
     }
     // 获取类引用
-    jclass clazz = env->FindClass(gl3d_class_name);
+    jclass clazz = env->FindClass(glshader_class_name);
     // 注册native方法
     jint regist_result = env->RegisterNatives(clazz, methods,
                                               sizeof(methods) / sizeof(methods[0]));

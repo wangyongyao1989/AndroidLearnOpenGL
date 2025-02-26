@@ -16,6 +16,7 @@ import com.wangyongyao.androidlearnopengl.databinding.FragmentGlShaderBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.glsl.GLSLCallJni;
 import com.wangyongyao.glsl.view.GLSLColorFunctionsView;
+import com.wangyongyao.glsl.view.GLSLShapeFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapingFunctionsView;
 
 /**
@@ -31,9 +32,11 @@ public class GLShaderShowFragment extends BaseFragment {
     private GLViewModel mGlViewModel;
     private Button mBtn1;
     private Button mBtn2;
+    private Button mBtn3;
 
     private GLSLShapingFunctionsView mShapingFunctionsView;
     private GLSLColorFunctionsView mColorFunctionsView;
+    private GLSLShapeFunctionsView mShapeFunctionsView;
 
     private int typeSF;
     private int typeCF;
@@ -52,6 +55,7 @@ public class GLShaderShowFragment extends BaseFragment {
         mBtnBack = mBinding.btnBack;
         mBtn1 = mBinding.btn1;
         mBtn2 = mBinding.btn2;
+        mBtn3 = mBinding.btn3;
 
     }
 
@@ -98,6 +102,20 @@ public class GLShaderShowFragment extends BaseFragment {
             switchCFTypeText(mBtn2, mColorFunctionsView.getType());
             mGlShow1.addView(mColorFunctionsView);
         });
+
+        mBtn3.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            if (mShapeFunctionsView == null) {
+                mShapeFunctionsView = new GLSLShapeFunctionsView(getActivity(), mGL3DCallJni);
+                typeSF = 0;
+            } else {
+                typeSF++;
+                mShapeFunctionsView.setType(typeSF);
+            }
+            switchSFTypeText(mBtn3, mShapeFunctionsView.getType());
+            mGlShow1.addView(mShapeFunctionsView);
+        });
+
     }
 
     @SuppressLint("SetTextI18n")
