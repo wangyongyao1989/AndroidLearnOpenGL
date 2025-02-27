@@ -40,10 +40,10 @@ public class GLSLPatternsFunctionsView extends GLSurfaceView implements GLSurfac
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_vert.glsl");
-        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "matrix_function_fragment1.glsl");
-        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "matrix_function_fragment2.glsl");
-        String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "matrix_function_fragment3.glsl");
-        String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "matrix_function_fragment4.glsl");
+        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment1.glsl");
+        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment2.glsl");
+        String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment3.glsl");
+        String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment4.glsl");
 
         if (mJniCall != null)
             mJniCall.setPatternsFunctionsPath(vertexPath

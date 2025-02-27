@@ -13,23 +13,19 @@ public class SwitchTypeText {
     public static void switchPFTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
-                view.setText("平移");
+                view.setText("图案内部应用标量");
             }
             break;
             case 1: {
-                view.setText("矩阵旋转");
+                view.setText("图案内部应用矩阵");
             }
             break;
             case 2: {
-                view.setText("矩阵缩放");
+                view.setText("偏移图案");
             }
             break;
             case 3: {
-                view.setText("YUV矩阵变换");
-            }
-            break;
-            case 4: {
-                view.setText("形状——极坐标图形");
+                view.setText("Truchet瓷砖");
             }
             break;
 
