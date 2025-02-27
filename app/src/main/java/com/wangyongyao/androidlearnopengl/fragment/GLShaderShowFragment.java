@@ -112,7 +112,7 @@ public class GLShaderShowFragment extends BaseFragment {
                 typeSF++;
                 mShapeFunctionsView.setType(typeSF);
             }
-            switchSFTypeText(mBtn3, mShapeFunctionsView.getType());
+            switchSF1TypeText(mBtn3, mShapeFunctionsView.getType());
             mGlShow1.addView(mShapeFunctionsView);
         });
 
@@ -196,6 +196,32 @@ public class GLShaderShowFragment extends BaseFragment {
             break;
             case 12: {
                 view.setText("Pcurve 函数");
+            }
+            break;
+
+        }
+    }
+
+    private void switchSF1TypeText(Button view, int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                view.setText("形状——正方形");
+            }
+            break;
+            case 1: {
+                view.setText("形状——圆");
+            }
+            break;
+            case 2: {
+                view.setText("形状——距离场1");
+            }
+            break;
+            case 3: {
+                view.setText("形状——距离场2");
+            }
+            break;
+            case 4: {
+                view.setText("形状——极坐标图形");
             }
             break;
 
