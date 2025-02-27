@@ -252,15 +252,15 @@ public class GLShaderShowFragment extends BaseFragment {
             }
             break;
             case 1: {
-                view.setText("形状——圆");
+                view.setText("矩阵旋转");
             }
             break;
             case 2: {
-                view.setText("形状——距离场1");
+                view.setText("矩阵缩放");
             }
             break;
             case 3: {
-                view.setText("形状——距离场2");
+                view.setText("YUV矩阵变换");
             }
             break;
             case 4: {
