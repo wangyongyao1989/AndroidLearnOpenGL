@@ -1,6 +1,5 @@
 package com.wangyongyao.androidlearnopengl.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,7 +13,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlShaderBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
-import com.wangyongyao.glsl.GLSLCallJni;
+import com.wangyongyao.glsl.GLSLAlgoritmDrawingCallJni;
 import com.wangyongyao.glsl.util.SwitchTypeText;
 import com.wangyongyao.glsl.view.GLSLColorFunctionsView;
 import com.wangyongyao.glsl.view.GLSLMatricesFunctionsView;
@@ -30,7 +29,7 @@ public class GLShaderShowFragment extends BaseFragment {
 
     private FragmentGlShaderBinding mBinding;
     private FrameLayout mGlShow1;
-    private GLSLCallJni mGL3DCallJni;
+    private GLSLAlgoritmDrawingCallJni mGL3DCallJni;
     private Button mBtnBack;
     private GLViewModel mGlViewModel;
     private Button mBtn1;
@@ -71,7 +70,7 @@ public class GLShaderShowFragment extends BaseFragment {
 
     @Override
     public void initData() {
-        mGL3DCallJni = new GLSLCallJni();
+        mGL3DCallJni = new GLSLAlgoritmDrawingCallJni();
     }
 
     @Override

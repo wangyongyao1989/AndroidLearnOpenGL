@@ -9,7 +9,7 @@
 #include "GLSLPatternsFunction.h"
 
 //包名+类名字符串定义：
-const char *glshader_class_name = "com/wangyongyao/glsl/GLSLCallJni";
+const char *algoritm_draw_class_name = "com/wangyongyao/glsl/GLSLAlgoritmDrawingCallJni";
 
 
 GLShapingFunction *shapingFunction;
@@ -106,9 +106,9 @@ cpp_patterns_functions_get_type(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_matrices_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
-                              jstring frag2,
-                              jstring frag3,
-                              jstring frag4
+                                 jstring frag2,
+                                 jstring frag3,
+                                 jstring frag4
 
 
 ) {
@@ -190,10 +190,10 @@ cpp_matrices_functions_get_type(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_shape_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
-                                jstring frag2,
-                                jstring frag3,
-                                jstring frag4,
-                                jstring frag5
+                              jstring frag2,
+                              jstring frag3,
+                              jstring frag4,
+                              jstring frag5
 
 
 ) {
@@ -280,10 +280,10 @@ cpp_shape_functions_get_type(JNIEnv *env, jobject thiz) {
 extern "C"
 JNIEXPORT void JNICALL
 cpp_color_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
-                                jstring frag2,
-                                jstring frag3,
-                                jstring frag4,
-                                jstring frag5
+                              jstring frag2,
+                              jstring frag3,
+                              jstring frag4,
+                              jstring frag5
 
 
 ) {
@@ -512,60 +512,60 @@ static const JNINativeMethod methods[] = {
 
         /*********************** GL Shader 着色器矩阵 Matrices********************/
         {"native_matrices_functions_set_glsl_path", "(Ljava/lang/String;"
-                                                 "Ljava/lang/String;"
-                                                 "Ljava/lang/String;"
-                                                 "Ljava/lang/String;"
-                                                 "Ljava/lang/String;)V", (void *) cpp_matrices_functions_glsl_path},
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;)V", (void *) cpp_matrices_functions_glsl_path},
         {"native_matrices_functions_init",          "(II)V",                (void *) cpp_matrices_functions_init},
         {"native_matrices_functions_render_frame",  "()V",                  (void *) cpp_matrices_functions_render_frame},
         {"native_matrices_functions_set_type",      "(I)V",                 (void *) cpp_matrices_functions_set_type},
         {"native_matrices_functions_get_type",      "()I",                  (void *) cpp_matrices_functions_get_type},
 
         /*********************** GL Shader 造型函数（Shaping Function）********************/
-        {"native_shape_functions_set_glsl_path", "(Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;)V", (void *) cpp_shape_functions_glsl_path},
-        {"native_shape_functions_init",          "(II)V",                (void *) cpp_shape_functions_init},
-        {"native_shape_functions_render_frame",  "()V",                  (void *) cpp_shape_functions_render_frame},
-        {"native_shape_functions_set_type",      "(I)V",                 (void *) cpp_shape_functions_set_type},
-        {"native_shape_functions_get_type",      "()I",                  (void *) cpp_shape_functions_get_type},
+        {"native_shape_functions_set_glsl_path",    "(Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;)V", (void *) cpp_shape_functions_glsl_path},
+        {"native_shape_functions_init",             "(II)V",                (void *) cpp_shape_functions_init},
+        {"native_shape_functions_render_frame",     "()V",                  (void *) cpp_shape_functions_render_frame},
+        {"native_shape_functions_set_type",         "(I)V",                 (void *) cpp_shape_functions_set_type},
+        {"native_shape_functions_get_type",         "()I",                  (void *) cpp_shape_functions_get_type},
 
         /*********************** GL Shader 颜色 ********************/
-        {"native_color_functions_set_glsl_path", "(Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;)V", (void *) cpp_color_functions_glsl_path},
-        {"native_color_functions_init",          "(II)V",                (void *) cpp_color_functions_init},
-        {"native_color_functions_render_frame",  "()V",                  (void *) cpp_color_functions_render_frame},
-        {"native_color_functions_set_type",      "(I)V",                 (void *) cpp_color_functions_set_type},
-        {"native_color_functions_get_type",      "()I",                  (void *) cpp_color_functions_get_type},
+        {"native_color_functions_set_glsl_path",    "(Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;)V", (void *) cpp_color_functions_glsl_path},
+        {"native_color_functions_init",             "(II)V",                (void *) cpp_color_functions_init},
+        {"native_color_functions_render_frame",     "()V",                  (void *) cpp_color_functions_render_frame},
+        {"native_color_functions_set_type",         "(I)V",                 (void *) cpp_color_functions_set_type},
+        {"native_color_functions_get_type",         "()I",                  (void *) cpp_color_functions_get_type},
 
 
         /*********************** GL Shader 造型函数（Shaping Function）********************/
-        {"native_shaping_functions_set_glsl_path", "(Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
-                                                   "Ljava/lang/String;"
+        {"native_shaping_functions_set_glsl_path",  "(Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
 
-                                                   "Ljava/lang/String;)V", (void *) cpp_shaping_functions_glsl_path},
-        {"native_shaping_functions_init",          "(II)V",                (void *) cpp_shaping_functions_init},
-        {"native_shaping_functions_render_frame",  "()V",                  (void *) cpp_shaping_functions_render_frame},
-        {"native_shaping_functions_set_type",      "(I)V",                 (void *) cpp_shaping_functions_set_type},
-        {"native_shaping_functions_get_type",      "()I",                  (void *) cpp_shaping_functions_get_type},
+                                                    "Ljava/lang/String;)V", (void *) cpp_shaping_functions_glsl_path},
+        {"native_shaping_functions_init",           "(II)V",                (void *) cpp_shaping_functions_init},
+        {"native_shaping_functions_render_frame",   "()V",                  (void *) cpp_shaping_functions_render_frame},
+        {"native_shaping_functions_set_type",       "(I)V",                 (void *) cpp_shaping_functions_set_type},
+        {"native_shaping_functions_get_type",       "()I",                  (void *) cpp_shaping_functions_get_type},
 
 };
 
@@ -587,7 +587,7 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
         return JNI_ERR;
     }
     // 获取类引用
-    jclass clazz = env->FindClass(glshader_class_name);
+    jclass clazz = env->FindClass(algoritm_draw_class_name);
     // 注册native方法
     jint regist_result = env->RegisterNatives(clazz, methods,
                                               sizeof(methods) / sizeof(methods[0]));

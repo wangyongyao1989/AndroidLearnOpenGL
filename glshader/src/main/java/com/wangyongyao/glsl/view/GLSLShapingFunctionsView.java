@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.wangyongyao.glsl.GLSLCallJni;
+import com.wangyongyao.glsl.GLSLAlgoritmDrawingCallJni;
 import com.wangyongyao.glsl.util.GLSLShowUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -20,11 +20,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class GLSLShapingFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static String TAG = GLSLShapingFunctionsView.class.getSimpleName();
-    private GLSLCallJni mJniCall;
+    private GLSLAlgoritmDrawingCallJni mJniCall;
     private Context mContext;
     private int TYPE_MODE = 13;
 
-    public GLSLShapingFunctionsView(Context context, GLSLCallJni jniCall) {
+    public GLSLShapingFunctionsView(Context context, GLSLAlgoritmDrawingCallJni jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;

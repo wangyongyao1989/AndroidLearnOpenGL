@@ -1,8 +1,8 @@
 package com.wangyongyao.glsl;
 
-public class GLSLCallJni {
+public class GLSLAlgoritmDrawingCallJni {
 
-    private static final String TAG = GLSLCallJni.class.getSimpleName();
+    private static final String TAG = GLSLAlgoritmDrawingCallJni.class.getSimpleName();
 
     static {
         System.loadLibrary("glsl");

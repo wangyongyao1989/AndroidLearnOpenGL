@@ -5,7 +5,7 @@ import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.wangyongyao.glsl.GLSLCallJni;
+import com.wangyongyao.glsl.GLSLAlgoritmDrawingCallJni;
 import com.wangyongyao.glsl.util.GLSLShowUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -18,11 +18,11 @@ import javax.microedition.khronos.opengles.GL10;
 public class GLSLColorFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
     private static String TAG = GLSLColorFunctionsView.class.getSimpleName();
-    private GLSLCallJni mJniCall;
+    private GLSLAlgoritmDrawingCallJni mJniCall;
     private Context mContext;
     private int TYPE_MODE = 5;
 
-    public GLSLColorFunctionsView(Context context, GLSLCallJni jniCall) {
+    public GLSLColorFunctionsView(Context context, GLSLAlgoritmDrawingCallJni jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
