@@ -2,11 +2,7 @@
 // Created by MMM on 2025/2/27.
 //
 
-#include "GLMatricesFunction.h"
-//  Author : wangyongyao https://github.com/wangyongyao1989
-// Created by MMM on 2025/2/26.
-//
-
+#include "../includes/GLMatricesFunction.h"
 
 bool GLMatricesFunction::setupGraphics(int w, int h) {
     screenW = w;

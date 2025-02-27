@@ -42,6 +42,7 @@ public class GLShaderShowFragment extends BaseFragment {
     private GLSLMatricesFunctionsView mMatricesFunctionsView;
     private int typeSF;
     private int typeCF;
+    private int typeMF;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -123,10 +124,10 @@ public class GLShaderShowFragment extends BaseFragment {
             mGlShow1.removeAllViews();
             if (mMatricesFunctionsView == null) {
                 mMatricesFunctionsView = new GLSLMatricesFunctionsView(getActivity(), mGL3DCallJni);
-                typeSF = 0;
+                typeMF = 0;
             } else {
-                typeSF++;
-                mMatricesFunctionsView.setType(typeSF);
+                typeMF++;
+                mMatricesFunctionsView.setType(typeMF);
             }
             switchMFTypeText(mBtn4, mMatricesFunctionsView.getType());
             mGlShow1.addView(mMatricesFunctionsView);
@@ -247,7 +248,7 @@ public class GLShaderShowFragment extends BaseFragment {
     private void switchMFTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
-                view.setText("形状——正方形");
+                view.setText("平移");
             }
             break;
             case 1: {
