@@ -29,6 +29,7 @@ add_library(
         shader/GLColorFunction.cpp
         shader/GLShapeFunction.cpp
         shader/GLMatricesFunction.cpp
+        shader/GLSLPatternsFunction.cpp
 
 
 )

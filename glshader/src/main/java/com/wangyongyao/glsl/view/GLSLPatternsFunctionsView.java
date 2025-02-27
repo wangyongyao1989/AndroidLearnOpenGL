@@ -13,23 +13,23 @@ import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Descibe : AndroidLearnOpenGL com.wangyongyao.glsl.view
- * 着色器——矩阵
+ * 着色器图案
  */
-public class GLSLMatricesFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSLPatternsFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private static String TAG = GLSLMatricesFunctionsView.class.getSimpleName();
+    private static String TAG = GLSLPatternsFunctionsView.class.getSimpleName();
     private GLSLCallJni mJniCall;
     private Context mContext;
     private int TYPE_MODE = 4;
 
-    public GLSLMatricesFunctionsView(Context context, GLSLCallJni jniCall) {
+    public GLSLPatternsFunctionsView(Context context, GLSLCallJni jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GLSLMatricesFunctionsView(Context context, AttributeSet attrs) {
+    public GLSLPatternsFunctionsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -46,7 +46,7 @@ public class GLSLMatricesFunctionsView extends GLSurfaceView implements GLSurfac
         String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "matrix_function_fragment4.glsl");
 
         if (mJniCall != null)
-            mJniCall.setMatricesFunctionsPath(vertexPath
+            mJniCall.setPatternsFunctionsPath(vertexPath
                     , fragPath1
                     , fragPath2
                     , fragPath3
@@ -60,13 +60,13 @@ public class GLSLMatricesFunctionsView extends GLSurfaceView implements GLSurfac
     public void onDrawFrame(GL10 gl) {
 //        Log.e(TAG, "onDrawFrame: ");
         if (mJniCall != null)
-            mJniCall.onMatricesFunctionsRenderFrame();
+            mJniCall.onPatternsFunctionsRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.e(TAG, "onSurfaceChanged: ");
         if (mJniCall != null)
-            mJniCall.initMatricesFunctions(width, height);
+            mJniCall.initPatternsFunctions(width, height);
     }
 
 
@@ -78,13 +78,13 @@ public class GLSLMatricesFunctionsView extends GLSurfaceView implements GLSurfac
     public void setType(int typeSF) {
         int typeVaule = typeSF % TYPE_MODE;
         if (mJniCall != null) {
-            mJniCall.setTypeMatricesFunctions(typeVaule);
+            mJniCall.setTypePatternsFunctions(typeVaule);
         }
     }
 
     public int getType() {
         if (mJniCall != null) {
-            return mJniCall.getTypeMatricesFunctions();
+            return mJniCall.getTypePatternsFunctions();
         } else {
             return 0;
         }

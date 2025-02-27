@@ -15,8 +15,10 @@ import androidx.lifecycle.ViewModelProviders;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlShaderBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.glsl.GLSLCallJni;
+import com.wangyongyao.glsl.util.SwitchTypeText;
 import com.wangyongyao.glsl.view.GLSLColorFunctionsView;
 import com.wangyongyao.glsl.view.GLSLMatricesFunctionsView;
+import com.wangyongyao.glsl.view.GLSLPatternsFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapeFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapingFunctionsView;
 
@@ -35,14 +37,17 @@ public class GLShaderShowFragment extends BaseFragment {
     private Button mBtn2;
     private Button mBtn3;
     private Button mBtn4;
+    private Button mBtn5;
 
     private GLSLShapingFunctionsView mShapingFunctionsView;
     private GLSLColorFunctionsView mColorFunctionsView;
     private GLSLShapeFunctionsView mShapeFunctionsView;
     private GLSLMatricesFunctionsView mMatricesFunctionsView;
+    private GLSLPatternsFunctionsView mPatternsFunctionsView;
     private int typeSF;
     private int typeCF;
     private int typeMF;
+    private int typePF;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -60,6 +65,7 @@ public class GLShaderShowFragment extends BaseFragment {
         mBtn2 = mBinding.btn2;
         mBtn3 = mBinding.btn3;
         mBtn4 = mBinding.btn4;
+        mBtn5 = mBinding.btn5;
 
     }
 
@@ -89,7 +95,7 @@ public class GLShaderShowFragment extends BaseFragment {
                 typeSF++;
                 mShapingFunctionsView.setType(typeSF);
             }
-            switchSFTypeText(mBtn1, mShapingFunctionsView.getType());
+            SwitchTypeText.switchSFTypeText(mBtn1, mShapingFunctionsView.getType());
             mGlShow1.addView(mShapingFunctionsView);
         });
 
@@ -103,7 +109,7 @@ public class GLShaderShowFragment extends BaseFragment {
                 typeCF++;
                 mColorFunctionsView.setType(typeCF);
             }
-            switchCFTypeText(mBtn2, mColorFunctionsView.getType());
+            SwitchTypeText.switchCFTypeText(mBtn2, mColorFunctionsView.getType());
             mGlShow1.addView(mColorFunctionsView);
         });
 
@@ -116,7 +122,7 @@ public class GLShaderShowFragment extends BaseFragment {
                 typeSF++;
                 mShapeFunctionsView.setType(typeSF);
             }
-            switchSF1TypeText(mBtn3, mShapeFunctionsView.getType());
+            SwitchTypeText.switchSF1TypeText(mBtn3, mShapeFunctionsView.getType());
             mGlShow1.addView(mShapeFunctionsView);
         });
 
@@ -129,146 +135,24 @@ public class GLShaderShowFragment extends BaseFragment {
                 typeMF++;
                 mMatricesFunctionsView.setType(typeMF);
             }
-            switchMFTypeText(mBtn4, mMatricesFunctionsView.getType());
+            SwitchTypeText.switchMFTypeText(mBtn4, mMatricesFunctionsView.getType());
             mGlShow1.addView(mMatricesFunctionsView);
+        });
+
+        mBtn5.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            if (mPatternsFunctionsView == null) {
+                mPatternsFunctionsView = new GLSLPatternsFunctionsView(getActivity(), mGL3DCallJni);
+                typePF = 0;
+            } else {
+                typePF++;
+                mPatternsFunctionsView.setType(typePF);
+            }
+            SwitchTypeText.switchPFTypeText(mBtn5, mPatternsFunctionsView.getType());
+            mGlShow1.addView(mPatternsFunctionsView);
         });
 
     }
 
-    @SuppressLint("SetTextI18n")
-    private void switchCFTypeText(Button view, int typeSF) {
-        switch (typeSF) {
-            case 0: {
-                view.setText("混合颜色 Mix函数");
-            }
-            break;
-            case 1: {
-                view.setText("缓动函数");
-            }
-            break;
-            case 2: {
-                view.setText("颜色渐变");
-            }
-            break;
-            case 3: {
-                view.setText("色相、饱和度、亮度(HSB)");
-            }
-            break;
-            case 4: {
-                view.setText("极坐标下的HSB");
-            }
-            break;
-        }
-    }
-
-    private void switchSFTypeText(Button view, int typeSF) {
-        switch (typeSF) {
-            case 0: {
-                view.setText("造型函数——直线及颜色渐变");
-            }
-            break;
-            case 1: {
-                view.setText("造型函数——step()函数");
-            }
-            break;
-            case 2: {
-                view.setText("造型函数——曲线及颜色渐变");
-            }
-            break;
-            case 3: {
-                view.setText("造型函数——其他有用函数");
-            }
-            break;
-            case 4: {
-                view.setText("多项式造型函数");
-            }
-            break;
-            case 5: {
-                view.setText("指数造型函数");
-            }
-            break;
-            case 6: {
-                view.setText("椭圆造型函数");
-            }
-            break;
-            case 7: {
-                view.setText("赛贝尔造型函数");
-            }
-            break;
-            case 8: {
-                view.setText("Impulse 函数");
-            }
-            break;
-            case 9: {
-                view.setText("CubicPulse 函数");
-            }
-            break;
-            case 10: {
-                view.setText("ExpStep 函数");
-            }
-            break;
-            case 11: {
-                view.setText("Parabola 函数");
-            }
-            break;
-            case 12: {
-                view.setText("Pcurve 函数");
-            }
-            break;
-
-        }
-    }
-
-    private void switchSF1TypeText(Button view, int typeSF) {
-        switch (typeSF) {
-            case 0: {
-                view.setText("形状——正方形");
-            }
-            break;
-            case 1: {
-                view.setText("形状——圆");
-            }
-            break;
-            case 2: {
-                view.setText("形状——距离场1");
-            }
-            break;
-            case 3: {
-                view.setText("形状——距离场2");
-            }
-            break;
-            case 4: {
-                view.setText("形状——极坐标图形");
-            }
-            break;
-
-        }
-    }
-
-    private void switchMFTypeText(Button view, int typeSF) {
-        switch (typeSF) {
-            case 0: {
-                view.setText("平移");
-            }
-            break;
-            case 1: {
-                view.setText("矩阵旋转");
-            }
-            break;
-            case 2: {
-                view.setText("矩阵缩放");
-            }
-            break;
-            case 3: {
-                view.setText("YUV矩阵变换");
-            }
-            break;
-            case 4: {
-                view.setText("形状——极坐标图形");
-            }
-            break;
-
-        }
-    }
 
 }

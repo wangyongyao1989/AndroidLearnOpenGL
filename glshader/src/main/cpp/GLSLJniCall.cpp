@@ -6,6 +6,7 @@
 #include "GLColorFunction.h"
 #include "GLShapeFunction.h"
 #include "GLMatricesFunction.h"
+#include "GLSLPatternsFunction.h"
 
 //包名+类名字符串定义：
 const char *glshader_class_name = "com/wangyongyao/glsl/GLSLCallJni";
@@ -15,15 +16,16 @@ GLShapingFunction *shapingFunction;
 GLColorFunction *colorFunction;
 GLShapeFunction *shapeFunction;
 GLMatricesFunction *matricesFunction;
+GLSLPatternsFunction *patternsFunction;
 
-/*********************** GL Shader 着色器矩阵 Matrices********************/
+/*********************  着色器 图案 Patterns *****************/
+
 extern "C"
 JNIEXPORT void JNICALL
-cpp_matrices_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
-                              jstring frag2,
-                              jstring frag3,
-                              jstring frag4,
-                              jstring frag5
+cpp_patterns_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
+                                 jstring frag2,
+                                 jstring frag3,
+                                 jstring frag4
 
 
 ) {
@@ -32,7 +34,89 @@ cpp_matrices_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstr
     const char *fragPath2 = env->GetStringUTFChars(frag2, nullptr);
     const char *fragPath3 = env->GetStringUTFChars(frag3, nullptr);
     const char *fragPath4 = env->GetStringUTFChars(frag4, nullptr);
-    const char *fragPath5 = env->GetStringUTFChars(frag5, nullptr);
+
+
+    if (patternsFunction == nullptr) {
+        patternsFunction = new GLSLPatternsFunction();
+    }
+    string sFragPath1(fragPath1);
+    string sFragPath2(fragPath2);
+    string sFragPath3(fragPath3);
+    string sFragPath4(fragPath4);
+
+    vector<string> sFragPathes;
+    sFragPathes.push_back(sFragPath1);
+    sFragPathes.push_back(sFragPath2);
+    sFragPathes.push_back(sFragPath3);
+    sFragPathes.push_back(sFragPath4);
+
+    patternsFunction->setSharderStringPathes(vertexPath, sFragPathes);
+
+    env->ReleaseStringUTFChars(vertex, vertexPath);
+    env->ReleaseStringUTFChars(frag1, fragPath1);
+    env->ReleaseStringUTFChars(frag2, fragPath2);
+    env->ReleaseStringUTFChars(frag3, fragPath3);
+    env->ReleaseStringUTFChars(frag4, fragPath4);
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_patterns_functions_render_frame(JNIEnv *env, jobject thiz) {
+    if (patternsFunction == nullptr) {
+        LOGE("GLpatternsFunction is nullptr");
+        return;
+    }
+    patternsFunction->renderFrame();
+
+}
+
+extern "C"
+JNIEXPORT void JNICALL
+cpp_patterns_functions_init(JNIEnv *env, jobject thiz, jint width, jint height) {
+    if (patternsFunction == nullptr) {
+        LOGE("GLpatternsFunction is nullptr");
+        return;
+    }
+    patternsFunction->setupGraphics(width, height);
+
+}
+extern "C"
+JNIEXPORT void JNICALL
+cpp_patterns_functions_set_type(JNIEnv *env, jobject thiz, jint type) {
+    if (patternsFunction == nullptr) {
+        LOGE("GLpatternsFunction is nullptr");
+        return;
+    }
+    patternsFunction->setParameters(type);
+
+}
+
+extern "C"
+JNIEXPORT jint JNICALL
+cpp_patterns_functions_get_type(JNIEnv *env, jobject thiz) {
+    if (patternsFunction == nullptr) {
+        LOGE("GLpatternsFunction is nullptr");
+        return 0;
+    }
+    return patternsFunction->getParameters();
+}
+
+/*********************** GL Shader 着色器矩阵 Matrices********************/
+extern "C"
+JNIEXPORT void JNICALL
+cpp_matrices_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
+                              jstring frag2,
+                              jstring frag3,
+                              jstring frag4
+
+
+) {
+    const char *vertexPath = env->GetStringUTFChars(vertex, nullptr);
+    const char *fragPath1 = env->GetStringUTFChars(frag1, nullptr);
+    const char *fragPath2 = env->GetStringUTFChars(frag2, nullptr);
+    const char *fragPath3 = env->GetStringUTFChars(frag3, nullptr);
+    const char *fragPath4 = env->GetStringUTFChars(frag4, nullptr);
 
 
     if (matricesFunction == nullptr) {
@@ -42,15 +126,12 @@ cpp_matrices_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstr
     string sFragPath2(fragPath2);
     string sFragPath3(fragPath3);
     string sFragPath4(fragPath4);
-    string sFragPath5(fragPath5);
 
     vector<string> sFragPathes;
     sFragPathes.push_back(sFragPath1);
     sFragPathes.push_back(sFragPath2);
     sFragPathes.push_back(sFragPath3);
     sFragPathes.push_back(sFragPath4);
-    sFragPathes.push_back(sFragPath5);
-
 
     matricesFunction->setSharderStringPathes(vertexPath, sFragPathes);
 
@@ -59,7 +140,6 @@ cpp_matrices_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstr
     env->ReleaseStringUTFChars(frag2, fragPath2);
     env->ReleaseStringUTFChars(frag3, fragPath3);
     env->ReleaseStringUTFChars(frag4, fragPath4);
-    env->ReleaseStringUTFChars(frag5, fragPath5);
 
 }
 
@@ -419,9 +499,19 @@ cpp_shaping_functions_get_type(JNIEnv *env, jobject thiz) {
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
 static const JNINativeMethod methods[] = {
 
+        /*********************  着色器 图案 Patterns *****************/
+        {"native_patterns_functions_set_glsl_path", "(Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;"
+                                                    "Ljava/lang/String;)V", (void *) cpp_patterns_functions_glsl_path},
+        {"native_patterns_functions_init",          "(II)V",                (void *) cpp_patterns_functions_init},
+        {"native_patterns_functions_render_frame",  "()V",                  (void *) cpp_patterns_functions_render_frame},
+        {"native_patterns_functions_set_type",      "(I)V",                 (void *) cpp_patterns_functions_set_type},
+        {"native_patterns_functions_get_type",      "()I",                  (void *) cpp_patterns_functions_get_type},
+
         /*********************** GL Shader 着色器矩阵 Matrices********************/
         {"native_matrices_functions_set_glsl_path", "(Ljava/lang/String;"
-                                                 "Ljava/lang/String;"
                                                  "Ljava/lang/String;"
                                                  "Ljava/lang/String;"
                                                  "Ljava/lang/String;"

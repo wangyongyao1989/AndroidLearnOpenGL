@@ -8,13 +8,61 @@ public class GLSLCallJni {
         System.loadLibrary("glsl");
     }
 
+    /*********************  着色器 图案 Patterns *****************/
+    public void setPatternsFunctionsPath(String vertexPath
+            , String fragPath1
+            , String fragPath2
+            , String fragPath3
+            , String fragPath4
+
+    ) {
+        native_patterns_functions_set_glsl_path(vertexPath
+                , fragPath1
+                , fragPath2
+                , fragPath3
+                , fragPath4
+
+        );
+    }
+
+    public void onPatternsFunctionsRenderFrame() {
+        native_patterns_functions_render_frame();
+    }
+
+    public void initPatternsFunctions(int width, int height) {
+        native_patterns_functions_init(width, height);
+    }
+
+    public void setTypePatternsFunctions(int typeVaule) {
+        native_patterns_functions_set_type(typeVaule);
+    }
+
+    public int getTypePatternsFunctions() {
+        return native_patterns_functions_get_type();
+    }
+
+    private native void native_patterns_functions_set_glsl_path(String vertexPath
+            , String fragPath1
+            , String fragPath2
+            , String fragPath3
+            , String fragPath4
+
+    );
+
+    private native void native_patterns_functions_render_frame();
+
+    private native void native_patterns_functions_init(int width, int height);
+
+    private native void native_patterns_functions_set_type(int typeVaule);
+
+    private native int native_patterns_functions_get_type();
+
     /*********************  着色器矩阵 Matrices *****************/
     public void setMatricesFunctionsPath(String vertexPath
             , String fragPath1
             , String fragPath2
             , String fragPath3
             , String fragPath4
-            , String fragPath5
 
     ) {
         native_matrices_functions_set_glsl_path(vertexPath
@@ -22,7 +70,6 @@ public class GLSLCallJni {
                 , fragPath2
                 , fragPath3
                 , fragPath4
-                , fragPath5
 
         );
     }
@@ -48,7 +95,6 @@ public class GLSLCallJni {
             , String fragPath2
             , String fragPath3
             , String fragPath4
-            , String fragPath5
 
     );
 

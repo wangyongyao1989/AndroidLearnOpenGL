@@ -2,19 +2,20 @@
 // Created by MMM on 2025/2/27.
 //
 
-#ifndef ANDROIDLEARNOPENGL_GLMATRICESFUNCTION_H
-#define ANDROIDLEARNOPENGL_GLMATRICESFUNCTION_H
+#ifndef ANDROIDLEARNOPENGL_GLSLPATTERNSFUNCTION_H
+#define ANDROIDLEARNOPENGL_GLSLPATTERNSFUNCTION_H
+
 #include <vector>
 #include "GLSLShader.h"
 
-static float MFVertices[] = {
+static float PFVertices[] = {
         0.8f, 0.8f, 0.0f,  // top right
         0.8f, -0.8f, 0.0f,  // bottom right
         -0.8f, -0.8f, 0.0f,  // bottom left
         -0.8f, 0.8f, 0.0f   // top left
 };
 
-static unsigned int MFIndices[] = {
+static unsigned int PFIndices[] = {
         // 注意索引从0开始!
         // 此例的索引(0,1,2,3)就是顶点数组vertices的下标，
         // 这样可以由下标代表顶点组合成矩形
@@ -23,7 +24,7 @@ static unsigned int MFIndices[] = {
 };
 
 // Vertices for a full screen quad.
-static const float kMFVerticek[8] = {
+static const float kPFVerticek[8] = {
         -1.f, 1.f,
         -1.f, -1.f,
         1.f, 1.f,
@@ -31,12 +32,12 @@ static const float kMFVerticek[8] = {
 };
 
 
-class GLMatricesFunction {
+class GLSLPatternsFunction {
 
 public:
-    GLMatricesFunction();
+    GLSLPatternsFunction();
 
-    ~GLMatricesFunction();
+    ~GLSLPatternsFunction();
 
     bool setupGraphics(int w, int h);
 
@@ -88,4 +89,4 @@ private:
 };
 
 
-#endif //ANDROIDLEARNOPENGL_GLMATRICESFUNCTION_H
+#endif //ANDROIDLEARNOPENGL_GLSLPATTERNSFUNCTION_H

@@ -67,6 +67,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/btn_3"
                 tools:ignore="HardcodedText,SmallSp" />
 
+            <Button
+                android:id="@+id/btn_5"
+                android:layout_width="90dp"
+                android:layout_height="40dp"
+                android:text="GL着色器——图案"
+                android:textSize="8sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btn_4"
+                tools:ignore="HardcodedText,SmallSp" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </ScrollView>
