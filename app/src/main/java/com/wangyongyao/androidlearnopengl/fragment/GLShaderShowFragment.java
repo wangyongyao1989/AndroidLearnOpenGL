@@ -16,6 +16,7 @@ import com.wangyongyao.androidlearnopengl.databinding.FragmentGlShaderBinding;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.glsl.GLSLCallJni;
 import com.wangyongyao.glsl.view.GLSLColorFunctionsView;
+import com.wangyongyao.glsl.view.GLSLMatricesFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapeFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapingFunctionsView;
 
@@ -33,11 +34,12 @@ public class GLShaderShowFragment extends BaseFragment {
     private Button mBtn1;
     private Button mBtn2;
     private Button mBtn3;
+    private Button mBtn4;
 
     private GLSLShapingFunctionsView mShapingFunctionsView;
     private GLSLColorFunctionsView mColorFunctionsView;
     private GLSLShapeFunctionsView mShapeFunctionsView;
-
+    private GLSLMatricesFunctionsView mMatricesFunctionsView;
     private int typeSF;
     private int typeCF;
 
@@ -56,6 +58,7 @@ public class GLShaderShowFragment extends BaseFragment {
         mBtn1 = mBinding.btn1;
         mBtn2 = mBinding.btn2;
         mBtn3 = mBinding.btn3;
+        mBtn4 = mBinding.btn4;
 
     }
 
@@ -114,6 +117,19 @@ public class GLShaderShowFragment extends BaseFragment {
             }
             switchSF1TypeText(mBtn3, mShapeFunctionsView.getType());
             mGlShow1.addView(mShapeFunctionsView);
+        });
+
+        mBtn4.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            if (mMatricesFunctionsView == null) {
+                mMatricesFunctionsView = new GLSLMatricesFunctionsView(getActivity(), mGL3DCallJni);
+                typeSF = 0;
+            } else {
+                typeSF++;
+                mMatricesFunctionsView.setType(typeSF);
+            }
+            switchMFTypeText(mBtn4, mMatricesFunctionsView.getType());
+            mGlShow1.addView(mMatricesFunctionsView);
         });
 
     }
@@ -203,6 +219,32 @@ public class GLShaderShowFragment extends BaseFragment {
     }
 
     private void switchSF1TypeText(Button view, int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                view.setText("形状——正方形");
+            }
+            break;
+            case 1: {
+                view.setText("形状——圆");
+            }
+            break;
+            case 2: {
+                view.setText("形状——距离场1");
+            }
+            break;
+            case 3: {
+                view.setText("形状——距离场2");
+            }
+            break;
+            case 4: {
+                view.setText("形状——极坐标图形");
+            }
+            break;
+
+        }
+    }
+
+    private void switchMFTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
                 view.setText("形状——正方形");

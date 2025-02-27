@@ -8,6 +8,58 @@ public class GLSLCallJni {
         System.loadLibrary("glsl");
     }
 
+    /*********************  着色器矩阵 Matrices *****************/
+    public void setMatricesFunctionsPath(String vertexPath
+            , String fragPath1
+            , String fragPath2
+            , String fragPath3
+            , String fragPath4
+            , String fragPath5
+
+    ) {
+        native_matrices_functions_set_glsl_path(vertexPath
+                , fragPath1
+                , fragPath2
+                , fragPath3
+                , fragPath4
+                , fragPath5
+
+        );
+    }
+
+    public void onMatricesFunctionsRenderFrame() {
+        native_matrices_functions_render_frame();
+    }
+
+    public void initMatricesFunctions(int width, int height) {
+        native_matrices_functions_init(width, height);
+    }
+
+    public void setTypeMatricesFunctions(int typeVaule) {
+        native_matrices_functions_set_type(typeVaule);
+    }
+
+    public int getTypeMatricesFunctions() {
+        return native_matrices_functions_get_type();
+    }
+
+    private native void native_matrices_functions_set_glsl_path(String vertexPath
+            , String fragPath1
+            , String fragPath2
+            , String fragPath3
+            , String fragPath4
+            , String fragPath5
+
+    );
+
+    private native void native_matrices_functions_render_frame();
+
+    private native void native_matrices_functions_init(int width, int height);
+
+    private native void native_matrices_functions_set_type(int typeVaule);
+
+    private native int native_matrices_functions_get_type();
+
     /*********************  着色器形状 *****************/
     public void setShapeFunctionsPath(String vertexPath
             , String fragPath1
