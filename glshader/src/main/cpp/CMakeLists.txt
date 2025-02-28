@@ -35,6 +35,7 @@ add_library(
         shader/algoritmdrawing/GLSLPatternsFunction.cpp
 
         shader/designgeneration/GLSLRandomFunction.cpp
+        shader/designgeneration/GLNoiseFunction.cpp
 
 
 )

@@ -10,7 +10,65 @@ import android.widget.Button;
  */
 public class SwitchTypeText {
 
-    public static void switchPFTypeText(Button view, int typeSF) {
+    public static void switchDNTypeText(Button view, int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                view.setText("造型函数——直线及颜色渐变");
+            }
+            break;
+            case 1: {
+                view.setText("造型函数——step()函数");
+            }
+            break;
+            case 2: {
+                view.setText("造型函数——曲线及颜色渐变");
+            }
+            break;
+            case 3: {
+                view.setText("造型函数——其他有用函数");
+            }
+            break;
+            case 4: {
+                view.setText("多项式造型函数");
+            }
+            break;
+            case 5: {
+                view.setText("指数造型函数");
+            }
+            break;
+            case 6: {
+                view.setText("椭圆造型函数");
+            }
+            break;
+            case 7: {
+                view.setText("赛贝尔造型函数");
+            }
+            break;
+            case 8: {
+                view.setText("Impulse 函数");
+            }
+            break;
+            case 9: {
+                view.setText("CubicPulse 函数");
+            }
+            break;
+            case 10: {
+                view.setText("ExpStep 函数");
+            }
+            break;
+            case 11: {
+                view.setText("Parabola 函数");
+            }
+            break;
+            case 12: {
+                view.setText("Pcurve 函数");
+            }
+            break;
+
+        }
+    }
+
+    public static void switchDRTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
                 view.setText("随机——random");
@@ -22,6 +80,27 @@ public class SwitchTypeText {
             break;
             case 2: {
                 view.setText("随机——truchetPattern");
+            }
+            break;
+        }
+    }
+
+    public static void switchPFTypeText(Button view, int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                view.setText("图案内部应用标量");
+            }
+            break;
+            case 1: {
+                view.setText("图案内部应用矩阵");
+            }
+            break;
+            case 2: {
+                view.setText("偏移图案");
+            }
+            break;
+            case 3: {
+                view.setText("Truchet瓷砖");
             }
             break;
         }

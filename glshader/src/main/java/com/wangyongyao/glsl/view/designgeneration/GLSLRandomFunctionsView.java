@@ -14,7 +14,7 @@ import javax.microedition.khronos.opengles.GL10;
 
 /**
  * Descibe : AndroidLearnOpenGL com.wangyongyao.glsl.view
- * 着色器图案
+ * 着色器——生成设计：随机
  */
 public class GLSLRandomFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
 

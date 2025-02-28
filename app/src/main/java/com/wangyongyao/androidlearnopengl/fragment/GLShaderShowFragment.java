@@ -21,6 +21,7 @@ import com.wangyongyao.glsl.view.algoritmdrawing.GLSLMatricesFunctionsView;
 import com.wangyongyao.glsl.view.algoritmdrawing.GLSLPatternsFunctionsView;
 import com.wangyongyao.glsl.view.algoritmdrawing.GLSLShapeFunctionsView;
 import com.wangyongyao.glsl.view.algoritmdrawing.GLSLShapingFunctionsView;
+import com.wangyongyao.glsl.view.designgeneration.GLSLNoiseFunctionsView;
 import com.wangyongyao.glsl.view.designgeneration.GLSLRandomFunctionsView;
 
 /**
@@ -42,6 +43,7 @@ public class GLShaderShowFragment extends BaseFragment {
     private Button mBtn4;
     private Button mBtn5;
     private Button mBtn6;
+    private Button mBtn7;
 
     private GLSLShapingFunctionsView mShapingFunctionsView;
     private GLSLColorFunctionsView mColorFunctionsView;
@@ -49,10 +51,14 @@ public class GLShaderShowFragment extends BaseFragment {
     private GLSLMatricesFunctionsView mMatricesFunctionsView;
     private GLSLPatternsFunctionsView mPatternsFunctionsView;
     private GLSLRandomFunctionsView mRandomFunctionsView;
+    private GLSLNoiseFunctionsView mNoiseFunctionsView;
+
     private int typeSF;
     private int typeCF;
     private int typeMF;
     private int typePF;
+    private int typeDR;
+    private int typeDN;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -72,6 +78,7 @@ public class GLShaderShowFragment extends BaseFragment {
         mBtn4 = mBinding.btn4;
         mBtn5 = mBinding.btn5;
         mBtn6 = mBinding.btn6;
+        mBtn7 = mBinding.btn7;
 
     }
 
@@ -163,13 +170,26 @@ public class GLShaderShowFragment extends BaseFragment {
             mGlShow1.removeAllViews();
             if (mRandomFunctionsView == null) {
                 mRandomFunctionsView = new GLSLRandomFunctionsView(getActivity(), mGLDGCallJni);
-                typePF = 0;
+                typeDR = 0;
             } else {
-                typePF++;
-                mRandomFunctionsView.setType(typePF);
+                typeDR++;
+                mRandomFunctionsView.setType(typeDR);
             }
-            SwitchTypeText.switchPFTypeText(mBtn6, mRandomFunctionsView.getType());
+            SwitchTypeText.switchDRTypeText(mBtn6, mRandomFunctionsView.getType());
             mGlShow1.addView(mRandomFunctionsView);
+        });
+
+        mBtn7.setOnClickListener(view -> {
+            mGlShow1.removeAllViews();
+            if (mNoiseFunctionsView == null) {
+                mNoiseFunctionsView = new GLSLNoiseFunctionsView(getActivity(), mGLDGCallJni);
+                typeDN = 0;
+            } else {
+                typeDN++;
+                mNoiseFunctionsView.setType(typeDN);
+            }
+            SwitchTypeText.switchDNTypeText(mBtn7, mNoiseFunctionsView.getType());
+            mGlShow1.addView(mNoiseFunctionsView);
         });
 
     }
