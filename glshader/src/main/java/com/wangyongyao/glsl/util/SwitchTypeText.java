@@ -13,33 +13,34 @@ public class SwitchTypeText {
     public static void switchDNTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
-                view.setText("造型函数——直线及颜色渐变");
+                view.setText("2D Noise");
             }
             break;
             case 1: {
-                view.setText("造型函数——step()函数");
+                view.setText("Gradient Noise");
             }
             break;
             case 2: {
-                view.setText("造型函数——曲线及颜色渐变");
+                view.setText("木头表皮噪音");
             }
             break;
             case 3: {
-                view.setText("造型函数——其他有用函数");
+                view.setText("距离场噪音");
             }
             break;
             case 4: {
-                view.setText("多项式造型函数");
+                view.setText("形状噪音");
             }
             break;
             case 5: {
-                view.setText("指数造型函数");
+                view.setText("水榕灯");
             }
             break;
             case 6: {
-                view.setText("椭圆造型函数");
+                view.setText("噪音形态");
             }
             break;
+
             case 7: {
                 view.setText("赛贝尔造型函数");
             }

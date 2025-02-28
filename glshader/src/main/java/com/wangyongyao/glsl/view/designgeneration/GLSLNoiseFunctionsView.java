@@ -43,13 +43,14 @@ public class GLSLNoiseFunctionsView extends GLSurfaceView implements GLSurfaceVi
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_vert.glsl");
-        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment1.glsl");
-        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment2.glsl");
-        String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment3.glsl");
-        String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment4.glsl");
-        String fragPath5 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment5.glsl");
-        String fragPath6 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment6.glsl");
-        String fragPath7 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment7.glsl");
+        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment1.glsl");
+        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment2.glsl");
+        String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment3.glsl");
+        String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment4.glsl");
+        String fragPath5 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment5.glsl");
+        String fragPath6 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment6.glsl");
+        String fragPath7 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment7.glsl");
+
         String fragPath8 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment8.glsl");
         String fragPath9 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment9.glsl");
         String fragPath10 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment10.glsl");
