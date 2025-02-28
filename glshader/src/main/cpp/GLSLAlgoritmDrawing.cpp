@@ -1,3 +1,7 @@
+//  Author : wangyongyao https://github.com/wangyongyao1989
+// Created by MMM on 2025/2/28.
+//
+
 #include <jni.h>
 #include <string>
 #include <android/log.h>
@@ -9,8 +13,7 @@
 #include "GLSLPatternsFunction.h"
 
 //包名+类名字符串定义：
-const char *algoritm_draw_class_name = "com/wangyongyao/glsl/GLSLAlgoritmDrawingCallJni";
-
+const char *algoritm_draw_class_name = "com/wangyongyao/glsl/GLSLADCallJni";
 
 GLShapingFunction *shapingFunction;
 GLColorFunction *colorFunction;
@@ -497,7 +500,7 @@ cpp_shaping_functions_get_type(JNIEnv *env, jobject thiz) {
 }
 
 // 重点：定义类名和函数签名，如果有多个方法要动态注册，在数组里面定义即可
-static const JNINativeMethod methods[] = {
+static  JNINativeMethod ADMethods[] = {
 
         /*********************  着色器 图案 Patterns *****************/
         {"native_patterns_functions_set_glsl_path", "(Ljava/lang/String;"
@@ -570,32 +573,11 @@ static const JNINativeMethod methods[] = {
 };
 
 
-
-
-
-/**
- * 定义注册方法
- * @param vm
- * @param reserved
- * @return
- */
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
-    LOGD("动态注册");
-    JNIEnv *env;
-    if ((vm)->GetEnv((void **) &env, JNI_VERSION_1_6) != JNI_OK) {
-        LOGD("动态注册GetEnv  fail");
-        return JNI_ERR;
-    }
-    // 获取类引用
+void registerClassAlgoritmDrawing(JNIEnv* env) {
     jclass clazz = env->FindClass(algoritm_draw_class_name);
-    // 注册native方法
-    jint regist_result = env->RegisterNatives(clazz, methods,
-                                              sizeof(methods) / sizeof(methods[0]));
-    if (regist_result) { // 非零true 进if
-        LOGE("动态注册 fail regist_result = %d", regist_result);
-    } else {
-        LOGI("动态注册 success result = %d", regist_result);
+    if (clazz) {
+        int methodCount = sizeof(ADMethods) / sizeof(JNINativeMethod);
+        env->RegisterNatives(clazz, ADMethods, methodCount);
+        env->DeleteLocalRef(clazz);
     }
-    return JNI_VERSION_1_6;
 }
-

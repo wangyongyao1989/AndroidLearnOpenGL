@@ -20,7 +20,9 @@ add_library(
         glsl
         SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        GLSLAlgoritDrawJniCall.cpp
+        GLSLJniCall.cpp
+        GLSLAlgoritmDrawing.cpp
+        GLSLDesignGeneration.cpp
 
         shader/GLSLStdImage.cpp
         shader/GLSLCamera.cpp
@@ -31,6 +33,8 @@ add_library(
         shader/algoritmdrawing/GLShapeFunction.cpp
         shader/algoritmdrawing/GLMatricesFunction.cpp
         shader/algoritmdrawing/GLSLPatternsFunction.cpp
+
+        shader/designgeneration/GLSLRandomFunction.cpp
 
 
 )

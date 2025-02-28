@@ -1,11 +1,12 @@
-package com.wangyongyao.glsl.view;
+package com.wangyongyao.glsl.view.designgeneration;
 
 import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
 
-import com.wangyongyao.glsl.GLSLAlgoritmDrawingCallJni;
+import com.wangyongyao.glsl.GLSLADCallJni;
+import com.wangyongyao.glsl.GLSLDGCallJni;
 import com.wangyongyao.glsl.util.GLSLShowUtil;
 
 import javax.microedition.khronos.egl.EGLConfig;
@@ -15,21 +16,21 @@ import javax.microedition.khronos.opengles.GL10;
  * Descibe : AndroidLearnOpenGL com.wangyongyao.glsl.view
  * 着色器图案
  */
-public class GLSLPatternsFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
+public class GLSLRandomFunctionsView extends GLSurfaceView implements GLSurfaceView.Renderer {
 
-    private static String TAG = GLSLPatternsFunctionsView.class.getSimpleName();
-    private GLSLAlgoritmDrawingCallJni mJniCall;
+    private static String TAG = GLSLRandomFunctionsView.class.getSimpleName();
+    private GLSLDGCallJni mJniCall;
     private Context mContext;
     private int TYPE_MODE = 4;
 
-    public GLSLPatternsFunctionsView(Context context, GLSLAlgoritmDrawingCallJni jniCall) {
+    public GLSLRandomFunctionsView(Context context, GLSLDGCallJni jniCall) {
         super(context);
         mContext = context;
         mJniCall = jniCall;
         init();
     }
 
-    public GLSLPatternsFunctionsView(Context context, AttributeSet attrs) {
+    public GLSLRandomFunctionsView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mContext = context;
         init();
@@ -46,7 +47,7 @@ public class GLSLPatternsFunctionsView extends GLSurfaceView implements GLSurfac
         String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment4.glsl");
 
         if (mJniCall != null)
-            mJniCall.setPatternsFunctionsPath(vertexPath
+            mJniCall.setRandomPath(vertexPath
                     , fragPath1
                     , fragPath2
                     , fragPath3
@@ -60,13 +61,13 @@ public class GLSLPatternsFunctionsView extends GLSurfaceView implements GLSurfac
     public void onDrawFrame(GL10 gl) {
 //        Log.e(TAG, "onDrawFrame: ");
         if (mJniCall != null)
-            mJniCall.onPatternsFunctionsRenderFrame();
+            mJniCall.onRandomRenderFrame();
     }
 
     public void onSurfaceChanged(GL10 gl, int width, int height) {
         Log.e(TAG, "onSurfaceChanged: ");
         if (mJniCall != null)
-            mJniCall.initPatternsFunctions(width, height);
+            mJniCall.initRandom(width, height);
     }
 
 
@@ -78,13 +79,13 @@ public class GLSLPatternsFunctionsView extends GLSurfaceView implements GLSurfac
     public void setType(int typeSF) {
         int typeVaule = typeSF % TYPE_MODE;
         if (mJniCall != null) {
-            mJniCall.setTypePatternsFunctions(typeVaule);
+            mJniCall.setTypeRandom(typeVaule);
         }
     }
 
     public int getType() {
         if (mJniCall != null) {
-            return mJniCall.getTypePatternsFunctions();
+            return mJniCall.getTypeRandom();
         } else {
             return 0;
         }
