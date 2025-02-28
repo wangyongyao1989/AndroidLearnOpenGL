@@ -10,14 +10,12 @@ public class GLSLDGCallJni {
             , String fragPath1
             , String fragPath2
             , String fragPath3
-            , String fragPath4
 
     ) {
         native_random_set_glsl_path(vertexPath
                 , fragPath1
                 , fragPath2
                 , fragPath3
-                , fragPath4
 
         );
     }
@@ -42,7 +40,6 @@ public class GLSLDGCallJni {
             , String fragPath1
             , String fragPath2
             , String fragPath3
-            , String fragPath4
 
     );
 

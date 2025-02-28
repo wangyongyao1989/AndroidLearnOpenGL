@@ -21,7 +21,7 @@ public class GLSLRandomFunctionsView extends GLSurfaceView implements GLSurfaceV
     private static String TAG = GLSLRandomFunctionsView.class.getSimpleName();
     private GLSLDGCallJni mJniCall;
     private Context mContext;
-    private int TYPE_MODE = 4;
+    private int TYPE_MODE = 3;
 
     public GLSLRandomFunctionsView(Context context, GLSLDGCallJni jniCall) {
         super(context);
@@ -41,17 +41,15 @@ public class GLSLRandomFunctionsView extends GLSurfaceView implements GLSurfaceV
         setEGLContextClientVersion(3);
         setEGLConfigChooser(8, 8, 8, 8, 16, 0);
         String vertexPath = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_vert.glsl");
-        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment1.glsl");
-        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment2.glsl");
-        String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment3.glsl");
-        String fragPath4 = GLSLShowUtil.getModelFilePath(mContext, "patterns_function_fragment4.glsl");
+        String fragPath1 = GLSLShowUtil.getModelFilePath(mContext, "random_function_fragment1.glsl");
+        String fragPath2 = GLSLShowUtil.getModelFilePath(mContext, "random_function_fragment2.glsl");
+        String fragPath3 = GLSLShowUtil.getModelFilePath(mContext, "random_function_fragment3.glsl");
 
         if (mJniCall != null)
             mJniCall.setRandomPath(vertexPath
                     , fragPath1
                     , fragPath2
                     , fragPath3
-                    , fragPath4
             );
 
         setRenderer(this);

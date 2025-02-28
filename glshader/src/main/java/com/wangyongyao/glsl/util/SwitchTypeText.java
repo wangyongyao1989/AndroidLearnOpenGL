@@ -13,22 +13,17 @@ public class SwitchTypeText {
     public static void switchPFTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
-                view.setText("图案内部应用标量");
+                view.setText("随机——random");
             }
             break;
             case 1: {
-                view.setText("图案内部应用矩阵");
+                view.setText("随机——混沌");
             }
             break;
             case 2: {
-                view.setText("偏移图案");
+                view.setText("随机——truchetPattern");
             }
             break;
-            case 3: {
-                view.setText("Truchet瓷砖");
-            }
-            break;
-
         }
     }
 
