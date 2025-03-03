@@ -75,7 +75,7 @@ bool GLNoiseFunction::setSharderStringPath(string vertexPath, string fragmentPat
 }
 
 bool GLNoiseFunction::setSharderStringPathes(string vertexPath,
-                                             vector <string> fragmentPathes) {
+                                             vector<string> fragmentPathes) {
     m_fragmentStringPathes = fragmentPathes;
     m_vertexStringPath = vertexPath;
     return glslShader->getSharderStringPath(vertexPath, m_fragmentStringPathes.front());
@@ -116,6 +116,8 @@ int GLNoiseFunction::createProgram() {
     m_vertexPos = (GLuint) glGetAttribLocation(m_program, "position");
     m_resolutionLoc = (GLuint) glGetAttribLocation(m_program, "u_resolution");
     m_timeLoc = (GLuint) glGetAttribLocation(m_program, "u_time");
+    m_moveXYLoc = (GLuint) glGetAttribLocation(m_program, "u_mouse");
+
     return m_program;
 }
 
@@ -133,6 +135,10 @@ int GLNoiseFunction::bindVertexAttribPointer() {
 
         if (m_resolutionLoc) {
             glslShader->setVec2("u_resolution", screenW, screenH);
+        }
+
+        if (m_moveXYLoc) {
+            glslShader->setVec2("u_mouse", lastX, lastY);
         }
 
         isProgramChanged = false;
@@ -153,6 +159,16 @@ void GLNoiseFunction::deleteProgram(GLuint &program) {
         glDeleteProgram(program);
         m_program = 0;
     }
+}
+
+void GLNoiseFunction::setMoveXY(float dx, float dy, int actionMode) {
+    float xoffset = dx - lastX;
+    float yoffset = lastY - dy; // reversed since y-coordinates go from bottom to top
+    lastX = screenW - dx;
+    lastY = screenH - dy;
+//    LOGI("setMoveXY dx:%f,dy:%f,actionMode:%d", lastX, lastY, actionMode);
+    mActionMode = actionMode;
+
 }
 
 

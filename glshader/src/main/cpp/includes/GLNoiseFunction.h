@@ -53,6 +53,8 @@ public:
 
     uint32_t getParameters();
 
+    void setMoveXY(float dx, float dy, int actionMode);
+
 private:
 
     int createProgram();
@@ -75,6 +77,7 @@ private:
     GLuint m_vertexPos = 0;
     GLuint m_resolutionLoc = 0;
     GLuint m_timeLoc = 0;
+    GLuint m_moveXYLoc = 0;
 
     GLuint m_program = 0;
 
@@ -85,6 +88,9 @@ private:
     size_t m_prevFilter = 0;
     string m_vertexStringPath;
     vector<string> m_fragmentStringPathes;
+
+    float lastX, lastY;
+    int mActionMode;
 
 };
 

@@ -42,27 +42,27 @@ public class SwitchTypeText {
             break;
 
             case 7: {
-                view.setText("赛贝尔造型函数");
+                view.setText("网格噪音——1");
             }
             break;
             case 8: {
-                view.setText("Impulse 函数");
+                view.setText("网格噪音——2");
             }
             break;
             case 9: {
-                view.setText("CubicPulse 函数");
+                view.setText("网格噪音——3");
             }
             break;
             case 10: {
-                view.setText("ExpStep 函数");
+                view.setText("网格噪音——4");
             }
             break;
             case 11: {
-                view.setText("Parabola 函数");
+                view.setText("fBm 的二维实现");
             }
             break;
             case 12: {
-                view.setText("Pcurve 函数");
+                view.setText("布朗运动");
             }
             break;
 

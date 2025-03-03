@@ -20,18 +20,18 @@ const char *design_generation_class_name = "com/wangyongyao/glsl/GLSLDGCallJni";
 extern "C"
 JNIEXPORT void JNICALL
 cpp_noise_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
-                                jstring frag2,
-                                jstring frag3,
-                                jstring frag4,
-                                jstring frag5,
-                                jstring frag6,
-                                jstring frag7,
-                                jstring frag8,
-                                jstring frag9,
-                                jstring frag10,
-                                jstring frag11,
-                                jstring frag12,
-                                jstring frag13
+                              jstring frag2,
+                              jstring frag3,
+                              jstring frag4,
+                              jstring frag5,
+                              jstring frag6,
+                              jstring frag7,
+                              jstring frag8,
+                              jstring frag9,
+                              jstring frag10,
+                              jstring frag11,
+                              jstring frag12,
+                              jstring frag13
 
 
 ) {
@@ -68,7 +68,7 @@ cpp_noise_functions_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring
     string sFragPath12(fragPath12);
     string sFragPath13(fragPath13);
 
-    vector<string> sFragPathes;
+    vector <string> sFragPathes;
     sFragPathes.push_back(sFragPath1);
     sFragPathes.push_back(sFragPath2);
     sFragPathes.push_back(sFragPath3);
@@ -145,6 +145,16 @@ cpp_noise_functions_get_type(JNIEnv *env, jobject thiz) {
     return noiseFunction->getParameters();
 }
 
+extern "C"
+JNIEXPORT void JNICALL
+cpp_noise_functions_move_xy(JNIEnv *env, jobject thiz, jfloat dx, jfloat dy, jint actionMode) {
+    if (noiseFunction == nullptr) {
+        LOGE("GLnoiseFunction is nullptr");
+        return;
+    }
+    noiseFunction->setMoveXY(dx, dy, actionMode);
+}
+
 /*********************  着色器 随机 *****************/
 extern "C"
 JNIEXPORT void JNICALL
@@ -167,7 +177,7 @@ cpp_random_glsl_path(JNIEnv *env, jobject thiz, jstring vertex, jstring frag1,
     string sFragPath2(fragPath2);
     string sFragPath3(fragPath3);
 
-    vector<string> sFragPathes;
+    vector <string> sFragPathes;
     sFragPathes.push_back(sFragPath1);
     sFragPathes.push_back(sFragPath2);
     sFragPathes.push_back(sFragPath3);
@@ -226,36 +236,36 @@ cpp_random_get_type(JNIEnv *env, jobject thiz) {
 static const JNINativeMethod DGMethods[] = {
 
         /*********************** GL Shader 生成设计：噪音********************/
-        {"native_noise_functions_set_glsl_path",  "(Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
-                                                    "Ljava/lang/String;"
+        {"native_noise_functions_set_glsl_path", "(Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
 
-                                                    "Ljava/lang/String;)V", (void *) cpp_noise_functions_glsl_path},
-        {"native_noise_functions_init",           "(II)V",                (void *) cpp_noise_functions_init},
-        {"native_noise_functions_render_frame",   "()V",                  (void *) cpp_noise_functions_render_frame},
-        {"native_noise_functions_set_type",       "(I)V",                 (void *) cpp_noise_functions_set_type},
-        {"native_noise_functions_get_type",       "()I",                  (void *) cpp_noise_functions_get_type},
-        
+                                                 "Ljava/lang/String;)V", (void *) cpp_noise_functions_glsl_path},
+        {"native_noise_functions_init",          "(II)V",                (void *) cpp_noise_functions_init},
+        {"native_noise_functions_render_frame",  "()V",                  (void *) cpp_noise_functions_render_frame},
+        {"native_noise_functions_set_type",      "(I)V",                 (void *) cpp_noise_functions_set_type},
+        {"native_noise_functions_get_type",      "()I",                  (void *) cpp_noise_functions_get_type},
+        {"native_noise_functions_move_xy",       "(FFI)V",               (void *) cpp_noise_functions_move_xy},
 
         /*********************  着色器 随机 *****************/
-        {"native_random_set_glsl_path", "(Ljava/lang/String;"
-                                        "Ljava/lang/String;"
-                                        "Ljava/lang/String;"
-                                        "Ljava/lang/String;)V", (void *) cpp_random_glsl_path},
-        {"native_random_init",          "(II)V",                (void *) cpp_random_init},
-        {"native_random_render_frame",  "()V",                  (void *) cpp_random_render_frame},
-        {"native_random_set_type",      "(I)V",                 (void *) cpp_random_set_type},
-        {"native_random_get_type",      "()I",                  (void *) cpp_random_get_type},
+        {"native_random_set_glsl_path",          "(Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;"
+                                                 "Ljava/lang/String;)V", (void *) cpp_random_glsl_path},
+        {"native_random_init",                   "(II)V",                (void *) cpp_random_init},
+        {"native_random_render_frame",           "()V",                  (void *) cpp_random_render_frame},
+        {"native_random_set_type",               "(I)V",                 (void *) cpp_random_set_type},
+        {"native_random_get_type",               "()I",                  (void *) cpp_random_get_type},
 
 
 };

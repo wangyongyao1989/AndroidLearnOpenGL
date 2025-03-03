@@ -4,6 +4,7 @@ import android.content.Context;
 import android.opengl.GLSurfaceView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 
 import com.wangyongyao.glsl.GLSLADCallJni;
 import com.wangyongyao.glsl.GLSLDGCallJni;
@@ -24,6 +25,10 @@ public class GLSLNoiseFunctionsView extends GLSurfaceView implements GLSurfaceVi
     private GLSLDGCallJni mJniCall;
     private Context mContext;
     private int TYPE_MODE = 13;
+
+
+    private float downX;
+    private float downY;
 
     public GLSLNoiseFunctionsView(Context context, GLSLDGCallJni jniCall) {
         super(context);
@@ -51,12 +56,12 @@ public class GLSLNoiseFunctionsView extends GLSurfaceView implements GLSurfaceVi
         String fragPath6 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment6.glsl");
         String fragPath7 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment7.glsl");
 
-        String fragPath8 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment8.glsl");
-        String fragPath9 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment9.glsl");
-        String fragPath10 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment10.glsl");
-        String fragPath11 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment11.glsl");
-        String fragPath12 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment12.glsl");
-        String fragPath13 = GLSLShowUtil.getModelFilePath(mContext, "shaping_function_fragment13.glsl");
+        String fragPath8 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment8.glsl");
+        String fragPath9 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment9.glsl");
+        String fragPath10 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment10.glsl");
+        String fragPath11 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment11.glsl");
+        String fragPath12 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment12.glsl");
+        String fragPath13 = GLSLShowUtil.getModelFilePath(mContext, "noise_function_fragment13.glsl");
 
         if (mJniCall != null)
             mJniCall.setNoiseFunctionsPath(vertexPath
@@ -112,4 +117,40 @@ public class GLSLNoiseFunctionsView extends GLSurfaceView implements GLSurfaceVi
             return 0;
         }
     }
+
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+
+        switch (event.getAction()) {
+
+            case MotionEvent.ACTION_DOWN: {
+//                Log.e(TAG, "onTouchEvent: " + event.getAction());
+                downX = event.getX();
+                downY = event.getY();
+                mJniCall.MoveXYNoiseFunctions(0, 0, 1);
+            }
+            break;
+            case MotionEvent.ACTION_MOVE: {
+//                Log.e(TAG, "onTouchEvent: " + event.getAction());
+                float dx = event.getX();
+                float dy = event.getY();
+//                Log.e(TAG, "ACTION_MOVE:dx= "
+//                        + dx + "==dy:" + dy);
+                mJniCall.MoveXYNoiseFunctions(dx, dy, 2);
+            }
+            break;
+            case MotionEvent.ACTION_UP: {
+//                Log.e(TAG, "onTouchEvent: " + event.getAction());
+                downX = 0;
+                downY = 0;
+                mJniCall.MoveXYNoiseFunctions(0, 0, 3);
+            }
+            break;
+        }
+
+
+        return true;
+    }
+
 }

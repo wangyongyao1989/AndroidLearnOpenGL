@@ -55,6 +55,10 @@ public class GLSLDGCallJni {
         return native_noise_functions_get_type();
     }
 
+    public void MoveXYNoiseFunctions(float dx, float dy, int action) {
+        native_noise_functions_move_xy(dx, dy, action);
+    }
+
     private native void native_noise_functions_set_glsl_path(String vertexPath
             , String fragPath1
             , String fragPath2
@@ -79,6 +83,8 @@ public class GLSLDGCallJni {
     private native void native_noise_functions_set_type(int typeVaule);
 
     private native int native_noise_functions_get_type();
+
+    private native void native_noise_functions_move_xy(float dx, float dy, int action);
 
 
     /*********************  着色器 生成设计——随机 *****************/
