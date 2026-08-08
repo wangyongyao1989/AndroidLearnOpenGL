@@ -15,8 +15,16 @@ import androidx.lifecycle.ViewModelProviders;
 import androidx.lifecycle.viewmodel.ViewModelInitializer;
 
 
+import androidx.recyclerview.widget.GridLayoutManager;
+
+import com.wangyongyao.androidlearnopengl.R;
+import com.wangyongyao.androidlearnopengl.adapter.MainAdapter;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentMainBinding;
+import com.wangyongyao.androidlearnopengl.model.DemoItem;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * author : wangyongyao https://github.com/wangyongyao1989
@@ -27,11 +35,7 @@ public class MainFragment extends BaseFragment {
 
     private static final String TAG = MainFragment.class.getSimpleName();
     private FragmentMainBinding mBinding;
-    private Button mBtnGlFoundation;
     private GLViewModel mGlViewModel;
-    private Button mBtnGl3d;
-    private Button mBtnGlSenior;
-    private Button mBtnGlShader;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -43,11 +47,21 @@ public class MainFragment extends BaseFragment {
 
     @Override
     public void initView() {
-        mBtnGlFoundation = mBinding.btnGlFoundation;
-        mBtnGl3d = mBinding.btnGl3d;
-        mBtnGlSenior = mBinding.btnGlSenior;
-        mBtnGlShader = mBinding.btnGlShader;
+        List<DemoItem> data = new ArrayList<>();
+        data.add(new DemoItem(GLViewModel.FRAGMENT_STATUS.GL_FOUNDATION.ordinal(), "OpenGL基础", R.drawable.img_foundation));
+        data.add(new DemoItem(GLViewModel.FRAGMENT_STATUS.GL_3D.ordinal(), "OpenGL 3D", R.drawable.img_3d));
+        data.add(new DemoItem(GLViewModel.FRAGMENT_STATUS.GL_SENIOR.ordinal(), "OpenGL高级", R.drawable.img_senior));
+        data.add(new DemoItem(GLViewModel.FRAGMENT_STATUS.GL_SHADER.ordinal(), "GLShader着色器编程", R.drawable.img_shader));
 
+        MainAdapter adapter = new MainAdapter(data, item -> {
+            GLViewModel.FRAGMENT_STATUS[] statuses = GLViewModel.FRAGMENT_STATUS.values();
+            if (item.getId() >= 0 && item.getId() < statuses.length) {
+                mGlViewModel.getSwitchFragment().postValue(statuses[item.getId()]);
+            }
+        });
+
+        mBinding.rvMain.setLayoutManager(new GridLayoutManager(getContext(), 2));
+        mBinding.rvMain.setAdapter(adapter);
     }
 
     @Override
@@ -63,20 +77,5 @@ public class MainFragment extends BaseFragment {
 
     @Override
     public void initListener() {
-        mBtnGlFoundation.setOnClickListener(view -> {
-            mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.GL_FOUNDATION);
-        });
-
-        mBtnGl3d.setOnClickListener(view -> {
-            mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.GL_3D);
-        });
-
-        mBtnGlSenior.setOnClickListener(View -> {
-            mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.GL_SENIOR);
-        });
-
-        mBtnGlShader.setOnClickListener(View -> {
-            mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.GL_SHADER);
-        });
     }
 }

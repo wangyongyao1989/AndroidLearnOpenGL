@@ -1,18 +1,20 @@
 package com.wangyongyao.androidlearnopengl.fragment;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.wangyongyao.androidlearnopengl.R;
+import com.wangyongyao.androidlearnopengl.adapter.SideAdapter;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlShaderBinding;
+import com.wangyongyao.androidlearnopengl.model.DemoItem;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.glsl.GLSLCallJni;
 import com.wangyongyao.glsl.util.SwitchTypeText;
@@ -22,32 +24,26 @@ import com.wangyongyao.glsl.view.GLSLPatternsFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapeFunctionsView;
 import com.wangyongyao.glsl.view.GLSLShapingFunctionsView;
 
-/**
- * author : wangyongyao https://github.com/wangyongyao1989
- * Descibe : AndroidLearnOpenGL com.wangyongyao.androidlearnopengl
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class GLShaderShowFragment extends BaseFragment {
 
     private FragmentGlShaderBinding mBinding;
-    private FrameLayout mGlShow1;
     private GLSLCallJni mGL3DCallJni;
-    private Button mBtnBack;
     private GLViewModel mGlViewModel;
-    private Button mBtn1;
-    private Button mBtn2;
-    private Button mBtn3;
-    private Button mBtn4;
-    private Button mBtn5;
 
     private GLSLShapingFunctionsView mShapingFunctionsView;
     private GLSLColorFunctionsView mColorFunctionsView;
     private GLSLShapeFunctionsView mShapeFunctionsView;
     private GLSLMatricesFunctionsView mMatricesFunctionsView;
     private GLSLPatternsFunctionsView mPatternsFunctionsView;
+
     private int typeSF;
     private int typeCF;
     private int typeMF;
     private int typePF;
+    private int currentDemoId = -1;
 
     @Override
     public View getLayoutDataBing(@NonNull LayoutInflater inflater
@@ -59,14 +55,68 @@ public class GLShaderShowFragment extends BaseFragment {
 
     @Override
     public void initView() {
-        mGlShow1 = mBinding.glShow;
-        mBtnBack = mBinding.btnBack;
-        mBtn1 = mBinding.btn1;
-        mBtn2 = mBinding.btn2;
-        mBtn3 = mBinding.btn3;
-        mBtn4 = mBinding.btn4;
-        mBtn5 = mBinding.btn5;
+        List<DemoItem> data = new ArrayList<>();
+        data.add(new DemoItem(1, "GL 造型函数", R.drawable.img_shader));
+        data.add(new DemoItem(2, "GL着色器——Color", R.drawable.img_shader));
+        data.add(new DemoItem(3, "GL着色器——形状", R.drawable.img_shader));
+        data.add(new DemoItem(4, "GL着色器——二维矩阵", R.drawable.img_shader));
+        data.add(new DemoItem(5, "GL着色器——图案", R.drawable.img_shader));
 
+        SideAdapter adapter = new SideAdapter(data, item -> {
+            mBinding.glShow.removeAllViews();
+            mBinding.btnNextType.setVisibility(View.VISIBLE);
+            currentDemoId = item.getId();
+            switch (item.getId()) {
+                case 1:
+                    if (mShapingFunctionsView == null) {
+                        mShapingFunctionsView = new GLSLShapingFunctionsView(getActivity(), mGL3DCallJni);
+                        typeSF = 0;
+                    }
+                    mShapingFunctionsView.setType(typeSF);
+                    SwitchTypeText.switchSFTypeText(mBinding.btnNextType, mShapingFunctionsView.getType());
+                    mBinding.glShow.addView(mShapingFunctionsView);
+                    break;
+                case 2:
+                    if (mColorFunctionsView == null) {
+                        mColorFunctionsView = new GLSLColorFunctionsView(getActivity(), mGL3DCallJni);
+                        typeCF = 0;
+                    }
+                    mColorFunctionsView.setType(typeCF);
+                    SwitchTypeText.switchCFTypeText(mBinding.btnNextType, mColorFunctionsView.getType());
+                    mBinding.glShow.addView(mColorFunctionsView);
+                    break;
+                case 3:
+                    if (mShapeFunctionsView == null) {
+                        mShapeFunctionsView = new GLSLShapeFunctionsView(getActivity(), mGL3DCallJni);
+                        typeSF = 0;
+                    }
+                    mShapeFunctionsView.setType(typeSF);
+                    SwitchTypeText.switchSF1TypeText(mBinding.btnNextType, mShapeFunctionsView.getType());
+                    mBinding.glShow.addView(mShapeFunctionsView);
+                    break;
+                case 4:
+                    if (mMatricesFunctionsView == null) {
+                        mMatricesFunctionsView = new GLSLMatricesFunctionsView(getActivity(), mGL3DCallJni);
+                        typeMF = 0;
+                    }
+                    mMatricesFunctionsView.setType(typeMF);
+                    SwitchTypeText.switchMFTypeText(mBinding.btnNextType, mMatricesFunctionsView.getType());
+                    mBinding.glShow.addView(mMatricesFunctionsView);
+                    break;
+                case 5:
+                    if (mPatternsFunctionsView == null) {
+                        mPatternsFunctionsView = new GLSLPatternsFunctionsView(getActivity(), mGL3DCallJni);
+                        typePF = 0;
+                    }
+                    mPatternsFunctionsView.setType(typePF);
+                    SwitchTypeText.switchPFTypeText(mBinding.btnNextType, mPatternsFunctionsView.getType());
+                    mBinding.glShow.addView(mPatternsFunctionsView);
+                    break;
+            }
+        });
+
+        mBinding.rvSidebar.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBinding.rvSidebar.setAdapter(adapter);
     }
 
     @Override
@@ -77,82 +127,52 @@ public class GLShaderShowFragment extends BaseFragment {
     @Override
     public void initObserver() {
         mGlViewModel = ViewModelProviders.of(requireActivity()).get(GLViewModel.class);
-
     }
 
     @Override
     public void initListener() {
-        mBtnBack.setOnClickListener(view -> {
+        mBinding.btnBack.setOnClickListener(view -> {
             mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.MAIN);
         });
 
-        mBtn1.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            if (mShapingFunctionsView == null) {
-                mShapingFunctionsView = new GLSLShapingFunctionsView(getActivity(), mGL3DCallJni);
-                typeSF = 0;
-            } else {
-                typeSF++;
-                mShapingFunctionsView.setType(typeSF);
+        mBinding.btnNextType.setOnClickListener(view -> {
+            switch (currentDemoId) {
+                case 1:
+                    typeSF++;
+                    if (mShapingFunctionsView != null) {
+                        mShapingFunctionsView.setType(typeSF);
+                        SwitchTypeText.switchSFTypeText(mBinding.btnNextType, mShapingFunctionsView.getType());
+                    }
+                    break;
+                case 2:
+                    typeCF++;
+                    if (mColorFunctionsView != null) {
+                        mColorFunctionsView.setType(typeCF);
+                        SwitchTypeText.switchCFTypeText(mBinding.btnNextType, mColorFunctionsView.getType());
+                    }
+                    break;
+                case 3:
+                    typeSF++; // Shape functions also use typeSF in original code
+                    if (mShapeFunctionsView != null) {
+                        mShapeFunctionsView.setType(typeSF);
+                        SwitchTypeText.switchSF1TypeText(mBinding.btnNextType, mShapeFunctionsView.getType());
+                    }
+                    break;
+                case 4:
+                    typeMF++;
+                    if (mMatricesFunctionsView != null) {
+                        mMatricesFunctionsView.setType(typeMF);
+                        SwitchTypeText.switchMFTypeText(mBinding.btnNextType, mMatricesFunctionsView.getType());
+                    }
+                    break;
+                case 5:
+                    typePF++;
+                    if (mPatternsFunctionsView != null) {
+                        mPatternsFunctionsView.setType(typePF);
+                        SwitchTypeText.switchPFTypeText(mBinding.btnNextType, mPatternsFunctionsView.getType());
+                    }
+                    break;
             }
-            SwitchTypeText.switchSFTypeText(mBtn1, mShapingFunctionsView.getType());
-            mGlShow1.addView(mShapingFunctionsView);
         });
-
-
-        mBtn2.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            if (mColorFunctionsView == null) {
-                mColorFunctionsView = new GLSLColorFunctionsView(getActivity(), mGL3DCallJni);
-                typeCF = 0;
-            } else {
-                typeCF++;
-                mColorFunctionsView.setType(typeCF);
-            }
-            SwitchTypeText.switchCFTypeText(mBtn2, mColorFunctionsView.getType());
-            mGlShow1.addView(mColorFunctionsView);
-        });
-
-        mBtn3.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            if (mShapeFunctionsView == null) {
-                mShapeFunctionsView = new GLSLShapeFunctionsView(getActivity(), mGL3DCallJni);
-                typeSF = 0;
-            } else {
-                typeSF++;
-                mShapeFunctionsView.setType(typeSF);
-            }
-            SwitchTypeText.switchSF1TypeText(mBtn3, mShapeFunctionsView.getType());
-            mGlShow1.addView(mShapeFunctionsView);
-        });
-
-        mBtn4.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            if (mMatricesFunctionsView == null) {
-                mMatricesFunctionsView = new GLSLMatricesFunctionsView(getActivity(), mGL3DCallJni);
-                typeMF = 0;
-            } else {
-                typeMF++;
-                mMatricesFunctionsView.setType(typeMF);
-            }
-            SwitchTypeText.switchMFTypeText(mBtn4, mMatricesFunctionsView.getType());
-            mGlShow1.addView(mMatricesFunctionsView);
-        });
-
-        mBtn5.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            if (mPatternsFunctionsView == null) {
-                mPatternsFunctionsView = new GLSLPatternsFunctionsView(getActivity(), mGL3DCallJni);
-                typePF = 0;
-            } else {
-                typePF++;
-                mPatternsFunctionsView.setType(typePF);
-            }
-            SwitchTypeText.switchPFTypeText(mBtn5, mPatternsFunctionsView.getType());
-            mGlShow1.addView(mPatternsFunctionsView);
-        });
-
     }
-
-
 }

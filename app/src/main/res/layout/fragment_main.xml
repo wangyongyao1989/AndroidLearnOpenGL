@@ -3,45 +3,17 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:padding="8dp">
 
-    <Button
-        android:id="@+id/btn_gl_foundation"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="OpenGL基础"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
-
-    <Button
-        android:id="@+id/btn_gl_3d"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="OpenGL 3D"
-        app:layout_constraintStart_toEndOf="@+id/btn_gl_foundation"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
-
-    <Button
-        android:id="@+id/btn_gl_senior"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:text="OpenGL高级"
-        app:layout_constraintStart_toEndOf="@+id/btn_gl_3d"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:ignore="HardcodedText" />
-
-    <Button
-        android:id="@+id/btn_gl_shader"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="GLShader着色器编程"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btn_gl_foundation"
-        tools:ignore="HardcodedText" />
-
+        tools:listitem="@layout/item_main_module" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

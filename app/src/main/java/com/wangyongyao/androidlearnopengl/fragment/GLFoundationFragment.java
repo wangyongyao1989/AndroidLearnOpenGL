@@ -4,14 +4,17 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.wangyongyao.androidlearnopengl.R;
+import com.wangyongyao.androidlearnopengl.adapter.SideAdapter;
 import com.wangyongyao.androidlearnopengl.databinding.FragmentGlFoundationBinding;
+import com.wangyongyao.androidlearnopengl.model.DemoItem;
 import com.wangyongyao.androidlearnopengl.viewmodel.GLViewModel;
 import com.wangyongyao.glfoundation.GLFounationJniCall;
 import com.wangyongyao.glfoundation.view.GL3DCameraView;
@@ -32,34 +35,13 @@ import com.wangyongyao.glfoundation.view.GLSpecularLightingView;
 import com.wangyongyao.glfoundation.view.GLSpecularMapView;
 import com.wangyongyao.glfoundation.view.GLSpotLightView;
 
-/**
- * author : wangyongyao https://github.com/wangyongyao1989
- * Create Time : 2024/9/12 23:37
- * Descibe : AndroidLearnOpenGL com.wangyongyao.androidlearnopengl
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class GLFoundationFragment extends BaseFragment {
 
     private FragmentGlFoundationBinding mBinding;
-    private Button mBtn1;
-    private FrameLayout mGlShow1;
     private GLFounationJniCall mFounationJniCall;
-    private Button mBtn2;
-    private Button mBtn3;
-    private Button mBtn4;
-    private Button mBtn5;
-    private Button mBtn6;
-    private Button mBtn7;
-    private Button mBtn8;
-    private Button mBtn9;
-    private Button mBtn10;
-    private Button mBtn11;
-    private Button mBtn12;
-    private Button mBtn13;
-    private Button mBtn14;
-    private Button mBtn15;
-    private Button mBtn16;
-    private Button mBtn17;
-    private Button mBtnBack;
     private GLViewModel mGlViewModel;
 
     @Override
@@ -72,25 +54,84 @@ public class GLFoundationFragment extends BaseFragment {
 
     @Override
     public void initView() {
-        mGlShow1 = mBinding.glShow;
-        mBtnBack = mBinding.btnBack;
-        mBtn1 = mBinding.btn1;
-        mBtn2 = mBinding.btn2;
-        mBtn3 = mBinding.btn3;
-        mBtn4 = mBinding.btn4;
-        mBtn5 = mBinding.btn5;
-        mBtn6 = mBinding.btn6;
-        mBtn7 = mBinding.btn7;
-        mBtn8 = mBinding.btn8;
-        mBtn9 = mBinding.btn9;
-        mBtn10 = mBinding.btn10;
-        mBtn11 = mBinding.btn11;
-        mBtn12 = mBinding.btn12;
-        mBtn13 = mBinding.btn13;
-        mBtn14 = mBinding.btn14;
-        mBtn15 = mBinding.btn15;
-        mBtn16 = mBinding.btn16;
-        mBtn17 = mBinding.btn17;
+        List<DemoItem> data = new ArrayList<>();
+        data.add(new DemoItem(1, "GL基础", R.drawable.img_foundation));
+        data.add(new DemoItem(2, "GL纹理", R.drawable.img_shader));
+        data.add(new DemoItem(3, "基础3D显示", R.drawable.img_3d));
+        data.add(new DemoItem(4, "立方体3D", R.drawable.img_3d));
+        data.add(new DemoItem(5, "多立方体3D", R.drawable.img_3d));
+        data.add(new DemoItem(6, "GL摄像机", R.drawable.img_3d));
+        data.add(new DemoItem(7, "GL光照场景及环境光照", R.drawable.img_senior));
+        data.add(new DemoItem(8, "漫反射光照", R.drawable.img_senior));
+        data.add(new DemoItem(9, "镜面光照", R.drawable.img_senior));
+        data.add(new DemoItem(10, "GL材质", R.drawable.img_senior));
+        data.add(new DemoItem(11, "GL漫反射贴图", R.drawable.img_senior));
+        data.add(new DemoItem(12, "镜面光贴图", R.drawable.img_senior));
+        data.add(new DemoItem(13, "GL平行光", R.drawable.img_senior));
+        data.add(new DemoItem(14, "GL点光源衰减", R.drawable.img_senior));
+        data.add(new DemoItem(15, "GL聚光手电筒", R.drawable.img_senior));
+        data.add(new DemoItem(16, "GL聚光平滑/软化边缘", R.drawable.img_senior));
+        data.add(new DemoItem(17, "GL多光源", R.drawable.img_senior));
+
+        SideAdapter adapter = new SideAdapter(data, item -> {
+            mBinding.glShow.removeAllViews();
+            switch (item.getId()) {
+                case 1:
+                    mBinding.glShow.addView(new GL3FoundationView(getActivity(), mFounationJniCall));
+                    break;
+                case 2:
+                    mBinding.glShow.addView(new GL3TextureView(getActivity(), mFounationJniCall));
+                    break;
+                case 3:
+                    mBinding.glShow.addView(new GL3DView(getActivity(), mFounationJniCall));
+                    break;
+                case 4:
+                    mBinding.glShow.addView(new GL3DCubeView(getActivity(), mFounationJniCall));
+                    break;
+                case 5:
+                    mBinding.glShow.addView(new GL3DMultiCubeView(getActivity(), mFounationJniCall));
+                    break;
+                case 6:
+                    mBinding.glShow.addView(new GL3DCameraView(getActivity(), mFounationJniCall));
+                    break;
+                case 7:
+                    mBinding.glShow.addView(new GLLightingView(getActivity(), mFounationJniCall));
+                    break;
+                case 8:
+                    mBinding.glShow.addView(new GLDiffuseReflectionLightingView(getActivity(), mFounationJniCall));
+                    break;
+                case 9:
+                    mBinding.glShow.addView(new GLSpecularLightingView(getActivity(), mFounationJniCall));
+                    break;
+                case 10:
+                    mBinding.glShow.addView(new GLMaterialView(getActivity(), mFounationJniCall));
+                    break;
+                case 11:
+                    mBinding.glShow.addView(new GLDiffuseMapView(getActivity(), mFounationJniCall));
+                    break;
+                case 12:
+                    mBinding.glShow.addView(new GLSpecularMapView(getActivity(), mFounationJniCall));
+                    break;
+                case 13:
+                    mBinding.glShow.addView(new GLDirectionalLightView(getActivity(), mFounationJniCall));
+                    break;
+                case 14:
+                    mBinding.glShow.addView(new GLAttenuationLightView(getActivity(), mFounationJniCall));
+                    break;
+                case 15:
+                    mBinding.glShow.addView(new GLFlashLightView(getActivity(), mFounationJniCall));
+                    break;
+                case 16:
+                    mBinding.glShow.addView(new GLSpotLightView(getActivity(), mFounationJniCall));
+                    break;
+                case 17:
+                    mBinding.glShow.addView(new GLMultiLightView(getActivity(), mFounationJniCall));
+                    break;
+            }
+        });
+
+        mBinding.rvSidebar.setLayoutManager(new LinearLayoutManager(getContext()));
+        mBinding.rvSidebar.setAdapter(adapter);
     }
 
     @Override
@@ -101,109 +142,12 @@ public class GLFoundationFragment extends BaseFragment {
     @Override
     public void initObserver() {
         mGlViewModel = ViewModelProviders.of(requireActivity()).get(GLViewModel.class);
-
     }
 
     @Override
     public void initListener() {
-        mBtnBack.setOnClickListener(view -> {
+        mBinding.btnBack.setOnClickListener(view -> {
             mGlViewModel.getSwitchFragment().postValue(GLViewModel.FRAGMENT_STATUS.MAIN);
         });
-        mBtn1.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GL3FoundationView gl3BaseView = new GL3FoundationView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3BaseView);
-        });
-        mBtn2.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GL3TextureView gl3TextureView = new GL3TextureView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3TextureView);
-        });
-        mBtn3.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GL3DView gl3dView = new GL3DView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3dView);
-        });
-        mBtn4.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GL3DCubeView gl3DCubeView = new GL3DCubeView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3DCubeView);
-        });
-        mBtn5.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GL3DMultiCubeView gl3DMultiCubeView = new GL3DMultiCubeView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3DMultiCubeView);
-        });
-        mBtn6.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GL3DCameraView gl3DCameraView = new GL3DCameraView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3DCameraView);
-        });
-        mBtn7.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLLightingView gl3DCameraView = new GLLightingView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(gl3DCameraView);
-        });
-        mBtn8.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLDiffuseReflectionLightingView reflectionLightingView
-                    = new GLDiffuseReflectionLightingView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(reflectionLightingView);
-        });
-        mBtn9.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLSpecularLightingView glSpecularLightingView
-                    = new GLSpecularLightingView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glSpecularLightingView);
-        });
-        mBtn10.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLMaterialView glMaterialView
-                    = new GLMaterialView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glMaterialView);
-        });
-        mBtn11.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLDiffuseMapView glDiffuseMap
-                    = new GLDiffuseMapView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glDiffuseMap);
-        });
-        mBtn12.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLSpecularMapView glSpecularMap
-                    = new GLSpecularMapView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glSpecularMap);
-        });
-        mBtn13.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLDirectionalLightView glDirectionalLight
-                    = new GLDirectionalLightView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glDirectionalLight);
-        });
-        mBtn14.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLAttenuationLightView glAttenuationLight
-                    = new GLAttenuationLightView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glAttenuationLight);
-        });
-        mBtn15.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLFlashLightView glFlashLight
-                    = new GLFlashLightView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glFlashLight);
-        });
-        mBtn16.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLSpotLightView glSpotLightView
-                    = new GLSpotLightView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glSpotLightView);
-        });
-        mBtn17.setOnClickListener(view -> {
-            mGlShow1.removeAllViews();
-            GLMultiLightView glMultiLightView
-                    = new GLMultiLightView(getActivity(), mFounationJniCall);
-            mGlShow1.addView(glMultiLightView);
-        });
     }
-
 }
