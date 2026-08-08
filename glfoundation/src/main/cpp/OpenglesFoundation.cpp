@@ -38,61 +38,62 @@ void OpenglesFoundation::renderFrame() {
 
 
 bool OpenglesFoundation::setupGraphics(int w, int h) {
+    LOGI("Starting OpenGL ES Graphics Setup...");
     printGLString("Version", GL_VERSION);
     printGLString("Vendor", GL_VENDOR);
     printGLString("Renderer", GL_RENDERER);
-    printGLString("Extensions", GL_EXTENSIONS);
 
-    LOGI("setupGraphics(%d, %d)", w, h);
-    LOGI("gVertexShaderCode :%s", gVertexShaderCode);
-    LOGI("gFragmentShaderCode :%s", gFragmentShaderCode);
+    LOGI("Viewport size: %dx%d", w, h);
 
-    int nrAttributes;
-    glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
-    LOGI("Maximum nr of vertex attributes supported: :%d", nrAttributes);
-//    gProgram = createProgram(gVertexShader, gFragmentShader);
+    // 编译并链接着色器程序
     gProgram = createProgram(gVertexShaderCode, gFragmentShaderCode);
     if (!gProgram) {
-        LOGE("Could not create shaderId.");
+        LOGE("Failed to create shader program in setupGraphics");
         return false;
     }
+
+    // 获取顶点着色器中 vPosition 属性的位置
     gvPositionHandle = glGetAttribLocation(gProgram, "vPosition");
     checkGlError("glGetAttribLocation");
-    LOGI("glGetAttribLocation(\"vPosition\") = %d\n",
-         gvPositionHandle);
+    LOGI("Attribute 'vPosition' location: %d", gvPositionHandle);
 
     glViewport(0, 0, w, h);
     checkGlError("glViewport");
-    LOGI("glViewport successed!");
 
-    //清屏
+    // 初始化背景颜色为深青色
+    glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
     glClear(GL_DEPTH_BUFFER_BIT | GL_COLOR_BUFFER_BIT);
-    checkGlError("glClear");
 
+    /**
+     * 数据缓冲管理 (VAO/VBO/EBO)
+     * 1. VAO (Vertex Array Object): 记录顶点属性配置
+     * 2. VBO (Vertex Buffer Object): 将顶点数据传输到 GPU 显存
+     * 3. EBO (Element Buffer Object): 索引缓冲，实现顶点复用
+     */
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
     glGenBuffers(1, &EBO);
 
-    //绑定VAO
+    // 绑定 VAO 开始记录状态
     glBindVertexArray(VAO);
-    //把顶点数组复制到缓冲中供OpenGL使用
+
+    // 传输顶点坐标数据
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-//    glBufferData(GL_ARRAY_BUFFER, sizeof(gTriangleVertices), gTriangleVertices, GL_STATIC_DRAW);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-    //绑定EBO
+    // 传输索引数据
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
     glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 
-
-    // 1. 设置顶点属性指针
+    // 配置顶点属性指针 (位置:0, 大小:3, 类型:float, 步长:3*float)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *) 0);
     glEnableVertexAttribArray(0);
 
-
+    // 解绑，防止后续操作意外修改当前 VAO
     glBindBuffer(GL_ARRAY_BUFFER, 0);
     glBindVertexArray(0);
 
+    LOGI("OpenglesFoundation setup successfully finished.");
     return true;
 }
 

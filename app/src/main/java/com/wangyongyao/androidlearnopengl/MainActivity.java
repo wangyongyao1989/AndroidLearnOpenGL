@@ -66,18 +66,25 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
+    /**
+     * 根据 FRAGMENT_STATUS 状态切换当前显示的 Fragment
+     * @param status 目标 Fragment 状态
+     */
     private void selectionFragment(GLViewModel.FRAGMENT_STATUS status) {
+        Log.i(TAG, "Navigating to Fragment: " + status);
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         hideTransaction(fragmentTransaction);
         switch (status) {
             case MAIN: {
+                Log.d(TAG, "Showing Main Menu");
                 fragmentTransaction.show(mMainFragment);
                 fragmentTransaction.commit();
             }
             break;
             case GL_FOUNDATION: {
                 if (mFoundationFragment == null) {
+                    Log.d(TAG, "Initializing GL Foundation Fragment");
                     mFoundationFragment = new GLFoundationFragment();
                     fragmentTransaction
                             .add(mFlGlFoundation.getId(), mFoundationFragment);
@@ -88,6 +95,7 @@ public class MainActivity extends AppCompatActivity {
             break;
             case GL_3D: {
                 if (mGl3DShowFragment == null) {
+                    Log.d(TAG, "Initializing GL 3D Fragment");
                     mGl3DShowFragment = new GL3DShowFragment();
                     fragmentTransaction
                             .add(mFlGl3d.getId(), mGl3DShowFragment);
@@ -98,6 +106,7 @@ public class MainActivity extends AppCompatActivity {
             break;
             case GL_SENIOR: {
                 if (mGLSeniorFragment == null) {
+                    Log.d(TAG, "Initializing GL Senior Fragment");
                     mGLSeniorFragment = new GLSeniorFragment();
                     fragmentTransaction
                             .add(mFlGl3d.getId(), mGLSeniorFragment);
@@ -108,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
             break;
             case GL_SHADER: {
                 if (mShaderShowFragment == null) {
+                    Log.d(TAG, "Initializing GL Shader Fragment");
                     mShaderShowFragment = new GLShaderShowFragment();
                     fragmentTransaction
                             .add(mFlGl3d.getId(), mShaderShowFragment);

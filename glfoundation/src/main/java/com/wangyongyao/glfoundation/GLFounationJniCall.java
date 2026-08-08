@@ -1,18 +1,39 @@
 package com.wangyongyao.glfoundation;
 
+import android.util.Log;
+
 public class GLFounationJniCall {
+
+    private static final String TAG = "GLFounationJniCall";
 
     // Used to load the 'androidlearnopengl' library on application startup.
     static {
+        Log.i(TAG, "Loading glfoundation library...");
         System.loadLibrary("glfoundation");
     }
 
+    /**
+     * 设置基础 OpenGL ES 渲染的着色器路径
+     */
     public void setFoundationGLSLPath(String fragString, String vertexString) {
+        Log.d(TAG, "setFoundationGLSLPath: frag=" + fragString + ", vertex=" + vertexString);
         native_foundation_set_glsl_path(fragString, vertexString);
     }
+
+    /**
+     * 初始化基础 OpenGL ES 环境
+     * @param w 屏幕宽度
+     * @param h 屏幕高度
+     * @return 是否初始化成功
+     */
     public boolean initFoundationOpenGl(int w, int h) {
+        Log.i(TAG, "initFoundationOpenGl: size=" + w + "x" + h);
         return native_foundation_init_opengl(w, h);
     }
+
+    /**
+     * 执行帧渲染回调
+     */
     public void openFoundationGlRenderFrame() {
         native_foundation_render_frame();
     }
