@@ -1,10 +1,10 @@
 //  Author : wangyongyao https://github.com/wangyongyao1989
-// Created by MMM on 2025/2/26.
+// Created by MMM on 2025/2/27.
 //
 
-#include "../includes/GLShapeFunction.h"
+#include "GLSLPatternsFunction.h"
 
-bool GLShapeFunction::setupGraphics(int w, int h) {
+bool GLSLPatternsFunction::setupGraphics(int w, int h) {
     screenW = w;
     screenH = h;
     GLuint program = glslShader->createProgram();
@@ -29,11 +29,11 @@ bool GLShapeFunction::setupGraphics(int w, int h) {
     glBindVertexArray(VAO);
     //把顶点数组复制到缓冲中供OpenGL使用
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(SFVertices1), SFVertices1, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(PFVertices), PFVertices, GL_STATIC_DRAW);
 
     //绑定EBO
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(SFIndices1), SFIndices1, GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(PFIndices), PFIndices, GL_STATIC_DRAW);
 
 
     // 1. 设置顶点属性指针
@@ -46,7 +46,7 @@ bool GLShapeFunction::setupGraphics(int w, int h) {
     return false;
 }
 
-void GLShapeFunction::renderFrame() {
+void GLSLPatternsFunction::renderFrame() {
     if (m_filter != m_prevFilter) {
         m_prevFilter = m_filter;
         if (m_filter >= 0 && m_filter < m_fragmentStringPathes.size()) {
@@ -64,28 +64,28 @@ void GLShapeFunction::renderFrame() {
     glDrawArrays(GL_TRIANGLE_STRIP, 0, 4);
 }
 
-bool GLShapeFunction::setSharderPath(const char *vertexPath, const char *fragmentPath) {
+bool GLSLPatternsFunction::setSharderPath(const char *vertexPath, const char *fragmentPath) {
     glslShader->getSharderPath(vertexPath, fragmentPath);
     return false;
 }
 
-bool GLShapeFunction::setSharderStringPath(string vertexPath, string fragmentPath) {
+bool GLSLPatternsFunction::setSharderStringPath(string vertexPath, string fragmentPath) {
     glslShader->getSharderStringPath(vertexPath, fragmentPath);
     return false;
 }
 
-bool GLShapeFunction::setSharderStringPathes(string vertexPath,
-                                               vector<string> fragmentPathes) {
+bool GLSLPatternsFunction::setSharderStringPathes(string vertexPath,
+                                                vector<string> fragmentPathes) {
     m_fragmentStringPathes = fragmentPathes;
     m_vertexStringPath = vertexPath;
     return glslShader->getSharderStringPath(vertexPath, m_fragmentStringPathes.front());
 }
 
-GLShapeFunction::GLShapeFunction() {
+GLSLPatternsFunction::GLSLPatternsFunction() {
     glslShader = new GLSLShader();
 }
 
-GLShapeFunction::~GLShapeFunction() {
+GLSLPatternsFunction::~GLSLPatternsFunction() {
     //析构函数中释放资源
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
@@ -98,15 +98,15 @@ GLShapeFunction::~GLShapeFunction() {
 }
 
 
-void GLShapeFunction::setParameters(uint32_t params) {
+void GLSLPatternsFunction::setParameters(uint32_t params) {
     m_filter = params;
 }
 
-uint32_t GLShapeFunction::getParameters() {
+uint32_t GLSLPatternsFunction::getParameters() {
     return m_filter;
 }
 
-int GLShapeFunction::createProgram() {
+int GLSLPatternsFunction::createProgram() {
     m_program = glslShader->createProgram();
     if (!m_program) {
         LOGE("Could not create program.");
@@ -119,7 +119,7 @@ int GLShapeFunction::createProgram() {
     return m_program;
 }
 
-int GLShapeFunction::bindVertexAttribPointer() {
+int GLSLPatternsFunction::bindVertexAttribPointer() {
     if (!m_program && !createProgram()) {
         LOGE("Could not use program.");
         return 0;
@@ -128,7 +128,7 @@ int GLShapeFunction::bindVertexAttribPointer() {
     if (isProgramChanged) {
         glUseProgram(m_program);
         //绑定顶点程序中的position数据
-        glVertexAttribPointer(m_vertexPos, 2, GL_FLOAT, GL_FALSE, 0, kSFVerticek1);
+        glVertexAttribPointer(m_vertexPos, 2, GL_FLOAT, GL_FALSE, 0, kPFVerticek);
         glEnableVertexAttribArray(m_vertexPos);
 
         if (m_resolutionLoc) {
@@ -147,7 +147,7 @@ int GLShapeFunction::bindVertexAttribPointer() {
     return m_program;
 }
 
-void GLShapeFunction::deleteProgram(GLuint &program) {
+void GLSLPatternsFunction::deleteProgram(GLuint &program) {
     if (m_program) {
         glUseProgram(0);
         glDeleteProgram(program);
@@ -156,15 +156,13 @@ void GLShapeFunction::deleteProgram(GLuint &program) {
 }
 
 
-void GLShapeFunction::printGLString(const char *name, GLenum s) {
+void GLSLPatternsFunction::printGLString(const char *name, GLenum s) {
     const char *v = (const char *) glGetString(s);
     LOGI("OpenGL %s = %s\n", name, v);
 }
 
-void GLShapeFunction::checkGlError(const char *op) {
+void GLSLPatternsFunction::checkGlError(const char *op) {
     for (GLint error = glGetError(); error; error = glGetError()) {
         LOGI("after %s() glError (0x%x)\n", op, error);
     }
 }
-
-

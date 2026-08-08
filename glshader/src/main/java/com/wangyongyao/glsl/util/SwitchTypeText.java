@@ -10,6 +10,82 @@ import android.widget.Button;
  */
 public class SwitchTypeText {
 
+    public static void switchDNTypeText(Button view, int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                view.setText("2D Noise");
+            }
+            break;
+            case 1: {
+                view.setText("Gradient Noise");
+            }
+            break;
+            case 2: {
+                view.setText("木头表皮噪音");
+            }
+            break;
+            case 3: {
+                view.setText("距离场噪音");
+            }
+            break;
+            case 4: {
+                view.setText("形状噪音");
+            }
+            break;
+            case 5: {
+                view.setText("水榕灯");
+            }
+            break;
+            case 6: {
+                view.setText("噪音形态");
+            }
+            break;
+
+            case 7: {
+                view.setText("网格噪音——1");
+            }
+            break;
+            case 8: {
+                view.setText("网格噪音——2");
+            }
+            break;
+            case 9: {
+                view.setText("网格噪音——3");
+            }
+            break;
+            case 10: {
+                view.setText("网格噪音——4");
+            }
+            break;
+            case 11: {
+                view.setText("fBm 的二维实现");
+            }
+            break;
+            case 12: {
+                view.setText("布朗运动");
+            }
+            break;
+
+        }
+    }
+
+    public static void switchDRTypeText(Button view, int typeSF) {
+        switch (typeSF) {
+            case 0: {
+                view.setText("随机——random");
+            }
+            break;
+            case 1: {
+                view.setText("随机——混沌");
+            }
+            break;
+            case 2: {
+                view.setText("随机——truchetPattern");
+            }
+            break;
+        }
+    }
+
     public static void switchPFTypeText(Button view, int typeSF) {
         switch (typeSF) {
             case 0: {
@@ -28,7 +104,6 @@ public class SwitchTypeText {
                 view.setText("Truchet瓷砖");
             }
             break;
-
         }
     }
 

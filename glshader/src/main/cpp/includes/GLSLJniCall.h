@@ -6,7 +6,7 @@
 #define ANDROIDLEARNOPENGL_GLSLJNICALL_H
 
 
-class GLSLJniCall {
+class GLSLAlgoritDrawJniCall {
 
 };
 
